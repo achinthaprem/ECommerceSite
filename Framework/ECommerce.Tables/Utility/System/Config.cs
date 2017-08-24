@@ -60,6 +60,9 @@ namespace ECommerce.Tables.Utility.System
 		private const string            KEY_MAINTENANCE_MESSAGE_HIDE_AFTER      = "MaintenanceMsgHideAfterMins";
 		private const string            KEY_APP_LAUNCH_DATE                     = "ApplicationLaunchDate";
 
+		// LO WEB API
+		private const string			KEY_TOKEN_LIFESPAN_MINUTES              = "TokenLifespanMinutes";
+
 		#endregion
 
 		#region Folder Constants
@@ -258,6 +261,14 @@ namespace ECommerce.Tables.Utility.System
 
 				return value;
 			}
+		}
+
+		/// <summary>
+		/// Gets the Token lifespan minutes
+		/// </summary>
+		public static int TokenLifespanMinutes
+		{
+			get { return GetIntegerSetting(KEY_TOKEN_LIFESPAN_MINUTES); }
 		}
 
 		#region Webfarm Thread Settings Accessors
