@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using ECommerceWeb.Models;
+using ECommerce.Tables.Active.HR;
 
 namespace ECommerceWeb.Common
 {
@@ -65,7 +65,7 @@ namespace ECommerceWeb.Common
 		public static void Start(Account obj)
 		{
 			HttpContext.Current.Session[Constants.USER_ID]          = obj.ID.ToString();
-			HttpContext.Current.Session[Constants.USER_NAME]        = obj.first_name.ToString() + " " + obj.last_name.ToString();
+			HttpContext.Current.Session[Constants.USER_NAME]        = obj.FirstName.ToString() + " " + obj.LastName.ToString();
 			HttpContext.Current.Session[Constants.USER_ROLE]        = obj.ID.ToString();
 		}
 

@@ -19,7 +19,7 @@ namespace ECommerceWeb.Controllers
 			}
 			else
 			{
-				result                                      = RedirectToAction(Constants.ACTION_LOGIN);
+				result                                      = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
 			}
 
 			return result;

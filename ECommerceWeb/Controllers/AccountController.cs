@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using ECommerceWeb.Models;
+using ECommerce.Tables.Active.HR;
 using ECommerceWeb.Common;
+using ECommerceWeb.Models;
 
 namespace ECommerceWeb.Controllers
 {
@@ -17,17 +19,17 @@ namespace ECommerceWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Login(Account user)
+		public async Task<ActionResult> Login(LoginViewModel user)
 		{
 			ActionResult            result                  = View(user);
 
 			if (ModelState.IsValid)
 			{
-				using (DBEntities db = new DBEntities())
-				{
-					var             obj                     = db.Accounts.Where(a => a.email.Equals(user.email) && a.password.Equals(user.password)).FirstOrDefault();
+				var					obj                     = await Task.Run(() => Account.ExecuteCreateByEmail(user.Email));
 
-					if (obj != null)
+				if (obj != null)
+				{
+					if (obj.Password.Equals(user.Password))
 					{
 						Common.Session.Start(obj);
 
@@ -35,7 +37,7 @@ namespace ECommerceWeb.Controllers
 					}
 				}
 			}
-
+			ViewBag.Message = "";
 			return result;
 		}
 
@@ -48,7 +50,7 @@ namespace ECommerceWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Register(Account user)
+		public async Task<ActionResult> Register(RegisterViewModel user)
 		{
 			ActionResult            result                  = View();
 
