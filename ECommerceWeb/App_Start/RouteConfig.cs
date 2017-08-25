@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ECommerceWeb.Common;
 
 namespace ECommerceWeb
 {
@@ -16,7 +17,11 @@ namespace ECommerceWeb
 			routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",
-				defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+				defaults: new {
+					controller		= Constants.CONTROLLER_ACCOUNT,
+					action			= Constants.ACTION_LOGIN,
+					id				= UrlParameter.Optional
+				}
 			);
 		}
 	}

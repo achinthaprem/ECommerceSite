@@ -1,0 +1,762 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ECommerceSiteModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="salt" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="contact_no" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="shipping_address" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="country" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="role" Type="int" Nullable="false" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+          <Property Name="date_modified" Type="datetime" Nullable="false" />
+          <Property Name="created_account_id" Type="int" Nullable="false" />
+          <Property Name="modified_account_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="image_name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+          <Property Name="date_modified" Type="datetime" Nullable="false" />
+          <Property Name="created_account_id" Type="int" Nullable="false" />
+          <Property Name="modified_account_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="account_id" Type="int" Nullable="false" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="payment_method" Type="int" Nullable="false" />
+          <Property Name="total_amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="order_id" Type="int" Nullable="false" />
+          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="quantity" Type="int" Nullable="false" />
+          <Property Name="unit_cost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="subtotal" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="category_id" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="image_name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+          <Property Name="date_modified" Type="datetime" Nullable="false" />
+          <Property Name="created_account_id" Type="int" Nullable="false" />
+          <Property Name="modified_account_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShippingInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="order_id" Type="int" Nullable="false" />
+          <Property Name="type" Type="int" Nullable="false" />
+          <Property Name="cost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="address" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <Function Name="AccountDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="AccountGetByEmail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="AccountGetByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="AccountInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="first_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="last_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="salt" Type="nvarchar" Mode="In" />
+          <Parameter Name="contact_no" Type="nvarchar" Mode="In" />
+          <Parameter Name="shipping_address" Type="nvarchar" Mode="In" />
+          <Parameter Name="country" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="role" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="date_modified" Type="datetime" Mode="In" />
+          <Parameter Name="created_account_id" Type="int" Mode="In" />
+          <Parameter Name="modified_account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="AccountList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="AccountUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="first_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="last_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="salt" Type="nvarchar" Mode="In" />
+          <Parameter Name="contact_no" Type="nvarchar" Mode="In" />
+          <Parameter Name="shipping_address" Type="nvarchar" Mode="In" />
+          <Parameter Name="country" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="role" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="date_modified" Type="datetime" Mode="In" />
+          <Parameter Name="created_account_id" Type="int" Mode="In" />
+          <Parameter Name="modified_account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CategoryDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CategoryGetByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CategoryInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="image_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="date_modified" Type="datetime" Mode="In" />
+          <Parameter Name="created_account_id" Type="int" Mode="In" />
+          <Parameter Name="modified_account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CategoryList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="CategoryListByStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="status" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CategoryUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="image_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="date_modified" Type="datetime" Mode="In" />
+          <Parameter Name="created_account_id" Type="int" Mode="In" />
+          <Parameter Name="modified_account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ConfigGetByName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="ConfigSetByName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="value" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="OrderDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderGetByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="account_id" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="payment_method" Type="int" Mode="In" />
+          <Parameter Name="total_amount" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="OrderItemDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderItemGetByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderItemInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="order_id" Type="int" Mode="In" />
+          <Parameter Name="product_id" Type="int" Mode="In" />
+          <Parameter Name="quantity" Type="int" Mode="In" />
+          <Parameter Name="unit_cost" Type="decimal" Mode="In" />
+          <Parameter Name="subtotal" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="OrderItemList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="OrderItemListByOrderID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="order_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderItemUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="order_id" Type="int" Mode="In" />
+          <Parameter Name="product_id" Type="int" Mode="In" />
+          <Parameter Name="quantity" Type="int" Mode="In" />
+          <Parameter Name="unit_cost" Type="decimal" Mode="In" />
+          <Parameter Name="subtotal" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="OrderList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="OrderListByAccountID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderListByStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="status" Type="int" Mode="In" />
+        </Function>
+        <Function Name="OrderUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="account_id" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="payment_method" Type="int" Mode="In" />
+          <Parameter Name="total_amount" Type="decimal" Mode="In" />
+        </Function>
+        <Function Name="ProductDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ProductGetByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ProductInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="category_id" Type="int" Mode="In" />
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="price" Type="decimal" Mode="In" />
+          <Parameter Name="image_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="date_modified" Type="datetime" Mode="In" />
+          <Parameter Name="created_account_id" Type="int" Mode="In" />
+          <Parameter Name="modified_account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ProductList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ProductListByStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="status" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ProductUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="category_id" Type="int" Mode="In" />
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="price" Type="decimal" Mode="In" />
+          <Parameter Name="image_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="date_created" Type="datetime" Mode="In" />
+          <Parameter Name="date_modified" Type="datetime" Mode="In" />
+          <Parameter Name="created_account_id" Type="int" Mode="In" />
+          <Parameter Name="modified_account_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ShippingInfoDelete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ShippingInfoGetByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ShippingInfoInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="order_id" Type="int" Mode="In" />
+          <Parameter Name="type" Type="int" Mode="In" />
+          <Parameter Name="cost" Type="decimal" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="ShippingInfoList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ShippingInfoListByType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="type" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ShippingInfoUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+          <Parameter Name="order_id" Type="int" Mode="In" />
+          <Parameter Name="type" Type="int" Mode="In" />
+          <Parameter Name="cost" Type="decimal" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="SystemLoggedInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="date_logged" Type="datetime" Mode="In" />
+          <Parameter Name="url" Type="nvarchar" Mode="In" />
+          <Parameter Name="account_id" Type="int" Mode="In" />
+          <Parameter Name="class_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="method_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="severity" Type="int" Mode="In" />
+          <Parameter Name="remote_address" Type="nvarchar" Mode="In" />
+          <Parameter Name="exceptiontype" Type="nvarchar" Mode="In" />
+          <Parameter Name="user_agent" Type="nvarchar" Mode="In" />
+          <Parameter Name="server_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="developer_msg" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="ECommerceSiteModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderItem" EntityType="Self.OrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShippingInfo" EntityType="Self.ShippingInfo" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ECommerceSiteModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="salt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="contact_no" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="shipping_address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="role" Type="Int32" Nullable="false" />
+          <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="date_modified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="created_account_id" Type="Int32" Nullable="false" />
+          <Property Name="modified_account_id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="image_name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="date_modified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="created_account_id" Type="Int32" Nullable="false" />
+          <Property Name="modified_account_id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="account_id" Type="Int32" Nullable="false" />
+          <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="payment_method" Type="Int32" Nullable="false" />
+          <Property Name="total_amount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="order_id" Type="Int32" Nullable="false" />
+          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="unit_cost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="subtotal" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="category_id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="image_name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="date_modified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="created_account_id" Type="Int32" Nullable="false" />
+          <Property Name="modified_account_id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShippingInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="order_id" Type="Int32" Nullable="false" />
+          <Property Name="type" Type="Int32" Nullable="false" />
+          <Property Name="cost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Orders" EntityType="Self.Order" />
+          <EntitySet Name="OrderItems" EntityType="Self.OrderItem" />
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="ShippingInfoes" EntityType="Self.ShippingInfo" />
+          <FunctionImport Name="AccountDelete">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="AccountGetByEmail">
+            <Parameter Name="email" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AccountGetByID">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="AccountInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="first_name" Mode="In" Type="String" />
+            <Parameter Name="last_name" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="salt" Mode="In" Type="String" />
+            <Parameter Name="contact_no" Mode="In" Type="String" />
+            <Parameter Name="shipping_address" Mode="In" Type="String" />
+            <Parameter Name="country" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="role" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="date_modified" Mode="In" Type="DateTime" />
+            <Parameter Name="created_account_id" Mode="In" Type="Int32" />
+            <Parameter Name="modified_account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="AccountList" />
+          <FunctionImport Name="AccountUpdate">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="first_name" Mode="In" Type="String" />
+            <Parameter Name="last_name" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="salt" Mode="In" Type="String" />
+            <Parameter Name="contact_no" Mode="In" Type="String" />
+            <Parameter Name="shipping_address" Mode="In" Type="String" />
+            <Parameter Name="country" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="role" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="date_modified" Mode="In" Type="DateTime" />
+            <Parameter Name="created_account_id" Mode="In" Type="Int32" />
+            <Parameter Name="modified_account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CategoryDelete">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CategoryGetByID">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CategoryInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="image_name" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="date_modified" Mode="In" Type="DateTime" />
+            <Parameter Name="created_account_id" Mode="In" Type="Int32" />
+            <Parameter Name="modified_account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CategoryList" />
+          <FunctionImport Name="CategoryListByStatus">
+            <Parameter Name="status" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CategoryUpdate">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="image_name" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="date_modified" Mode="In" Type="DateTime" />
+            <Parameter Name="created_account_id" Mode="In" Type="Int32" />
+            <Parameter Name="modified_account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ConfigGetByName" ReturnType="Collection(String)">
+            <Parameter Name="name" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ConfigSetByName">
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="value" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="OrderDelete">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderGetByID">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="account_id" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="payment_method" Mode="In" Type="Int32" />
+            <Parameter Name="total_amount" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="OrderItemDelete">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderItemGetByID">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderItemInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="order_id" Mode="In" Type="Int32" />
+            <Parameter Name="product_id" Mode="In" Type="Int32" />
+            <Parameter Name="quantity" Mode="In" Type="Int32" />
+            <Parameter Name="unit_cost" Mode="In" Type="Decimal" />
+            <Parameter Name="subtotal" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="OrderItemList" />
+          <FunctionImport Name="OrderItemListByOrderID">
+            <Parameter Name="order_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderItemUpdate">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="order_id" Mode="In" Type="Int32" />
+            <Parameter Name="product_id" Mode="In" Type="Int32" />
+            <Parameter Name="quantity" Mode="In" Type="Int32" />
+            <Parameter Name="unit_cost" Mode="In" Type="Decimal" />
+            <Parameter Name="subtotal" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="OrderList" />
+          <FunctionImport Name="OrderListByAccountID">
+            <Parameter Name="account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderListByStatus">
+            <Parameter Name="status" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="OrderUpdate">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="account_id" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="payment_method" Mode="In" Type="Int32" />
+            <Parameter Name="total_amount" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="ProductDelete">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ProductGetByID">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ProductInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="category_id" Mode="In" Type="Int32" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="price" Mode="In" Type="Decimal" />
+            <Parameter Name="image_name" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="date_modified" Mode="In" Type="DateTime" />
+            <Parameter Name="created_account_id" Mode="In" Type="Int32" />
+            <Parameter Name="modified_account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ProductList" />
+          <FunctionImport Name="ProductListByStatus">
+            <Parameter Name="status" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ProductUpdate">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="category_id" Mode="In" Type="Int32" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="price" Mode="In" Type="Decimal" />
+            <Parameter Name="image_name" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="date_created" Mode="In" Type="DateTime" />
+            <Parameter Name="date_modified" Mode="In" Type="DateTime" />
+            <Parameter Name="created_account_id" Mode="In" Type="Int32" />
+            <Parameter Name="modified_account_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ShippingInfoDelete">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ShippingInfoGetByID">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ShippingInfoInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="order_id" Mode="In" Type="Int32" />
+            <Parameter Name="type" Mode="In" Type="Int32" />
+            <Parameter Name="cost" Mode="In" Type="Decimal" />
+            <Parameter Name="address" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ShippingInfoList" />
+          <FunctionImport Name="ShippingInfoListByType">
+            <Parameter Name="type" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ShippingInfoUpdate">
+            <Parameter Name="ID" Mode="In" Type="Int32" />
+            <Parameter Name="order_id" Mode="In" Type="Int32" />
+            <Parameter Name="type" Mode="In" Type="Int32" />
+            <Parameter Name="cost" Mode="In" Type="Decimal" />
+            <Parameter Name="address" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SystemLoggedInsert" ReturnType="Collection(Decimal)">
+            <Parameter Name="date_logged" Mode="In" Type="DateTime" />
+            <Parameter Name="url" Mode="In" Type="String" />
+            <Parameter Name="account_id" Mode="In" Type="Int32" />
+            <Parameter Name="class_name" Mode="In" Type="String" />
+            <Parameter Name="method_name" Mode="In" Type="String" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="severity" Mode="In" Type="Int32" />
+            <Parameter Name="remote_address" Mode="In" Type="String" />
+            <Parameter Name="exceptiontype" Mode="In" Type="String" />
+            <Parameter Name="user_agent" Mode="In" Type="String" />
+            <Parameter Name="server_name" Mode="In" Type="String" />
+            <Parameter Name="developer_msg" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ECommerceSiteModelStoreContainer" CdmEntityContainer="DBEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="ECommerceSiteModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="salt" ColumnName="salt" />
+                <ScalarProperty Name="contact_no" ColumnName="contact_no" />
+                <ScalarProperty Name="shipping_address" ColumnName="shipping_address" />
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="role" ColumnName="role" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="date_modified" ColumnName="date_modified" />
+                <ScalarProperty Name="created_account_id" ColumnName="created_account_id" />
+                <ScalarProperty Name="modified_account_id" ColumnName="modified_account_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="ECommerceSiteModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="image_name" ColumnName="image_name" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="date_modified" ColumnName="date_modified" />
+                <ScalarProperty Name="created_account_id" ColumnName="created_account_id" />
+                <ScalarProperty Name="modified_account_id" ColumnName="modified_account_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="ECommerceSiteModel.Order">
+              <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="account_id" ColumnName="account_id" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="payment_method" ColumnName="payment_method" />
+                <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderItems">
+            <EntityTypeMapping TypeName="ECommerceSiteModel.OrderItem">
+              <MappingFragment StoreEntitySet="OrderItem">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="order_id" ColumnName="order_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="unit_cost" ColumnName="unit_cost" />
+                <ScalarProperty Name="subtotal" ColumnName="subtotal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="ECommerceSiteModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="image_name" ColumnName="image_name" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="date_modified" ColumnName="date_modified" />
+                <ScalarProperty Name="created_account_id" ColumnName="created_account_id" />
+                <ScalarProperty Name="modified_account_id" ColumnName="modified_account_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShippingInfoes">
+            <EntityTypeMapping TypeName="ECommerceSiteModel.ShippingInfo">
+              <MappingFragment StoreEntitySet="ShippingInfo">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="order_id" ColumnName="order_id" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+                <ScalarProperty Name="address" ColumnName="address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AccountDelete" FunctionName="ECommerceSiteModel.Store.AccountDelete" />
+          <FunctionImportMapping FunctionImportName="AccountGetByEmail" FunctionName="ECommerceSiteModel.Store.AccountGetByEmail" />
+          <FunctionImportMapping FunctionImportName="AccountGetByID" FunctionName="ECommerceSiteModel.Store.AccountGetByID" />
+          <FunctionImportMapping FunctionImportName="AccountInsert" FunctionName="ECommerceSiteModel.Store.AccountInsert" />
+          <FunctionImportMapping FunctionImportName="AccountList" FunctionName="ECommerceSiteModel.Store.AccountList" />
+          <FunctionImportMapping FunctionImportName="AccountUpdate" FunctionName="ECommerceSiteModel.Store.AccountUpdate" />
+          <FunctionImportMapping FunctionImportName="CategoryDelete" FunctionName="ECommerceSiteModel.Store.CategoryDelete" />
+          <FunctionImportMapping FunctionImportName="CategoryGetByID" FunctionName="ECommerceSiteModel.Store.CategoryGetByID" />
+          <FunctionImportMapping FunctionImportName="CategoryInsert" FunctionName="ECommerceSiteModel.Store.CategoryInsert" />
+          <FunctionImportMapping FunctionImportName="CategoryList" FunctionName="ECommerceSiteModel.Store.CategoryList" />
+          <FunctionImportMapping FunctionImportName="CategoryListByStatus" FunctionName="ECommerceSiteModel.Store.CategoryListByStatus" />
+          <FunctionImportMapping FunctionImportName="CategoryUpdate" FunctionName="ECommerceSiteModel.Store.CategoryUpdate" />
+          <FunctionImportMapping FunctionImportName="ConfigGetByName" FunctionName="ECommerceSiteModel.Store.ConfigGetByName" />
+          <FunctionImportMapping FunctionImportName="ConfigSetByName" FunctionName="ECommerceSiteModel.Store.ConfigSetByName" />
+          <FunctionImportMapping FunctionImportName="OrderDelete" FunctionName="ECommerceSiteModel.Store.OrderDelete" />
+          <FunctionImportMapping FunctionImportName="OrderGetByID" FunctionName="ECommerceSiteModel.Store.OrderGetByID" />
+          <FunctionImportMapping FunctionImportName="OrderInsert" FunctionName="ECommerceSiteModel.Store.OrderInsert" />
+          <FunctionImportMapping FunctionImportName="OrderItemDelete" FunctionName="ECommerceSiteModel.Store.OrderItemDelete" />
+          <FunctionImportMapping FunctionImportName="OrderItemGetByID" FunctionName="ECommerceSiteModel.Store.OrderItemGetByID" />
+          <FunctionImportMapping FunctionImportName="OrderItemInsert" FunctionName="ECommerceSiteModel.Store.OrderItemInsert" />
+          <FunctionImportMapping FunctionImportName="OrderItemList" FunctionName="ECommerceSiteModel.Store.OrderItemList" />
+          <FunctionImportMapping FunctionImportName="OrderItemListByOrderID" FunctionName="ECommerceSiteModel.Store.OrderItemListByOrderID" />
+          <FunctionImportMapping FunctionImportName="OrderItemUpdate" FunctionName="ECommerceSiteModel.Store.OrderItemUpdate" />
+          <FunctionImportMapping FunctionImportName="OrderList" FunctionName="ECommerceSiteModel.Store.OrderList" />
+          <FunctionImportMapping FunctionImportName="OrderListByAccountID" FunctionName="ECommerceSiteModel.Store.OrderListByAccountID" />
+          <FunctionImportMapping FunctionImportName="OrderListByStatus" FunctionName="ECommerceSiteModel.Store.OrderListByStatus" />
+          <FunctionImportMapping FunctionImportName="OrderUpdate" FunctionName="ECommerceSiteModel.Store.OrderUpdate" />
+          <FunctionImportMapping FunctionImportName="ProductDelete" FunctionName="ECommerceSiteModel.Store.ProductDelete" />
+          <FunctionImportMapping FunctionImportName="ProductGetByID" FunctionName="ECommerceSiteModel.Store.ProductGetByID" />
+          <FunctionImportMapping FunctionImportName="ProductInsert" FunctionName="ECommerceSiteModel.Store.ProductInsert" />
+          <FunctionImportMapping FunctionImportName="ProductList" FunctionName="ECommerceSiteModel.Store.ProductList" />
+          <FunctionImportMapping FunctionImportName="ProductListByStatus" FunctionName="ECommerceSiteModel.Store.ProductListByStatus" />
+          <FunctionImportMapping FunctionImportName="ProductUpdate" FunctionName="ECommerceSiteModel.Store.ProductUpdate" />
+          <FunctionImportMapping FunctionImportName="ShippingInfoDelete" FunctionName="ECommerceSiteModel.Store.ShippingInfoDelete" />
+          <FunctionImportMapping FunctionImportName="ShippingInfoGetByID" FunctionName="ECommerceSiteModel.Store.ShippingInfoGetByID" />
+          <FunctionImportMapping FunctionImportName="ShippingInfoInsert" FunctionName="ECommerceSiteModel.Store.ShippingInfoInsert" />
+          <FunctionImportMapping FunctionImportName="ShippingInfoList" FunctionName="ECommerceSiteModel.Store.ShippingInfoList" />
+          <FunctionImportMapping FunctionImportName="ShippingInfoListByType" FunctionName="ECommerceSiteModel.Store.ShippingInfoListByType" />
+          <FunctionImportMapping FunctionImportName="ShippingInfoUpdate" FunctionName="ECommerceSiteModel.Store.ShippingInfoUpdate" />
+          <FunctionImportMapping FunctionImportName="SystemLoggedInsert" FunctionName="ECommerceSiteModel.Store.SystemLoggedInsert" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

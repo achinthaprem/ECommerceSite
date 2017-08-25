@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ECommerceWeb.Common;
 
 namespace ECommerceWeb.Controllers
 {
@@ -10,7 +11,18 @@ namespace ECommerceWeb.Controllers
 	{
 		public ActionResult Index()
 		{
-			return View();
+			ActionResult            result                  = null;
+
+			if (Common.Session.Authorized)
+			{
+				result                                      = View();
+			}
+			else
+			{
+				result                                      = RedirectToAction(Constants.ACTION_LOGIN);
+			}
+
+			return result;
 		}
 
 		public ActionResult About()
