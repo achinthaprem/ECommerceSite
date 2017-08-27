@@ -1,0 +1,24 @@
+﻿@using ECommerceWeb.Common
+@if (ECommerceWeb.Common.Session.Authorized)
+{
+    using (Html.BeginForm(Constants.ACTION_LOGOUT, Constants.CONTROLLER_ACCOUNT, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink("Hello " + ECommerceWeb.Common.Session.UserName + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            </li>
+            <li>
+                <a href="" data-toggle="modal" data-target=".bs-example-modal-sm"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", Constants.ACTION_REGISTER, Constants.CONTROLLER_ACCOUNT, routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Login", Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-
+﻿
 namespace ECommerceWeb.Common
 {
 	public class Constants
@@ -9,9 +8,8 @@ namespace ECommerceWeb.Common
 		public const string             USER_NAME						= "UserName";
 		public const string             USER_ROLE						= "UserRole";
 
-		// Account
-		public const int				ACCOUNT_ACTIVE					= 1;
-		public const int				ACCOUNT_INACTIVE				= 0;
+		// Login
+		public const string             LOGIN_FAIL_USR_PSW              = "Invalid user credentials!";
 
 		// Actions
 		public const string             ACTION_LOGIN                    = "Login";
@@ -22,11 +20,6 @@ namespace ECommerceWeb.Common
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";
 		public const string             CONTROLLER_ACCOUNT              = "Account";
-
-		// Cryptography
-		public const int                ITERATION_COUNT                 = 10000;
-		public const KeyDerivationPrf   PRF                             = KeyDerivationPrf.HMACSHA1;
-		public const int                NUM_BYTES_REQUESTED             = 256 / 8;
 		
 		// DB Lengths
 		public const int                DB_LENGTH_FNAME                 = 50;

@@ -39,7 +39,25 @@ namespace ECommerce.Tables.Active.HR
 			/// <summary>
 			/// Default level for all accounts.
 			/// </summary>
-			All
+			All,
+
+			/// <summary>
+			/// For all admin levels.
+			/// </summary>
+			Admin
+		}
+
+		public enum RoleCode
+		{
+			/// <summary>
+			/// Role code for normal accounts.
+			/// </summary>
+			All			= 0,
+
+			/// <summary>
+			/// Role code for admin accounts.
+			/// </summary>
+			Admin		= 1
 		}
 
 		#endregion

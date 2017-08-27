@@ -12,6 +12,8 @@ namespace ECommerceWeb.Controllers
 {
 	public class AccountController : Controller
 	{
+		private AccountService AccountService = new AccountService();
+
 		public ActionResult Login()
 		{
 			return View();
@@ -21,23 +23,36 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Login(LoginViewModel user)
 		{
+			if (!ModelState.IsValid)
+			{
+				return View(user);
+			}
+
 			ActionResult            result                  = View(user);
 
-			if (ModelState.IsValid)
+			Account                 obj                     = Account.ExecuteCreateByEmail(user.Email);
+			SignInStatus            status                  = await AccountService.SignInUser(obj, user.Password);
+
+			switch (status)
 			{
-				var					obj                     = await Task.Run(() => Account.ExecuteCreateByEmail(user.Email));
+				case SignInStatus.Deactivated:
 
-				if (obj != null)
-				{
-					if (obj.Password.Equals(user.Password))
-					{
-						Common.Session.Start(obj);
+					// TODO: Do something for deactivated(inactive) accounts
+					break;
 
-						result                              = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
-					}
-				}
+				case SignInStatus.Success:
+
+					Common.Session.Start(obj);
+					result                                  = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+					break;
+
+				case SignInStatus.Failure:
+				default:
+
+					ModelState.AddModelError("", "Invalid login attempt.");
+					break;
 			}
-			ViewBag.Message = "";
+
 			return result;
 		}
 
@@ -52,14 +67,37 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register(RegisterViewModel user)
 		{
-			ActionResult            result                  = View();
+			if (!ModelState.IsValid)
+			{
+				return View(user);
+			}
+
+			ActionResult            result                  = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
+
+			if (!await AccountService.CreateAccount(user.FirstName,
+				user.LastName,
+				user.Email,
+				user.Password,
+				user.ContactNo,
+				user.ShippingAddress,
+				user.Country,
+				(int)Account.RoleCode.All,
+				AccountService.SELF_REGISTERED))
+			{
+				ModelState.AddModelError("", "Registration failed.");
+				result                                      = View(user);
+			}
 
 			return result;
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public ActionResult Logout()
 		{
-			ActionResult            result                  = View();
+			ActionResult            result                  = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
+
+			Common.Session.Destroy();
 
 			return result;
 		}

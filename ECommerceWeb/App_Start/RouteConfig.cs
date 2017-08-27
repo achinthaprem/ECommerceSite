@@ -18,8 +18,8 @@ namespace ECommerceWeb
 				name: "Default",
 				url: "{controller}/{action}/{id}",
 				defaults: new {
-					controller		= Constants.CONTROLLER_ACCOUNT,
-					action			= Constants.ACTION_LOGIN,
+					controller		= Constants.CONTROLLER_HOME,
+					action			= Constants.ACTION_INDEX,
 					id				= UrlParameter.Optional
 				}
 			);

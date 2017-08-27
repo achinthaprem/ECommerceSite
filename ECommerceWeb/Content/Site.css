@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    margin-bottom: 60px;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -20,5 +21,17 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 350px;
+}
+
+/* Custom Styles */
+.navbar-fixed-bottom {
+    background: #444;
+    height: 40px;
+}
+
+#FooterAppName {
+    margin-left: 20px;
+    margin-top: 12px;
+    color: #fff;
 }

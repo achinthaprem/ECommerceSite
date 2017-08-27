@@ -24,14 +24,27 @@
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
+
+        @* Logout confirmation popup *@
+        <div class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header"><h4>Logout <i class="glyphicon glyphicon-lock"></i></h4></div>
+                    <div class="modal-body"><i class="glyphicon glyphicon-question-sign"></i> Are you sure you want to logout?</div>
+                    <div class="modal-footer"><a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-primary btn-block">Logout</a></div>
+                </div>
+            </div>
+        </div>
+
         <footer class="navbar-fixed-bottom">
-            <hr />
-            <p style="margin-left: 20px;">&copy; @DateTime.Now.Year - ECommerce Application</p>
+            <span class="border-top"></span>
+            <p id="FooterAppName">&copy; @DateTime.Now.Year - ECommerce Application</p>
         </footer>
     </div>
 
