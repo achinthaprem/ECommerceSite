@@ -35,3 +35,28 @@ textarea {
     margin-top: 12px;
     color: #fff;
 }
+
+.dropdown {
+    width: 110%;
+    min-width: 180px;
+}
+
+    .dropdown ul.dropdown-menu {
+        width: -webkit-fill-available;
+    }
+
+.glyphi-1 {
+    margin-top: 1px;
+}
+
+.glyphi-2 {
+    margin-top: 2px;
+}
+
+.glyphi-3 {
+    margin-top: 3px;
+}
+
+.glyphi-4 {
+    margin-top: 4px;
+}

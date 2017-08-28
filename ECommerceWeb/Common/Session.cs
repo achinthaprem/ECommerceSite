@@ -8,42 +8,10 @@ namespace ECommerceWeb.Common
 {
 	public static class Session
 	{
-		public static int UserID
+		public static Account Account
 		{
-			get
-			{
-				int			result				= -1;
-				if (Authorized)
-				{
-					result                      = int.Parse(HttpContext.Current.Session[Constants.USER_ID].ToString());
-				}
-				return result;
-			}
-		}
-
-		public static string UserName
-		{
-			get
-			{
-				string      result              = null;
-				if (Authorized)
-				{
-					result                      = HttpContext.Current.Session[Constants.USER_NAME].ToString();
-				}
-				return result;
-			}
-		}
-
-		public static int UserRole
-		{
-			get
-			{
-				int         result              = -1;
-				if (Authorized)
-				{
-					result                      = int.Parse(HttpContext.Current.Session[Constants.USER_ID].ToString());
-				}
-				return result;
+			get {
+				return HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] as Account;
 			}
 		}
 
@@ -53,7 +21,7 @@ namespace ECommerceWeb.Common
 			{
 				bool            result              = false;
 
-				if (HttpContext.Current.Session[Constants.USER_ID] != null)
+				if (HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] != null)
 				{
 					result                          = true;
 				}
@@ -62,11 +30,23 @@ namespace ECommerceWeb.Common
 			}
 		}
 
-		public static void Start(Account obj)
+		public static string FullName
 		{
-			HttpContext.Current.Session[Constants.USER_ID]          = obj.ID.ToString();
-			HttpContext.Current.Session[Constants.USER_NAME]        = obj.FirstName.ToString() + " " + obj.LastName.ToString();
-			HttpContext.Current.Session[Constants.USER_ROLE]        = obj.ID.ToString();
+			get
+			{
+				string      result					= null;
+				if (Authorized)
+				{
+					Account         account         = HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] as Account;
+					result							= account.FirstName + " " + account.LastName;
+				}
+				return result;
+			}
+		}
+
+		public static void Start(Account account)
+		{
+			HttpContext.Current.Session[Constants.CURRENT_ACCOUNT]			= account;
 		}
 
 		public static void Destroy()

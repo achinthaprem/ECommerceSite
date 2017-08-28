@@ -761,6 +761,53 @@ namespace ECommerce.Tables.Active.HR
 		}
 		// V2Generator: Section End :Update
 
+		public void Update(
+			string FirstName,
+			string LastName,
+			string Email,
+			string ContactNo,
+			string ShippingAddress,
+			string Country,
+			int Status,
+			int Role,
+			int ModifiedAccountID)
+		{
+			this.Update(
+				FirstName, 
+				LastName, 
+				Email, 
+				Password, 
+				Salt, 
+				ContactNo, 
+				ShippingAddress, 
+				Country, 
+				Status, 
+				Role, 
+				this.m_DateCreated, 
+				DateTime.Now, 
+				this.m_CreatedAccountID, 
+				ModifiedAccountID);
+		}
+
+		public void UpdatePasswordSalt(string Password, string Salt, int ModifiedAccountID)
+		{
+			this.Update(
+				this.m_FirstName, 
+				this.m_LastName, 
+				this.m_Email, 
+				Password, 
+				Salt, 
+				this.m_ContactNo, 
+				this.m_ShippingAddress, 
+				this.m_Country, 
+				this.m_Status, 
+				this.m_Role, 
+				this.m_DateCreated, 
+				DateTime.Now, 
+				this.m_CreatedAccountID, 
+				ModifiedAccountID);
+		}
+
 		/// <summary>
 		/// Inserts a new record into the database, and updates the identity field in this object.
 		/// </summary>

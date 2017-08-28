@@ -3,19 +3,31 @@ namespace ECommerceWeb.Common
 {
 	public class Constants
 	{
-		// Session
-		public const string             USER_ID							= "UserID";
-		public const string             USER_NAME						= "UserName";
-		public const string             USER_ROLE						= "UserRole";
+		// Other
+		public const string             CONST_TMP_REG_SUCESS            = "RegSuccsess";
 
-		// Login
-		public const string             LOGIN_FAIL_USR_PSW              = "Invalid user credentials!";
+		// Session
+		public const string             CURRENT_ACCOUNT					= "CurrentAccount";
+
+		// Messages
+		public const string             MSG_LOGIN_FAIL_USR_PSW          = "Invalid user credentials!";
+		public const string             MSG_MANAGE_SUCCESS              = "Your account successfully updated!";
+		public const string             MSG_MANAGE_FAIL                 = "Unable to update your account, Try again later!";
+		public const string             MSG_MANAGE_FAIL_EMAIL_EXIST     = "The email address you have entered is already registered! Try different email.";
+		public const string             MSG_REG_SUCCESS                 = "You have successfully registered! Please Login.";
+		public const string             MSG_REG_FAIL                    = "Registration failed. Try again later!";
+		public const string             MSG_REG_FAIL_EMAIL_EXIST		= "The email address you have entered is already registered! Please login with that or enter different email.";
+		public const string             MSG_CHANGE_PSW_SUCCESS          = "Password changed successfully!";
+		public const string             MSG_CHANGE_PSW_FAIL             = "Something went wrong. Try again later!";
+		public const string             MSG_CHANGE_PSW_INVALID_PSW      = "Current Password is invalid!";
 
 		// Actions
 		public const string             ACTION_LOGIN                    = "Login";
 		public const string             ACTION_LOGOUT                   = "Logout";
 		public const string             ACTION_INDEX                    = "Index";
 		public const string             ACTION_REGISTER                 = "Register";
+		public const string             ACTION_MANAGE                   = "Manage";
+		public const string             ACTION_CHANGE_PSW               = "ChangePassword";
 
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";

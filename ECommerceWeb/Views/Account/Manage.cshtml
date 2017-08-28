@@ -1,11 +1,11 @@
-﻿@model ECommerceWeb.Models.Account.RegisterViewModel
-@using ECommerceWeb.Common
+﻿@using ECommerceWeb.Common
+@model ECommerceWeb.Models.Account.EditViewModel
 
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Manage";
 }
 
-<h2>Register</h2>
+<h2>Manage</h2>
 
 
 @using (Html.BeginForm())
@@ -13,8 +13,18 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>RegisterViewModel</h4>
+        <h4>EditViewModel</h4>
         <hr />
+
+        @if (ViewBag.Success != null)
+        {
+            <div class="alert alert-success">
+                <ul>
+                    <li>@ViewBag.Success</li>
+                </ul>
+            </div>
+        }
+
         @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -37,22 +47,6 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -80,19 +74,16 @@
             </div>
         </div>
 
+        @Html.HiddenFor(model => model.ID)
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-primary">
-                    Register
-                </button>
+                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="button" onclick="location.href='@Url.Action(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME)';return false;" value="Cancel" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to Login", Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT)
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
