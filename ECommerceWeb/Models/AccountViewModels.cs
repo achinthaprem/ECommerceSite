@@ -31,7 +31,7 @@ namespace ECommerceWeb.Models.Account
 		public string NewPassword { get; set; }
 
 		[DataType(DataType.Password)]
-		[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+		[Compare("NewPassword", ErrorMessage = "The password and confirmation password do not match.")]
 		[Display(Name = "Confirm password")]
 		public string ConfirmPassword { get; set; }
 

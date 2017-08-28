@@ -107,7 +107,7 @@ namespace ECommerceWeb.Controllers
 				ModelState.AddModelError("", Constants.MSG_REG_FAIL_EMAIL_EXIST);
 				result                                          = View(model);
 			}
-			
+
 			return result;
 		}
 
@@ -161,7 +161,7 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.Authorized)
 			{
-				int                 ID						= int.Parse(model.ID);
+				int                 ID                      = int.Parse(model.ID);
 
 				if (await AccountService.CheckEmailAsync(ID, model.Email))
 				{
@@ -202,10 +202,19 @@ namespace ECommerceWeb.Controllers
 
 		public ActionResult ChangePassword()
 		{
-			ChangePasswordViewModel view               = new ChangePasswordViewModel();
-			view.ID                                    = Common.Session.Account.ID.ToString();
+			ActionResult            result                  = null;
 
-			return View(view);
+			if (Common.Session.Authorized)
+			{
+				ChangePasswordViewModel view               = new ChangePasswordViewModel();
+				view.ID                                    = Common.Session.Account.ID.ToString();
+				result                                      = View(view);
+			}
+			else
+			{
+				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+			return result;
 		}
 
 		[HttpPost]
@@ -217,7 +226,7 @@ namespace ECommerceWeb.Controllers
 			if (Common.Session.Authorized)
 			{
 				int                 ID                      = int.Parse(model.ID);
-				
+
 				if (await AccountService.ValidatePasswordAsync(ID, model.CurrentPassword))
 				{
 					if (await AccountService.ChangePasswordAsync(ID, model.NewPassword, Common.Session.Account.ID))
