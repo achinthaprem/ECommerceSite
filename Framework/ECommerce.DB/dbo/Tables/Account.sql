@@ -17,3 +17,15 @@
     CONSTRAINT [PK_Account] PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Account_modified_account_id]
+    ON [dbo].[Account]([modified_account_id] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Account_created_account_id]
+    ON [dbo].[Account]([created_account_id] ASC);
+

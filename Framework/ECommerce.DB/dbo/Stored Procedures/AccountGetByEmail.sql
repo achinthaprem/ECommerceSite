@@ -3,6 +3,8 @@ CREATE PROCEDURE [dbo].[AccountGetByEmail]
 	@email NVARCHAR(255)
 AS
 
+	/* Volume Technologies RADA Generator v6.1 */
+
 	SELECT *
 	INTO #temp
 	FROM [Account]

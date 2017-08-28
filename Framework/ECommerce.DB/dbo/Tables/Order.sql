@@ -8,3 +8,10 @@
     CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Order_account_id]
+    ON [dbo].[Order]([account_id] ASC);
+

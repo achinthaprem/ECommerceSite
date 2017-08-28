@@ -7,3 +7,10 @@
     CONSTRAINT [PK_ShippingInfo] PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_ShippingInfo_order_id]
+    ON [dbo].[ShippingInfo]([order_id] ASC);
+
