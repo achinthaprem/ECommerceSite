@@ -54,6 +54,7 @@ namespace ECommerceWeb.Common
 		public const int                DB_LENGTH_DECIMAL_MAX           = 16;
 		public const int                DB_LENGTH_DECIMAL_DP			= 2;
 
-
+		// Validations
+		public static readonly int      UPLOAD_IMAGE_MAX_SIZE           = 5;
 	}
 }

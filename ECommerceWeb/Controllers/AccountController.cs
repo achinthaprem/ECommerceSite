@@ -16,6 +16,8 @@ namespace ECommerceWeb.Controllers
 
 		public ActionResult Login(string returnUrl)
 		{
+			// TODO: if (!loggedIn) Then validate cookies
+
 			ViewBag.ReturnUrl                               = returnUrl;
 			return View();
 		}
@@ -28,7 +30,7 @@ namespace ECommerceWeb.Controllers
 			{
 				return View(model);
 			}
-
+			
 			ActionResult            result                  = View(model);
 
 			Account                 account                 = null;// Common.Session.ValidateCookie(Request);

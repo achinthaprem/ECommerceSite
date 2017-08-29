@@ -28,6 +28,20 @@ namespace ECommerce.Tables.Content
 	public class Category : Object, IComparable
 	{
 
+		#region Status Constants
+
+		/// <summary>
+		/// Account is active.
+		/// </summary>
+		public const int        STATUS_ACTIVE           = 1;
+
+		/// <summary>
+		/// Account is inactive.
+		/// </summary>
+		public const int        STATUS_INACTIVE         = 0;
+
+		#endregion
+
 		#region Column Fields
 
 		// V2Generator: Section Start : Database Column Field Names
