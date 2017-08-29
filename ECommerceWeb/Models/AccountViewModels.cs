@@ -52,6 +52,9 @@ namespace ECommerceWeb.Models.Account
 		[StringLength(Constants.DB_LENGTH_PASSWORD, ErrorMessage = "Maximum allowed length is {1} characters")]
 		[Display(Name = "Password")]
 		public string Password { get; set; }
+
+		[Display(Name = "Remember me?")]
+		public bool RememberMe { get; set; }
 	}
 
 	public class RegisterViewModel

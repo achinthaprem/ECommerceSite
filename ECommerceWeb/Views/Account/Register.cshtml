@@ -5,7 +5,7 @@
     ViewBag.Title = "Register";
 }
 
-<h2>Register</h2>
+<h2>@ViewBag.Title</h2>
 
 
 @using (Html.BeginForm())
@@ -13,7 +13,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>RegisterViewModel</h4>
+        <h4>Register and log in to access the web site.</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
         <div class="form-group">

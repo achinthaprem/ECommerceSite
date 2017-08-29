@@ -7,6 +7,11 @@ namespace ECommerceWeb.Common
 		public const string             CONST_TMP_REG_SUCESS            = "RegSuccsess";
 
 		// Session
+		public const string             USER_ID							= "UserID";
+		public const string             USER_NAME                       = "UserName";
+		public const string             USER_EMAIL                      = "UserEmail";
+		public const string             USER_REMEMBER_ME                = "RememberMe";
+		public const string             USER_COOCKIE_NAME               = "ECOM_User_Info";
 		public const string             CURRENT_ACCOUNT					= "CurrentAccount";
 
 		// Messages

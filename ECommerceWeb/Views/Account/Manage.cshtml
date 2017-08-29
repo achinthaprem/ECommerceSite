@@ -2,10 +2,10 @@
 @model ECommerceWeb.Models.Account.EditViewModel
 
 @{
-    ViewBag.Title = "Manage";
+    ViewBag.Title = "Manage Account";
 }
 
-<h2>Manage</h2>
+<h2>@ViewBag.Title</h2>
 
 
 @using (Html.BeginForm())
@@ -13,7 +13,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>EditViewModel</h4>
+        <h4>Update your account information and shipping address.</h4>
         <hr />
 
         @if (ViewBag.Success != null)

@@ -31,7 +31,15 @@ namespace ECommerceWeb.Controllers
 
 			ActionResult            result                  = View(model);
 
-			Account                 account                 = await AccountService.GetAccountAsync(model.Email);
+			Account                 account                 = null;// Common.Session.ValidateCookie(Request);
+
+			//if (account == null)
+			//{
+			account                                     = await AccountService.GetAccountAsync(model.Email);
+
+			//	Response.Cookies.Add(Common.Session.CreateCookie(account, model.RememberMe));
+			//}
+
 			SignInStatus            status                  = await AccountService.SignInUserAsync(account, model.Password);
 
 			switch (status)
@@ -135,14 +143,17 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.Authorized)
 			{
+				Account             account                 = Common.Session.Account;
+
 				EditViewModel       editView                = new EditViewModel();
-				editView.ID                                 = Common.Session.Account.ID.ToString();
-				editView.FirstName                          = Common.Session.Account.FirstName;
-				editView.LastName                           = Common.Session.Account.LastName;
-				editView.Email                              = Common.Session.Account.Email;
-				editView.ContactNo                          = Common.Session.Account.ContactNo;
-				editView.ShippingAddress                    = Common.Session.Account.ShippingAddress;
-				editView.Country                            = Common.Session.Account.Country;
+
+				editView.ID                                 = account.ID.ToString();
+				editView.FirstName                          = account.FirstName;
+				editView.LastName                           = account.LastName;
+				editView.Email                              = account.Email;
+				editView.ContactNo                          = account.ContactNo;
+				editView.ShippingAddress                    = account.ShippingAddress;
+				editView.Country                            = account.Country;
 
 				result                                      = View(editView);
 			}
@@ -206,8 +217,8 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.Authorized)
 			{
-				ChangePasswordViewModel view               = new ChangePasswordViewModel();
-				view.ID                                    = Common.Session.Account.ID.ToString();
+				ChangePasswordViewModel view                = new ChangePasswordViewModel();
+				view.ID                                     = Common.Session.Account.ID.ToString();
 				result                                      = View(view);
 			}
 			else

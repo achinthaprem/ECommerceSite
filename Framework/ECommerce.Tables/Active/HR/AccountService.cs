@@ -24,6 +24,16 @@ namespace ECommerce.Tables.Active.HR
 			return result;
 		}
 
+		public Task<Account> GetAccountAsync(int ID)
+		{
+			Task<Account>                      result              = Task.Run(() =>
+			{
+				return Account.ExecuteCreate(ID);
+			});
+
+			return result;
+		}
+
 		public Task<bool> ValidatePasswordAsync(int ID, string Password)
 		{
 			Task<bool>                      result              = Task.Run(() =>
