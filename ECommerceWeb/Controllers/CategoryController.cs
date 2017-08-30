@@ -18,7 +18,10 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.Authorized)
 			{
-				result													= View();
+				AddCategoryViewModel		temp						= new AddCategoryViewModel();
+				temp.Status = true;
+
+				result													= View(temp);
 			}
 			else
 			{
@@ -35,7 +38,21 @@ namespace ECommerceWeb.Controllers
 		{
 			ActionResult					result						= null;
 
-
+			if (ModelState.IsValid || true)
+			{
+				if (model.Status)
+				{
+					result = Content("<script language='javascript' type='text/javascript'>alert('True');</script>");
+				}
+				else
+				{
+					result = Content("<script language='javascript' type='text/javascript'>alert('False');</script>");
+				}
+			}
+			else
+			{
+				result                                                  = View(model);
+			}
 
 			return result;
 		}

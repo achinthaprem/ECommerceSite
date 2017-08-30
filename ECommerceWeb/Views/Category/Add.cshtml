@@ -1,10 +1,10 @@
 ﻿@model ECommerceWeb.Models.Category.AddCategoryViewModel
 
 @{
-    ViewBag.Title = "Add";
+    ViewBag.Title = "Add Category";
 }
 
-<h2>Add</h2>
+<h2>@ViewBag.Title</h2>
 
 
 @using (Html.BeginForm())
@@ -12,7 +12,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>AddCategoryViewModel</h4>
+        <h4>Add new Category.</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -41,10 +41,13 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2", @style = "margin-top: 2px;" })
             <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @id = "status-checkbox" } })
+                <div class="checkbox" style="padding-top: 0px;">
+                    <label class="switch switch_type1" role="switch">
+                        @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "switch__toggle", @id = "status-checkbox" } })
+                        <span class="switch__label"></span>
+                    </label>
                     @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -52,7 +55,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Add Category" class="btn btn-primary" />
             </div>
         </div>
     </div>
