@@ -33,11 +33,14 @@ namespace ECommerceWeb.Common
 		public const string             ACTION_REGISTER                 = "Register";
 		public const string             ACTION_MANAGE                   = "Manage";
 		public const string             ACTION_CHANGE_PSW               = "ChangePassword";
+		public const string             ACTION_ADD                      = "Add";
+		public const string             ACTION_EDIT                     = "Edit";
 
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";
 		public const string             CONTROLLER_ACCOUNT              = "Account";
-		
+		public const string             CONTROLLER_CATEGORY             = "Category";
+
 		// DB Lengths
 		public const int                DB_LENGTH_FNAME                 = 50;
 		public const int                DB_LENGTH_LNAME                 = 50;

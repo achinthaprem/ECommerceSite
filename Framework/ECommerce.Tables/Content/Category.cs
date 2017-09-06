@@ -577,6 +577,16 @@ namespace ECommerce.Tables.Content
 		}
 		// V2Generator: Section End :Update
 
+		public void Update(
+		string Name,
+		string Description,
+		string ImageName,
+		int Status,
+		int ModifiedAccountID)
+		{
+			this.Update(Name, Description, ImageName, Status, this.m_DateCreated, DateTime.Now, this.m_CreatedAccountID, ModifiedAccountID);
+		}
+
 		/// <summary>
 		/// Inserts a new record into the database, and updates the identity field in this object.
 		/// </summary>

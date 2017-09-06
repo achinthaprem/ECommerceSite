@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using ECommerceWeb.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -18,13 +19,13 @@ namespace ECommerceWeb.Models.Category
 		public string Name { get; set; }
 
 		[Required]
-		[DataType(DataType.Text)]
+		[DataType(DataType.MultilineText)]
 		[StringLength(Constants.DB_LENGTH_DESCRIPTION, ErrorMessage = "Maximum allowed length is {1} characters")]
 		[Display(Name = "Description")]
 		public string Description { get; set; }
-		
-		[Required]
-		[DataType(DataType.Upload)]
+
+		[Required(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB.")]
+		[ValidateImageFile(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB.")]
 		[Display(Name = "Choose Image")]
 		public HttpPostedFileBase Image { get; set; }
 
@@ -33,19 +34,46 @@ namespace ECommerceWeb.Models.Category
 		public bool Status { get; set; }
 	}
 
-	public class ValidateImageFileAttribute : RequiredAttribute
+	public class EditCategoryViewModel
 	{
+		[HiddenInput(DisplayValue = false)]
+		public int ID { get; set; }
+
+		[Required]
+		[DataType(DataType.Text)]
+		[StringLength(Constants.DB_LENGTH_NAME, ErrorMessage = "Maximum allowed length is {1} characters")]
+		[Display(Name = "Name")]
+		public string Name { get; set; }
+
+		[Required]
+		[DataType(DataType.MultilineText)]
+		[StringLength(Constants.DB_LENGTH_DESCRIPTION, ErrorMessage = "Maximum allowed length is {1} characters")]
+		[Display(Name = "Description")]
+		public string Description { get; set; }
+
+		public string ImageSrc { get; set; }
 		
+		[ValidateImageFile(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB or Leave field empty to keep the file in databse.")]
+		[Display(Name = "Choose Image")]
+		public HttpPostedFileBase Image { get; set; }
+
+		[Required]
+		[Display(Name = "Status")]
+		public bool Status { get; set; }
+	}
+
+	public class ValidateImageFileAttribute : ValidationAttribute
+	{
 		public override bool IsValid(object value)
 		{
 			bool                result              = false;
-			var					image				= value as HttpPostedFile;
+			var					image				= value as HttpPostedFileBase;
 
-			if (image == null)
+			if (image != null)
 			{
-				if (image.FileName.Length > Constants.DB_LENGTH_IMG_NAME)
+				if (image.FileName.Length < 500)
 				{
-					if (image.ContentLength > Constants.UPLOAD_IMAGE_MAX_SIZE * 1024 * 1024)
+					if (image.ContentLength < 5 * 1024 * 1024)
 					{
 						try
 						{
