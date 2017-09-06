@@ -65,17 +65,39 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
-		public ActionResult List()
+		public async Task<ActionResult> List()
 		{
-			ActionResult                    result                      = null;
+			ActionResult									result								= null;
 
 			if (Common.Session.Authorized)
 			{
+				List<ListCategoryViewModel>                 list                                = new List<ListCategoryViewModel>();
+				List<Category>                              categories                          = await CategoryHelper.GetCategoryListAsync();
 
+				if (categories.Count > 0)
+				{
+					foreach (Category category in categories)
+					{
+						ListCategoryViewModel                   element                         = new ListCategoryViewModel();
+						element.ID                                                              = category.ID;
+						element.Name                                                            = category.Name;
+						element.Description                                                     = category.Description;
+						element.ImageSrc                                                        = $@"~/Filestore/Images/Category/{category.ID}/{category.ImageName}";
+						element.Status                                                          = (category.Status == Category.STATUS_ACTIVE) ? true : false;
+
+						list.Add(element);
+					}
+
+					result                                                                      = View(list);
+				}
+				else
+				{
+
+				}
 			}
 			else
 			{
-				result                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				result																			= GetAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;

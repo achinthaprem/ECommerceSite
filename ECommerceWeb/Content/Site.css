@@ -172,3 +172,12 @@ textarea {
     --switchSize: 64px;
     margin-top: 0px;
 }
+
+/* table fix */
+.table, tbody, tr, td {
+    vertical-align: middle !important;
+}
+
+th {
+    text-align: center;
+}

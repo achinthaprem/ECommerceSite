@@ -62,6 +62,24 @@ namespace ECommerceWeb.Models.Category
 		public bool Status { get; set; }
 	}
 
+	public class ListCategoryViewModel
+	{
+		[Display(Name = "ID")]
+		public int ID { get; set; }
+
+		[Display(Name = "Name")]
+		public string Name { get; set; }
+
+		[Display(Name = "Description")]
+		public string Description { get; set; }
+
+		[Display(Name = "Image")]
+		public string ImageSrc { get; set; }
+
+		[Display(Name = "Status")]
+		public bool Status { get; set; }
+	}
+
 	public class ValidateImageFileAttribute : ValidationAttribute
 	{
 		public override bool IsValid(object value)

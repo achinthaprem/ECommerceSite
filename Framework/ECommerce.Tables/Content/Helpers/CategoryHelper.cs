@@ -53,7 +53,7 @@ namespace ECommerce.Tables.Content.Helpers
 			{
 				Category            category                = Category.ExecuteCreate(ID);
 				bool                result                  = false;
-				
+
 				if (category != null)
 				{
 					string          imageName               = String.Empty;
@@ -74,8 +74,16 @@ namespace ECommerce.Tables.Content.Helpers
 
 					result                                  = true;
 				}
-				
+
 				return result;
+			});
+		}
+
+		public Task<List<Category>> GetCategoryListAsync()
+		{
+			return Task.Run(() =>
+			{
+				return Category.List();
 			});
 		}
 	}

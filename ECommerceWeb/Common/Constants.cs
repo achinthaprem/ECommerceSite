@@ -35,6 +35,7 @@ namespace ECommerceWeb.Common
 		public const string             ACTION_CHANGE_PSW               = "ChangePassword";
 		public const string             ACTION_ADD                      = "Add";
 		public const string             ACTION_EDIT                     = "Edit";
+		public const string             ACTION_LIST                     = "List";
 
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";
