@@ -266,6 +266,7 @@ namespace ECommerceWeb.Controllers
 
 		private ActionResult GetAuthorizeRedirect(string returnUrl)
 		{
+			// GetAuthorizeRedirect(Request.Url.PathAndQuery);
 			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
 		}
 	}

@@ -1,0 +1,20 @@
+﻿@using ECommerceWeb.Common
+@if (ECommerceWeb.Common.Session.Authorized && ECommerceWeb.Common.Session.IsAdmin)
+{
+    using (Html.BeginForm(Constants.ACTION_ADMINMODE, Constants.CONTROLLER_ACCOUNT, FormMethod.Post, new { id = "adminModeForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#">Admin Mode: </a>
+            </li>
+            <li class="checkbox" style="padding-top: 0px;">
+                <label class="switch switch_type1" role="switch">
+                    @Html.CheckBox("AdminMode", new { @onclick = "javascript:document.getElementById('adminModeForm').submit()", @class = "switch__toggle", @id = "status-checkbox", @checked = ECommerceWeb.Common.Session.AdminMode })
+                    <span class="switch__label"></span>
+                </label>
+            </li>
+        </ul>
+    }
+}

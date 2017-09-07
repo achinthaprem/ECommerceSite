@@ -52,7 +52,6 @@ namespace ECommerceWeb.Controllers
 												model.Status,
 												Common.Session.Account.ID))
 				{
-					// TODO: after creaeting category list, redirect to list after successful creation
 					result                                              = View(model);
 					ViewBag.Message                                     = "Category added successfully!";
 				}
