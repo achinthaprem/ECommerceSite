@@ -9,6 +9,7 @@ using ECommerceWeb.Common;
 using ECommerceWeb.Models.Category;
 using ECommerce.Tables.Content.Helpers;
 using ECommerce.Tables.Content;
+using System.Net;
 
 namespace ECommerceWeb.Controllers
 {
@@ -112,15 +113,15 @@ namespace ECommerceWeb.Controllers
 		}
 
 		// GET: Category/Edit
-		public async Task<ActionResult> Edit(int ID = -1)
+		public async Task<ActionResult> Edit(int? ID)
 		{
 			ActionResult                        result                  = View();
 
 			if (Common.Session.IsAdmin)
 			{
-				if (ID != -1)
+				if (ID != null)
 				{
-					Category                    category                = await CategoryHelper.GetCategoryAsync(ID);
+					Category                    category                = await CategoryHelper.GetCategoryAsync(ID ?? default(int));
 
 					if (category != null)
 					{
@@ -136,12 +137,12 @@ namespace ECommerceWeb.Controllers
 					}
 					else
 					{
-						ViewBag.MessageError                            = "Oh Snap! Something went wrong :/";
+						result                                          = new HttpNotFoundResult();
 					}
 				}
 				else
 				{
-					ViewBag.MessageError								= "Oh Snap! Something went wrong :/";
+					result												= new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
@@ -200,28 +201,28 @@ namespace ECommerceWeb.Controllers
 		}
 
 		// GET: Category/Delete
-		public async Task<ActionResult> Delete(int ID = -1)
+		public async Task<ActionResult> Delete(int? ID)
 		{
 			ActionResult                        result                  = View();
 
 			if (Common.Session.IsAdmin)
 			{
-				if (ID != -1)
+				if (ID != null)
 				{
-					Category                    category                = await CategoryHelper.GetCategoryAsync(ID);
+					Category                    category                = await CategoryHelper.GetCategoryAsync(ID ?? default(int));
 
 					if (category != null)
 					{
-
+						// TODO: Complete the code here and POST method
 					}
 					else
 					{
-						ViewBag.MessageError                            = "Oh Snap! Something went wrong :/";
+						result                                          = new HttpNotFoundResult();
 					}
 				}
 				else
 				{
-					ViewBag.MessageError                                = "Oh Snap! Something went wrong :/";
+					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else

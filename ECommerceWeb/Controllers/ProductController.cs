@@ -8,6 +8,7 @@ using ECommerceWeb.Common;
 using ECommerceWeb.Models.Product;
 using ECommerce.Tables.Content.Helpers;
 using ECommerce.Tables.Content;
+using System.Net;
 
 namespace ECommerceWeb.Controllers
 {
@@ -116,15 +117,15 @@ namespace ECommerceWeb.Controllers
 		}
 		
 		// GET: Product/Edit
-		public async Task<ActionResult> Edit(int ID = -1)
+		public async Task<ActionResult> Edit(int? ID)
 		{
 			ActionResult                        result                  = View();
 
 			if (Common.Session.IsAdmin)
 			{
-				if (ID != -1)
+				if (ID != null)
 				{
-					Product						product					= await ProductHelper.GetProductAsync(ID);
+					Product						product					= await ProductHelper.GetProductAsync(ID ?? default(int));
 
 					if (product != null)
 					{
@@ -143,12 +144,12 @@ namespace ECommerceWeb.Controllers
 					}
 					else
 					{
-						ViewBag.MessageError                            = "Oh Snap! Something went wrong :/";
+						result                                          = new HttpNotFoundResult();
 					}
 				}
 				else
 				{
-					ViewBag.MessageError                                = "Oh Snap! Something went wrong :/";
+					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
