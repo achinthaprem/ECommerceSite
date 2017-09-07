@@ -23,7 +23,22 @@ namespace ECommerceWeb.Common
 			{
 				bool            result              = false;
 
-				if (HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] != null)
+				if (Account != null)
+				{
+					result                          = true;
+				}
+
+				return result;
+			}
+		}
+
+		public static bool IsAdmin
+		{
+			get
+			{
+				bool            result              = false;
+
+				if (Authorized && (Account.Role == (int)Account.RoleCode.Admin))
 				{
 					result                          = true;
 				}
@@ -39,7 +54,7 @@ namespace ECommerceWeb.Common
 				string      result                  = null;
 				if (Authorized)
 				{
-					Account         account         = HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] as Account;
+					Account         account         = Account;
 					result                          = account.FirstName + " " + account.LastName;
 				}
 				return result;

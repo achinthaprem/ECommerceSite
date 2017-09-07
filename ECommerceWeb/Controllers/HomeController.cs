@@ -13,8 +13,14 @@ namespace ECommerceWeb.Controllers
 		{
 			ActionResult            result                  = null;
 
-			if (Common.Session.Authorized)
+			if (Common.Session.IsAdmin)
 			{
+				ViewBag.IsAdmin                             = true;
+				result                                      = View();
+			}
+			else if (Common.Session.Authorized)
+			{
+				ViewBag.IsAdmin                             = false;
 				result                                      = View();
 			}
 			else

@@ -5,6 +5,7 @@ namespace ECommerceWeb.Common
 	{
 		// Other
 		public const string             CONST_TMP_REG_SUCESS            = "RegSuccsess";
+		public const string             CONST_ADMIN_ONLY_LOGIN          = "AdminOnlyLogin";
 
 		// Session
 		public const string             USER_ID							= "UserID";
@@ -25,6 +26,7 @@ namespace ECommerceWeb.Common
 		public const string             MSG_CHANGE_PSW_SUCCESS          = "Password changed successfully!";
 		public const string             MSG_CHANGE_PSW_FAIL             = "Something went wrong. Try again later!";
 		public const string             MSG_CHANGE_PSW_INVALID_PSW      = "Current Password is invalid!";
+		public const string             MSG_ADMIN_ONLY_LOGIN			= "In order to access the page log in as a Administrator!";
 
 		// Actions
 		public const string             ACTION_LOGIN                    = "Login";
@@ -36,11 +38,15 @@ namespace ECommerceWeb.Common
 		public const string             ACTION_ADD                      = "Add";
 		public const string             ACTION_EDIT                     = "Edit";
 		public const string             ACTION_LIST                     = "List";
+		public const string             ACTION_DELETE                   = "Delete";
 
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";
 		public const string             CONTROLLER_ACCOUNT              = "Account";
 		public const string             CONTROLLER_CATEGORY             = "Category";
+		public const string             CONTROLLER_PRODUCT				= "Product";
+		public const string             CONTROLLER_SHOP					= "Shop";
+		public const string             CONTROLLER_CART					= "Cart";
 
 		// DB Lengths
 		public const int                DB_LENGTH_FNAME                 = 50;

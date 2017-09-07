@@ -30,7 +30,13 @@ namespace ECommerce.Tables.Content.Helpers
 		{
 			return Task.Run(() =>
 			{
-				Category            category                = Category.ExecuteCreate(Name, Description, Image.FileName, ((Status)?Category.STATUS_ACTIVE:Category.STATUS_INACTIVE), CreatingAccountID, CreatingAccountID);
+				Category            category                = Category.ExecuteCreate(
+																				Name,
+																				Description,
+																				Image.FileName,
+																				((Status)?Category.STATUS_ACTIVE:Category.STATUS_INACTIVE),
+																				CreatingAccountID,
+																				CreatingAccountID);
 				category.Insert();
 
 				string              path                    = $@"Images\Category\{category.ID}";
@@ -70,12 +76,30 @@ namespace ECommerce.Tables.Content.Helpers
 						CommonHelper.SaveImage(Image, path, imageName);
 					}
 
-					category.Update(Name, Description, imageName, ((Status == true) ? Category.STATUS_ACTIVE : Category.STATUS_INACTIVE), ModifyingAccountID);
+					category.Update(
+								Name,
+								Description,
+								imageName,
+								((Status == true) ? Category.STATUS_ACTIVE : Category.STATUS_INACTIVE),
+								ModifyingAccountID);
 
 					result                                  = true;
 				}
 
 				return result;
+			});
+		}
+
+		public Task<bool> DeleteCategoryAsync(int ID)
+		{
+			return Task.Run(() =>
+			{
+				Category            category                = Category.ExecuteCreate(ID);
+				category.Delete();
+
+				category									= Category.ExecuteCreate(ID);
+
+				return (category == null) ? true : false;
 			});
 		}
 

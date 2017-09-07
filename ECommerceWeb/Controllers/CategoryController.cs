@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Threading.Tasks;
-using ECommerceWeb.Common;
 using System.Web.Mvc;
+using ECommerceWeb.Common;
 using ECommerceWeb.Models.Category;
 using ECommerce.Tables.Content.Helpers;
 using ECommerce.Tables.Content;
@@ -16,59 +16,68 @@ namespace ECommerceWeb.Controllers
 	{
 		CategoryHelper                  CategoryHelper                  = new CategoryHelper();
 
-		// GET: Category
+		// GET: Category/Add
 		public ActionResult Add()
 		{
 			ActionResult                    result                      = null;
 
-			if (Common.Session.Authorized)
+			if (Common.Session.IsAdmin)
 			{
 				AddCategoryViewModel        temp                        = new AddCategoryViewModel();
-				temp.Status = true;
+				temp.Status												= true;
 
 				result                                                  = View(temp);
 			}
 			else
 			{
-				result                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 
 			return result;
 		}
 
+		// POST: Category/Add
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Add(AddCategoryViewModel model)
 		{
 			ActionResult                    result                      = null;
 
-			if (ModelState.IsValid && Common.Session.Authorized)
+			if (Common.Session.IsAdmin)
 			{
-				if (await CategoryHelper.CreateCategoryAsync(
-												model.Name,
-												model.Description,
-												model.Image,
-												model.Status,
-												Common.Session.Account.ID))
+				if (ModelState.IsValid)
+				{
+					if (await CategoryHelper.CreateCategoryAsync(
+													model.Name,
+													model.Description,
+													model.Image,
+													model.Status,
+													Common.Session.Account.ID))
+					{
+						result                                          = View(model);
+						ViewBag.Message                                 = "Category added successfully!";
+					}
+				}
+				else
 				{
 					result                                              = View(model);
-					ViewBag.Message                                     = "Category added successfully!";
 				}
 			}
 			else
 			{
-				result                                                  = View(model);
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
 		}
 
+		// GET: Category/List
 		public async Task<ActionResult> List()
 		{
 			ActionResult									result								= null;
 
-			if (Common.Session.Authorized)
+			if (Common.Session.IsAdmin)
 			{
 				List<ListCategoryViewModel>                 list                                = new List<ListCategoryViewModel>();
 				List<Category>                              categories                          = await CategoryHelper.GetCategoryListAsync();
@@ -91,12 +100,12 @@ namespace ECommerceWeb.Controllers
 				}
 				else
 				{
-
+					// TODO: If no categories
 				}
 			}
 			else
 			{
-				result																			= GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				result																			= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
@@ -107,7 +116,7 @@ namespace ECommerceWeb.Controllers
 		{
 			ActionResult                        result                  = View();
 
-			if (Common.Session.Authorized)
+			if (Common.Session.IsAdmin)
 			{
 				if (ID != -1)
 				{
@@ -137,19 +146,20 @@ namespace ECommerceWeb.Controllers
 			}
 			else
 			{
-				result                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
 		}
 
+		// POST: Category/Edit
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Edit(EditCategoryViewModel model)
 		{
 			ActionResult                    result                      = null;
 			
-			if (Common.Session.Authorized)
+			if (Common.Session.IsAdmin)
 			{
 				if (model.Image == null)
 				{
@@ -183,14 +193,49 @@ namespace ECommerceWeb.Controllers
 			}
 			else
 			{
-				result                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
 		}
 
-		private ActionResult GetAuthorizeRedirect(string returnUrl)
+		// GET: Category/Delete
+		public async Task<ActionResult> Delete(int ID = -1)
 		{
+			ActionResult                        result                  = View();
+
+			if (Common.Session.IsAdmin)
+			{
+				if (ID != -1)
+				{
+					Category                    category                = await CategoryHelper.GetCategoryAsync(ID);
+
+					if (category != null)
+					{
+
+					}
+					else
+					{
+						ViewBag.MessageError                            = "Oh Snap! Something went wrong :/";
+					}
+				}
+				else
+				{
+					ViewBag.MessageError                                = "Oh Snap! Something went wrong :/";
+				}
+			}
+			else
+			{
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+
+			return result;
+		}
+
+		private ActionResult GetAdminAuthorizeRedirect(string returnUrl)
+		{
+			TempData[Constants.CONST_ADMIN_ONLY_LOGIN]					= Constants.MSG_ADMIN_ONLY_LOGIN;
+
 			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
 		}
 	}

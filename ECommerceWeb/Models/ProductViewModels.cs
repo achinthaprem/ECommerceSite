@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.Mvc;
 using ECommerceWeb.Common;
 
-namespace ECommerceWeb.Models.Category
+namespace ECommerceWeb.Models.Product
 {
-	public class AddCategoryViewModel
+	public class AddProductViewModel
 	{
 		[Required]
 		[DataType(DataType.Text)]
@@ -21,17 +21,29 @@ namespace ECommerceWeb.Models.Category
 		[Display(Name = "Description")]
 		public string Description { get; set; }
 
+		[Required]
+		[DataType(DataType.Currency)]
+		[RegularExpression(@"^(\d{2,16})(.\d{2})?$", ErrorMessage = "Enter Price with two decimal points.")]
+		[Display(Name = "Price")]
+		public decimal Price { get; set; }
+
 		[Required(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB.")]
 		[ValidateImageFile(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB.")]
 		[Display(Name = "Choose Image")]
 		public HttpPostedFileBase Image { get; set; }
+
+		public List<SelectListItem> CategoryList { get; set; }
+
+		[Required]
+		[Display(Name = "Category")]
+		public int CategoryID { get; set; }
 
 		[Required]
 		[Display(Name = "Status")]
 		public bool Status { get; set; }
 	}
 
-	public class EditCategoryViewModel
+	public class EditProductViewModel
 	{
 		[HiddenInput(DisplayValue = false)]
 		public int ID { get; set; }
@@ -48,31 +60,49 @@ namespace ECommerceWeb.Models.Category
 		[Display(Name = "Description")]
 		public string Description { get; set; }
 
+		[Required]
+		[DataType(DataType.Currency)]
+		[RegularExpression(@"^(\d{2,16})(.\d{2})?$", ErrorMessage = "Enter Price with two decimal points.")]
+		[Display(Name = "Price")]
+		public decimal Price { get; set; }
+
 		public string ImageSrc { get; set; }
 		
-		[ValidateImageFile(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB or Leave field empty to keep the file in databse.")]
+		[ValidateImageFile(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB.")]
 		[Display(Name = "Choose Image")]
 		public HttpPostedFileBase Image { get; set; }
+
+		public List<SelectListItem> CategoryList { get; set; }
+
+		[Required]
+		[Display(Name = "Category")]
+		public int CategoryID { get; set; }
 
 		[Required]
 		[Display(Name = "Status")]
 		public bool Status { get; set; }
 	}
 
-	public class ListCategoryViewModel
+	public class ListProductViewModel
 	{
 		[Display(Name = "ID")]
 		public int ID { get; set; }
-
+		
 		[Display(Name = "Name")]
 		public string Name { get; set; }
-
+		
 		[Display(Name = "Description")]
 		public string Description { get; set; }
+		
+		[Display(Name = "Price")]
+		public decimal Price { get; set; }
 
 		[Display(Name = "Image")]
 		public string ImageSrc { get; set; }
-
+		
+		[Display(Name = "Category")]
+		public string Category { get; set; }
+		
 		[Display(Name = "Status")]
 		public bool Status { get; set; }
 	}

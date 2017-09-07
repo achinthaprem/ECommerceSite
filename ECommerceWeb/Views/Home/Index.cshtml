@@ -1,6 +1,59 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using ECommerceWeb.Common
+@{
+    ViewBag.Title = (ViewBag.IsAdmin) ? "Admin Home Page" : "User Home Page";
 }
 
 <h2>@ViewBag.Title</h2>
 
+<hr />
+
+@if (ViewBag.IsAdmin)
+{
+    <h4 style="margin-top: 30px;">Quick Links</h4>
+
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Manage Categories</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@Html.ActionLink("Add", Constants.ACTION_ADD, Constants.CONTROLLER_CATEGORY)</li>
+                    </ul>
+                    <ul>
+                        <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Manage Products</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@Html.ActionLink("Add", Constants.ACTION_ADD, Constants.CONTROLLER_PRODUCT)</li>
+                    </ul>
+                    <ul>
+                        <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Manage Users</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@Html.ActionLink("Add", Constants.ACTION_ADD, Constants.CONTROLLER_CATEGORY)</li>
+                    </ul>
+                    <ul>
+                        <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+
+}

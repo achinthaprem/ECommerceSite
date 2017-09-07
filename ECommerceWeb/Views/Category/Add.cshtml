@@ -7,7 +7,6 @@
 
 <h2>@ViewBag.Title</h2>
 
-
 @using (Html.BeginForm(Constants.ACTION_ADD, Constants.CONTROLLER_CATEGORY, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -77,7 +76,6 @@
             </div>
         }
     </div>
-
 }
 
 <div>

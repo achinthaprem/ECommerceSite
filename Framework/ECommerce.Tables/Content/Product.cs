@@ -28,6 +28,20 @@ namespace ECommerce.Tables.Content
 	public class Product : Object, IComparable
 	{
 
+		#region Status Constants
+
+		/// <summary>
+		/// Account is active.
+		/// </summary>
+		public const int        STATUS_ACTIVE           = 1;
+
+		/// <summary>
+		/// Account is inactive.
+		/// </summary>
+		public const int        STATUS_INACTIVE         = 0;
+
+		#endregion
+
 		#region Column Fields
 
 		// V2Generator: Section Start : Database Column Field Names
@@ -652,13 +666,13 @@ namespace ECommerce.Tables.Content
 		}
 		// V2Generator: Section End :Update
 
-		public void Update(int CategoryID,
+		public void Update(
+			int CategoryID,
 			string Name,
 			string Description,
 			decimal Price,
 			string ImageName,
 			int Status,
-			DateTime DateModified,
 			int ModifiedAccountID)
 		{
 			this.Update(CategoryID, Name, Description, Price, ImageName, Status, this.m_DateCreated, DateModified, this.m_CreatedAccountID, ModifiedAccountID);
