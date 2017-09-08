@@ -203,7 +203,7 @@ namespace ECommerceWeb.Controllers
 		// GET: Category/Delete
 		public async Task<ActionResult> Delete(int? ID)
 		{
-			ActionResult                        result                  = View();
+			ActionResult                        result                  = null;
 
 			if (Common.Session.IsAdmin)
 			{
@@ -213,7 +213,15 @@ namespace ECommerceWeb.Controllers
 
 					if (category != null)
 					{
-						// TODO: Complete the code here and POST method
+						DeleteCategoryViewModel model                   = new DeleteCategoryViewModel();
+
+						model.ID                                        = category.ID;
+						model.Name                                      = category.Name;
+						model.Description                               = category.Description;
+						model.ImageSrc                                  = $@"~/Filestore/Images/Category/{category.ID}/{category.ImageName}";
+						model.Status                                    = (category.Status == Category.STATUS_ACTIVE) ? true : false;
+
+						result                                          = View(model);
 					}
 					else
 					{
@@ -223,6 +231,34 @@ namespace ECommerceWeb.Controllers
 				else
 				{
 					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+				}
+			}
+			else
+			{
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+
+			return result;
+		}
+
+		// POST: Category/Delete
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> Delete(DeleteCategoryViewModel model)
+		{
+			ActionResult                        result                  = View();
+
+			if (Common.Session.IsAdmin)
+			{
+				if (await CategoryHelper.DeleteCategoryAsync(model.ID))
+				{
+					ViewBag.MessageSuccess								= "Category Deleted successfully!";
+					result												= View(model);
+				}
+				else
+				{
+					ViewBag.MessageSuccess								= "Something went wrong! Try again later.";
+					result												= View(model);
 				}
 			}
 			else

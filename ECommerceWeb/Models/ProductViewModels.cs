@@ -67,7 +67,7 @@ namespace ECommerceWeb.Models.Product
 		public decimal Price { get; set; }
 
 		public string ImageSrc { get; set; }
-		
+
 		[ValidateImageFile(ErrorMessage = "Please select a PNG or JPG file smaller than 5MB.")]
 		[Display(Name = "Choose Image")]
 		public HttpPostedFileBase Image { get; set; }
@@ -87,22 +87,46 @@ namespace ECommerceWeb.Models.Product
 	{
 		[Display(Name = "ID")]
 		public int ID { get; set; }
-		
+
 		[Display(Name = "Name")]
 		public string Name { get; set; }
-		
+
 		[Display(Name = "Description")]
 		public string Description { get; set; }
-		
+
 		[Display(Name = "Price")]
 		public decimal Price { get; set; }
 
 		[Display(Name = "Image")]
 		public string ImageSrc { get; set; }
-		
+
 		[Display(Name = "Category")]
 		public string Category { get; set; }
-		
+
+		[Display(Name = "Status")]
+		public bool Status { get; set; }
+	}
+
+	public class DeleteProductViewModel
+	{
+		[Display(Name = "ID")]
+		public int ID { get; set; }
+
+		[Display(Name = "Name")]
+		public string Name { get; set; }
+
+		[Display(Name = "Description")]
+		public string Description { get; set; }
+
+		[Display(Name = "Price")]
+		public decimal Price { get; set; }
+
+		[Display(Name = "Image")]
+		public string ImageSrc { get; set; }
+
+		[Display(Name = "Category")]
+		public string Category { get; set; }
+
 		[Display(Name = "Status")]
 		public bool Status { get; set; }
 	}

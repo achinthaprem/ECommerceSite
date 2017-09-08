@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /ECommerceWeb/Filestore/Images/Category
+/ECommerceWeb/Filestore/Images/Product/1

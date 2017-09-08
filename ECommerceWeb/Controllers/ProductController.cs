@@ -209,6 +209,77 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		// GET: Product/Delete
+		public async Task<ActionResult> Delete(int? ID)
+		{
+			ActionResult                        result                  = null;
+
+			if (Common.Session.IsAdmin)
+			{
+				if (ID != null)
+				{
+					Product						product					= await ProductHelper.GetProductAsync(ID ?? default(int));
+
+					if (product != null)
+					{
+						DeleteProductViewModel model					= new DeleteProductViewModel();
+
+						model.ID                                        = product.ID;
+						model.Name                                      = product.Name;
+						model.Description                               = product.Description;
+						model.Price                                     = product.Price;
+						model.ImageSrc                                  = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
+						model.Category									= (await CategoryHelper.GetCategoryAsync(product.CategoryID)).Name;
+						model.Status                                    = (product.Status == Product.STATUS_ACTIVE) ? true : false;
+
+						result                                          = View(model);
+					}
+					else
+					{
+						result                                          = new HttpNotFoundResult();
+					}
+				}
+				else
+				{
+					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+				}
+			}
+			else
+			{
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+
+			return result;
+		}
+
+		// POST: Product/Delete
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> Delete(DeleteProductViewModel model)
+		{
+			ActionResult                        result                  = View();
+
+			if (Common.Session.IsAdmin)
+			{
+				if (await ProductHelper.DeleteProductAsync(model.ID))
+				{
+					ViewBag.MessageSuccess                              = "Product Deleted successfully!";
+					result                                              = View(model);
+				}
+				else
+				{
+					ViewBag.MessageSuccess                              = "Something went wrong! Try again later.";
+					result                                              = View(model);
+				}
+			}
+			else
+			{
+				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+
+			return result;
+		}
+
 		private List<SelectListItem> ConvertToSelectList(List<Category> list)
 		{
 			List<SelectListItem>            result                          = new List<SelectListItem>();

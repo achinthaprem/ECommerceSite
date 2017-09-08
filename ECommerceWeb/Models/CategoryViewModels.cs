@@ -76,4 +76,22 @@ namespace ECommerceWeb.Models.Category
 		[Display(Name = "Status")]
 		public bool Status { get; set; }
 	}
+	
+	public class DeleteCategoryViewModel
+	{
+		[Display(Name = "ID")]
+		public int ID { get; set; }
+
+		[Display(Name = "Name")]
+		public string Name { get; set; }
+
+		[Display(Name = "Description")]
+		public string Description { get; set; }
+
+		[Display(Name = "Image")]
+		public string ImageSrc { get; set; }
+
+		[Display(Name = "Status")]
+		public bool Status { get; set; }
+	}
 }
