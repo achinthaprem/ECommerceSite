@@ -1,0 +1,57 @@
+﻿@using ECommerceWeb.Common
+@model IEnumerable<ECommerceWeb.Models.Product.ListProductViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="pull-right">
+    <label for="FilterBy">Filter by : </label>
+    @Html.DropDownList("FilterBy", ViewBag.FilterList as List<SelectListItem>, 
+    htmlAttributes: new { @class = "btn btn-default dropdown-toggle", @onchange = "FilterBy(this.value)", @style = "margin-bottom: 10px; margin-top: 7px;" })
+</div>
+
+<table class="table table-striped" style="vertical-align: middle;">
+    <tr>
+        <th class="col-md-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th class="col-md-6">
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th class="col-md-1">
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th class="col-md-2">
+            @Html.DisplayNameFor(model => model.ImageSrc)
+        </th>
+        <th class="col-md-1">
+            Actions
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <div class="summary text">@Html.DisplayFor(modelItem => item.Description)</div>
+                <a href="#" id="more">more</a>
+            </td>
+            <td style="text-align:center;">
+                @Func.Currencyfy(item.Price)
+            </td>
+            <td style="text-align:center;">
+                <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
+            </td>
+            <td style="white-space: nowrap; text-align: center">
+                @Html.ActionLink("Add to Cart", "Edit", new { id = item.ID })
+            </td>
+        </tr>
+    }
+
+</table>

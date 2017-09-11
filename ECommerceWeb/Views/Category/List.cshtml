@@ -10,24 +10,24 @@
 
 @Html.ActionLink("Create New", Constants.ACTION_ADD, Constants.CONTROLLER_CATEGORY, null, new { @class = "pull-right btn btn-primary", @style = "margin-bottom: 10px;" })
 
-<table class="table" style="vertical-align: middle;">
+<table class="table table-striped" style="vertical-align: middle;">
     <tr>
-        <th>
+        <th class="col-md-1">
             @Html.DisplayNameFor(model => model.ID)
         </th>
-        <th>
+        <th class="col-md-2">
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th>
+        <th class="col-md-5">
             @Html.DisplayNameFor(model => model.Description)
         </th>
-        <th>
+        <th class="col-md-2">
             @Html.DisplayNameFor(model => model.ImageSrc)
         </th>
-        <th>
+        <th class="col-md-1">
             @Html.DisplayNameFor(model => model.Status)
         </th>
-        <th>
+        <th class="col-md-1">
             Actions
         </th>
     </tr>
@@ -35,27 +35,28 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
+            <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.ID)
             </td>
-            <td style="white-space: nowrap;">
+            <td style="white-space: nowrap; text-align: center;">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                <div class="summary text">@Html.DisplayFor(modelItem => item.Description)</div>
+                <a href="#" id="more">more</a>
+            </td>
+            <td style="text-align: center;">
+                <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
             </td>
             <td>
-                <img src="@Url.Content(item.ImageSrc)" alt="Image" style="height: 150px;" />
-            </td>
-            <td>
-                <div class="checkbox" style="padding-top: 0px;">
+                <div class="checkbox" style="padding-top: 0px; text-align: center;">
                     <label class="switch switch_type1" role="switch">
                         @Html.EditorFor(modelItem => item.Status, new { htmlAttributes = new { @class = "switch__toggle", @id = "status-checkbox", @disabled = "disabled" } })
                         <span class="switch__label"></span>
                     </label>
                 </div>
             </td>
-            <td style="white-space: nowrap;">
+            <td style="white-space: nowrap; text-align: center;">
                 @Html.ActionLink(" ", Constants.ACTION_EDIT, Constants.CONTROLLER_CATEGORY, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
                 @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
             </td>

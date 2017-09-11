@@ -61,7 +61,14 @@ namespace ECommerceWeb.Controllers
 					}
 					else
 					{
-						result                              = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+						if (Common.Session.IsAdmin)
+						{
+							result                          = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+						}
+						else
+						{
+							result                          = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP);
+						}
 					}
 					break;
 

@@ -8,7 +8,7 @@
 
                 var img = document.getElementById("image_preview");
                 img.src = e.target.result;
-                
+
             }
 
             reader.readAsDataURL(input.files[0]);
@@ -25,3 +25,18 @@ function test() {
     console.log("Hello World!");
 }
 
+// Show more
+$('#more').click(function () {
+    var text = $(this).prev('.text');
+    text.toggleClass('summary');
+    if (text.hasClass('summary')) {
+        $(this).text('more');
+    } else {
+        $(this).text('less');
+    }
+});
+
+// FilterBy
+function FilterBy(val) {
+    window.location.href = "/Shop/Index?filterBy=" + val;
+}

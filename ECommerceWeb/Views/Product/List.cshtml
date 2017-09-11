@@ -10,61 +10,63 @@
 
 @Html.ActionLink("Create New", Constants.ACTION_ADD, Constants.CONTROLLER_PRODUCT, null, new { @class = "pull-right btn btn-primary", @style = "margin-bottom: 10px;" })
 
-<table class="table" style="vertical-align: middle;">
+<table class="table table-striped" style="vertical-align: middle;">
     <tr>
-        <th>
+        <th class="col-md-2">
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th>
+        <th class="col-md-3">
             @Html.DisplayNameFor(model => model.Description)
         </th>
-        <th>
+        <th class="col-md-1">
             @Html.DisplayNameFor(model => model.Price)
         </th>
-        <th>
+        <th class="col-md-2">
             @Html.DisplayNameFor(model => model.ImageSrc)
         </th>
-        <th>
+        <th class="col-md-2">
             @Html.DisplayNameFor(model => model.Category)
         </th>
-        <th>
+        <th class="col-md-1">
             @Html.DisplayNameFor(model => model.Status)
         </th>
-        <th>
+        <th class="col-md-1">
             Actions
         </th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            <img src="@Url.Content(item.ImageSrc)" alt="Image" style="height: 150px;" />
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category)
-        </td>
-        <td>
-            <div class="checkbox" style="padding-top: 0px;">
-                <label class="switch switch_type1" role="switch">
-                    @Html.EditorFor(modelItem => item.Status, new { htmlAttributes = new { @class = "switch__toggle", @id = "status-checkbox", @disabled = "disabled" } })
-                    <span class="switch__label"></span>
-                </label>
-            </div>
-        </td>
-        <td style="white-space: nowrap;">
-            @Html.ActionLink(" ", Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
-            @Html.ActionLink(" ", Constants.ACTION_DELETE, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="text-align: center;">
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <div class="summary text" style="width: 270px">@Html.DisplayFor(modelItem => item.Description)</div>
+                <a href="#" id="more">more</a>
+            </td>
+            <td style="text-align: center;">
+                @Func.Currencyfy(item.Price)
+            </td>
+            <td style="text-align: center;">
+                <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
+            </td>
+            <td style="text-align: center;">
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td style="text-align: center;">
+                <div class="checkbox" style="padding-top: 0px;">
+                    <label class="switch switch_type1" role="switch">
+                        @Html.EditorFor(modelItem => item.Status, new { htmlAttributes = new { @class = "switch__toggle", @id = "status-checkbox", @disabled = "disabled" } })
+                        <span class="switch__label"></span>
+                    </label>
+                </div>
+            </td>
+            <td style="white-space: nowrap; text-align: center;">
+                @Html.ActionLink(" ", Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
+                @Html.ActionLink(" ", Constants.ACTION_DELETE, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
+            </td>
+        </tr>
+    }
 
 </table>

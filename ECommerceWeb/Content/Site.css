@@ -182,5 +182,14 @@ th {
     text-align: center;
 }
 
-/* dl fix */
+/* text summary */
+.summary {
+    width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
+.table {
+    table-layout: fixed;
+}
