@@ -1,8 +1,25 @@
 ﻿@using ECommerceWeb.Common
-@model IEnumerable<ECommerceWeb.Models.Product.ListProductViewModel>
+@model IEnumerable<ECommerceWeb.Models.Shop.ProductViewModel>
 
 @{
     ViewBag.Title = "Index";
+}
+
+@if (TempData["alert-success"] != null)
+{
+    <div class="alert alert-success" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-success"]</li>
+        </ul>
+    </div>
+}
+else if (TempData["alert-fail"] != null)
+{
+    <div class="alert alert-danger">
+        <ul>
+            <li>@TempData["alert-fail"]</li>
+        </ul>
+    </div>
 }
 
 <h2>@ViewBag.Title</h2>
@@ -36,7 +53,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.ActionLink(item.Name, Constants.ACTION_PRODUCT_VIEW, Constants.CONTROLLER_SHOP, new { ID =  item.ID}, null)
             </td>
             <td>
                 <div class="summary text">@Html.DisplayFor(modelItem => item.Description)</div>
@@ -49,7 +66,7 @@
                 <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
             </td>
             <td style="white-space: nowrap; text-align: center">
-                @Html.ActionLink("Add to Cart", "Edit", new { id = item.ID })
+                @Html.ActionLink("Add to Cart", Constants.ACTION_ADD, Constants.CONTROLLER_CART, new { ProductID = item.ID, Quantity = 1 }, null)
             </td>
         </tr>
     }

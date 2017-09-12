@@ -1,0 +1,48 @@
+﻿@using ECommerceWeb.Common
+@model ECommerceWeb.Models.Shop.ProductViewModel
+
+@{
+    ViewBag.Title = "Product View";
+}
+
+<div>
+    <h2>@Html.DisplayFor(model => model.Name)</h2>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Func.Currencyfy(Model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageSrc)
+        </dt>
+
+        <dd>
+            <img src="@Url.Content(Model.ImageSrc)" alt="Image" style="height: 200px;" />
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP)
+</p>

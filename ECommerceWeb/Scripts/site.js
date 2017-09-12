@@ -40,3 +40,8 @@ $('#more').click(function () {
 function FilterBy(val) {
     window.location.href = "/Shop/Index?filterBy=" + val;
 }
+
+// Auto fading alert
+$(".alert").fadeTo(3000, 500).slideUp(500, function(){
+    $(".alert").slideUp(500);
+});

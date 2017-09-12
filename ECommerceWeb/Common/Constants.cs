@@ -13,7 +13,9 @@ namespace ECommerceWeb.Common
 		public const string             USER_EMAIL                      = "UserEmail";
 		public const string             USER_REMEMBER_ME                = "RememberMe";
 		public const string             USER_COOCKIE_NAME               = "ECOM_User_Info";
-		public const string             CURRENT_ACCOUNT					= "CurrentAccount";
+		public const string             CURRENT_ACCOUNT                 = "CurrentAccount";
+		public const string             CURRENT_ORDER_ID                = "CurrentOrderID";
+		public const string             PENDING_ORDER_ITEMS             = "PendingOrderItems";
 
 		// Messages
 		public const string             MSG_LOGIN_FAIL_USR_PSW          = "Invalid user credentials!";
@@ -39,6 +41,8 @@ namespace ECommerceWeb.Common
 		public const string             ACTION_EDIT                     = "Edit";
 		public const string             ACTION_LIST                     = "List";
 		public const string             ACTION_DELETE                   = "Delete";
+		public const string             ACTION_VIEW						= "View";
+		public const string             ACTION_PRODUCT_VIEW             = "ProductView";
 
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";

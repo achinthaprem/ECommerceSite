@@ -1,0 +1,12 @@
+﻿@using ECommerceWeb.Common
+@if (ECommerceWeb.Common.Session.Authorized)
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="@Url.Action(Constants.ACTION_VIEW, Constants.CONTROLLER_CART)" style="padding-top: 17px;">
+                My Cart <span class="glyphicon glyphicon-shopping-cart"></span>
+                <span class="badge" style="margin-left: 5px; margin-top: -4px;">@ECommerceWeb.Common.Session.PendingOrderItems</span>
+            </a>
+        </li>
+    </ul>
+}

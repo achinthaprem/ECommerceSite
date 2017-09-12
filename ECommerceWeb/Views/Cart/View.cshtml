@@ -1,0 +1,46 @@
+﻿@using ECommerceWeb.Common
+@model ECommerceWeb.Models.Cart.OrderViewModel
+
+@{
+    ViewBag.Title = "My Cart";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="col-md-9">
+
+    <h3>Order Items</h3>
+
+</div>
+
+<div class="col-md-3" style="outline: 3px solid cadetblue; background: lightblue;">
+
+    <h3 style="margin-top: 20px;">Order Summary</h3>
+    <hr />
+
+    <div class="row" style="margin: auto;">
+        <label for="totalItems">Total Items</label>
+        <p class="pull-right" id="totalItems">8</p>
+    </div>
+
+    <div class="row" style="margin: auto;">
+        <label for="shipping">Shipping</label>
+        <p class="pull-right" id="shipping">LKR 0.00</p>
+    </div>
+
+    <div class="row" style="margin: auto;">
+        <label for="discounts">Discounts</label>
+        <p class="pull-right" id="discounts">LKR -0.00</p>
+    </div>
+
+    <div class="row" style="margin: auto; margin-top: 15px; vertical-align: central;">
+        <label for="total" style="margin-top: 2px;">Total Amount</label>
+        <p class="pull-right" id="total" style="font-size: large">LKR 1000.00</p>
+    </div>
+
+    <hr />
+
+    <button type="button" class="btn btn-block btn-primary" style="margin-bottom: 16px;">Checkout</button>
+
+</div>
+

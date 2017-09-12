@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ECommerce.Tables.Active.HR;
+using ECommerce.Tables.Content;
+using ECommerce.Tables.Content.Helpers;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using ECommerce.Tables.Active.HR;
 
 namespace ECommerceWeb.Common
 {
@@ -46,7 +46,31 @@ namespace ECommerceWeb.Common
 				return result;
 			}
 		}
-		
+
+		public static int? CurrentOrderID
+		{
+			get
+			{
+				return HttpContext.Current.Session[Constants.CURRENT_ORDER_ID] as int?;
+			}
+			set
+			{
+				HttpContext.Current.Session[Constants.CURRENT_ORDER_ID]         = value;
+			}
+		}
+
+		public static int? PendingOrderItems
+		{
+			get
+			{
+				return HttpContext.Current.Session[Constants.PENDING_ORDER_ITEMS] as int?;
+			}
+			set
+			{
+				HttpContext.Current.Session[Constants.PENDING_ORDER_ITEMS]      = value;
+			}
+		}
+
 		public static string FullName
 		{
 			get
@@ -64,12 +88,39 @@ namespace ECommerceWeb.Common
 		public static void Start(Account account)
 		{
 			HttpContext.Current.Session[Constants.CURRENT_ACCOUNT]          = account;
+			CountItemsInCart();
 		}
 
 		public static void Destroy()
 		{
 			HttpContext.Current.Session.Contents.RemoveAll();
 			HttpContext.Current.Session.Abandon();
+		}
+
+		public static void CountItemsInCart()
+		{
+			OrderHelper             OrderHelper                 = new OrderHelper();
+			List<Order>             orders                      = OrderHelper.GetOrdersByAccountAsync(Account.ID).Result;
+			Order                   order                       = null;
+
+			foreach (Order _order in orders)
+			{
+				if (_order.Status == Order.STATUS_PENDING)
+				{
+					order                                       = _order;
+					break;
+				}
+			}
+
+			List<OrderItem>         items                       = OrderHelper.GetOrderItemsByOrderIDAsync(order.ID).Result;
+			int                     count                       = 0;
+
+			foreach(OrderItem item in items)
+			{
+				count                                           += item.Quantity;
+			}
+
+			PendingOrderItems                                   = count;
 		}
 
 		//public static Account ValidateCookie(HttpRequestBase request)
