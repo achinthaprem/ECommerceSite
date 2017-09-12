@@ -91,11 +91,14 @@ namespace ECommerce.Tables.Content.Helpers
 			decimal UnitCost,
 			decimal Subtotal)
 		{
-			return Task.Run(() =>
+			return Task.Run(async () =>
 			{
 				bool                result              = false;
 				OrderItem           orderItem           = OrderItem.ExecuteCreate(OrderID, ProductID, Quantity, UnitCost, Subtotal);
 				orderItem.Insert();
+
+				await UpdateTotalOfOrder(orderItem.OrderID);
+
 				result                                  = true;
 				return result;
 			});
@@ -129,7 +132,7 @@ namespace ECommerce.Tables.Content.Helpers
 			decimal UnitCost,
 			decimal Subtotal)
 		{
-			return Task.Run(() =>
+			return Task.Run(async () =>
 			{
 				bool                result              = false;
 				OrderItem           orderItem           = OrderItem.ExecuteCreate(ID);
@@ -139,6 +142,8 @@ namespace ECommerce.Tables.Content.Helpers
 					orderItem.Update(Quantity, UnitCost, Subtotal);
 
 					result                              = true;
+
+					await UpdateTotalOfOrder(orderItem.OrderID);
 				}
 
 				return result;
@@ -160,10 +165,12 @@ namespace ECommerce.Tables.Content.Helpers
 
 		public Task<bool> DeleteOrderItemAsync(int ID)
 		{
-			return Task.Run(() =>
+			return Task.Run(async () =>
 			{
 				OrderItem           orderItem           = OrderItem.ExecuteCreate(ID);
 				orderItem.Delete();
+
+				await UpdateTotalOfOrder(orderItem.OrderID);
 
 				orderItem                               = OrderItem.ExecuteCreate(ID);
 
@@ -173,7 +180,16 @@ namespace ECommerce.Tables.Content.Helpers
 
 		public async Task UpdateTotalOfOrder(int OrderID)
 		{
-			// TODO: Update total amount of Order when any change happen to Order Item
+			Order                   order               = await GetOrderAsync(OrderID);
+			List<OrderItem>         list                = await GetOrderItemsByOrderIDAsync(OrderID);
+			decimal                 total               = 0.00m;
+
+			foreach (OrderItem item in list)
+			{
+				total                                   += item.Subtotal;
+			}
+
+			order.Update(order.Status, order.PaymentMethod, total);
 		}
 	}
 }

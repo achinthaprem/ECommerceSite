@@ -33,5 +33,10 @@ namespace ECommerceWeb.Models.Shop
 
 		[Display(Name = "Status")]
 		public bool Status { get; set; }
+
+		[Required]
+		[Range(1, int.MaxValue)]
+		[Display(Name = "Quantity")]
+		public int Quantity { get; set; }
 	}
 }

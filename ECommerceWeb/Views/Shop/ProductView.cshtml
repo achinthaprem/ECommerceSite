@@ -5,6 +5,23 @@
     ViewBag.Title = "Product View";
 }
 
+@if (TempData["alert-success"] != null)
+{
+    <div class="alert alert-success" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-success"]</li>
+        </ul>
+    </div>
+}
+else if (TempData["alert-fail"] != null)
+{
+    <div class="alert alert-danger">
+        <ul>
+            <li>@TempData["alert-fail"]</li>
+        </ul>
+    </div>
+}
+
 <div>
     <h2>@Html.DisplayFor(model => model.Name)</h2>
     <hr />
@@ -41,8 +58,25 @@
             <img src="@Url.Content(Model.ImageSrc)" alt="Image" style="height: 200px;" />
         </dd>
 
+        <dt></dt>
+
+        <dd style="margin-top: 40px">
+            
+            @using (Html.BeginForm(Constants.ACTION_ADD, Constants.CONTROLLER_CART, new { @ProductID = Model.ID, @Quantity = Model.Quantity }, FormMethod.Post))
+            {
+                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control", style = "display: unset; width: 7%;", @min = "1" } })
+                <input type="submit" value="Add to Cart" class="btn btn-primary" />
+                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+            }
+
+        </dd>
+
     </dl>
 </div>
 <p>
     @Html.ActionLink("Back to List", Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP)
 </p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

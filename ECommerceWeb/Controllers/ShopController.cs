@@ -89,6 +89,7 @@ namespace ECommerceWeb.Controllers
 						view.Category									= (await CategoryHelper.GetCategoryAsync(product.CategoryID)).Name;
 						view.CategoryID                                 = product.CategoryID.ToString();
 						view.Status                                     = (product.Status == Product.STATUS_ACTIVE) ? true : false;
+						view.Quantity                                   = 1;
 
 						result                                          = View(view);
 					}
