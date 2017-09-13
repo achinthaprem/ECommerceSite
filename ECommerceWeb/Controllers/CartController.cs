@@ -46,6 +46,7 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		// GET: Cart/Add
 		public async Task<ActionResult> Add(int? ProductID, int? Quantity)
 		{
 			ActionResult                            result                              = null;
@@ -134,7 +135,7 @@ namespace ECommerceWeb.Controllers
 
 					if (orderItem != null)
 					{
-						orderItem.Delete();
+						await OrderHelper.DeleteOrderItemAsync(orderItem.ID);
 
 						orderItem                                                       = await OrderHelper.GetOrderItemAsync(OrderItemID ?? default(int));
 
@@ -183,7 +184,7 @@ namespace ECommerceWeb.Controllers
 
 					if (order != null)
 					{
-						order.Delete();
+						await OrderHelper.DeleteOrderAsync(order.ID);
 
 						order                                                           = await OrderHelper.GetOrderAsync(OrderID ?? default(int));
 

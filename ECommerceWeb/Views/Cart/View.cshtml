@@ -1,8 +1,28 @@
 ﻿@using ECommerceWeb.Common
+@using ECommerce.Tables.Content
+@using ECommerce.Tables.Content.Helpers
 @model ECommerceWeb.Models.Cart.OrderViewModel
 
 @{
     ViewBag.Title = "My Cart";
+    ProductHelper           ProductHelper           = new ProductHelper();
+}
+
+@if (TempData["alert-success"] != null)
+{
+    <div class="alert alert-success" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-success"]</li>
+        </ul>
+    </div>
+}
+else if (TempData["alert-fail"] != null)
+{
+    <div class="alert alert-danger" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-fail"]</li>
+        </ul>
+    </div>
 }
 
 <h2>@ViewBag.Title</h2>
@@ -10,6 +30,55 @@
 <div class="col-md-9">
 
     <h3>Order Items</h3>
+
+    <table class="table table-striped" style="vertical-align: middle;">
+        <tr>
+            <th class="col-md-1">
+                #
+            </th>
+            <th class="col-md-2">
+                Item Name
+            </th>
+            <th class="col-md-2">
+                Image
+            </th>
+            <th class="col-md-1">
+                Price
+            </th>
+            <th class="col-md-1">
+                Quantity
+            </th>
+            <th class="col-md-2">
+                Actions
+            </th>
+        </tr>
+        @for (int i = 0; i < Model.OrderItems.Count; i++)
+        {
+            Product     product     = ProductHelper.GetProductAsync(Model.OrderItems[i].ProductID).Result;
+            OrderItem   item        = Model.OrderItems[i];
+            int         num         = i + 1;
+
+            <tr>
+                <td style="text-align:center;">
+                    #@num
+                </td>
+                <td style="text-align:center;">
+                    @Html.ActionLink(product.Name, Constants.ACTION_PRODUCT_VIEW, Constants.CONTROLLER_SHOP, new { ID = product.ID }, null)
+                </td>
+                <td style="text-align:center;">
+                    <img src="@Url.Content($@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}")" alt="Image" style="width: 100px;" />
+                </td>
+                <td style="text-align:center;">
+                    @Func.Currencyfy(item.UnitCost)
+                </td>
+                <td style="text-align:center;">
+                    @item.Quantity
+                </td>
+                <td style="white-space: nowrap; text-align: center;">
+                    @Html.ActionLink(" ", Constants.ACTION_REMOVE_ITEM, Constants.CONTROLLER_CART, new { OrderItemID = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
+                </td>
+            </tr>}
+    </table>
 
 </div>
 
@@ -20,22 +89,22 @@
 
     <div class="row" style="margin: auto;">
         <label for="totalItems">Total Items</label>
-        <p class="pull-right" id="totalItems">8</p>
+        <p class="pull-right" id="totalItems">@ECommerceWeb.Common.Session.PendingOrderItems</p>
     </div>
 
     <div class="row" style="margin: auto;">
         <label for="shipping">Shipping</label>
-        <p class="pull-right" id="shipping">LKR 0.00</p>
+        <p class="pull-right" id="shipping">Rs. 0.00</p>
     </div>
 
     <div class="row" style="margin: auto;">
         <label for="discounts">Discounts</label>
-        <p class="pull-right" id="discounts">LKR -0.00</p>
+        <p class="pull-right" id="discounts">Rs. -0.00</p>
     </div>
 
     <div class="row" style="margin: auto; margin-top: 15px; vertical-align: central;">
         <label for="total" style="margin-top: 2px;">Total Amount</label>
-        <p class="pull-right" id="total" style="font-size: large">LKR 1000.00</p>
+        <p class="pull-right" id="total" style="font-size: large">@ECommerceWeb.Common.Func.Currencyfy(Model.TotalAmount)</p>
     </div>
 
     <hr />

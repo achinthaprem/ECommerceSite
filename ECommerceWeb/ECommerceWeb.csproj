@@ -244,7 +244,6 @@
     <Content Include="Views\Shared\_Cart.cshtml" />
     <Content Include="Views\Shop\ProductView.cshtml" />
     <Content Include="Views\Cart\View.cshtml" />
-    <Content Include="Views\Shop\Viewhjgh.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
