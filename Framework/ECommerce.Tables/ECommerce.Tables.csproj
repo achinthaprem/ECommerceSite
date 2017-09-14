@@ -99,8 +99,10 @@
     <Compile Include="Active\HR\AccountPasswordHasher.cs" />
     <Compile Include="Active\HR\AccountService.cs" />
     <Compile Include="Content\Category.cs" />
+    <Compile Include="Content\Contact.cs" />
     <Compile Include="Content\Helpers\CategoryHelper.cs" />
     <Compile Include="Content\Helpers\CommonHelper.cs" />
+    <Compile Include="Content\Helpers\ContactHelper.cs" />
     <Compile Include="Content\Helpers\OrderHelper.cs" />
     <Compile Include="Content\Helpers\ProductHelper.cs" />
     <Compile Include="Content\Order.cs" />

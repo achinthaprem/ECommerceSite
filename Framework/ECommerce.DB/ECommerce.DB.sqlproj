@@ -121,5 +121,12 @@
     <Build Include="dbo\Stored Procedures\OrderListByAccountID.sql" />
     <Build Include="dbo\Stored Procedures\OrderItemListByOrderID.sql" />
     <Build Include="dbo\Stored Procedures\CategoryListByStatus.sql" />
+    <Build Include="dbo\Tables\Contact.sql" />
+    <Build Include="dbo\Stored Procedures\ContactUpdate.sql" />
+    <Build Include="dbo\Stored Procedures\ContactListByReadStatus.sql" />
+    <Build Include="dbo\Stored Procedures\ContactList.sql" />
+    <Build Include="dbo\Stored Procedures\ContactInsert.sql" />
+    <Build Include="dbo\Stored Procedures\ContactGetByID.sql" />
+    <Build Include="dbo\Stored Procedures\ContactDelete.sql" />
   </ItemGroup>
 </Project>

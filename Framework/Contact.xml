@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<framework type="SqlServerSchema">
+  <settings>
+    <version>6.1</version>
+    <root-directory-tables>ECommerce.Tables</root-directory-tables>
+    <root-directory-sql>ECommerce.SQL</root-directory-sql>
+    <author>Volum Technologies RADA Generator v6.1 : Achintha.Premarathne</author>
+  </settings>
+  <tables>
+    <table>
+      <name>Contact</name>
+      <name-sql>Contact</name-sql>
+      <name-tables>Contact</name-tables>
+      <namespace-sql>ECommerce.SQL.Content</namespace-sql>
+      <namespace-tables>ECommerce.Tables.Content</namespace-tables>
+      <inherit-from>Object, IComparable</inherit-from>
+      <relative-directory-sql>Content</relative-directory-sql>
+      <relative-directory-tables>Content</relative-directory-tables>
+      <list-text-accessor></list-text-accessor>
+      <list-value-accessor></list-value-accessor>
+      <columns>
+        <column>
+          <name-database>ID</name-database>
+          <type-database>Int</type-database>
+          <size-database></size-database>
+          <is-identity>True</is-identity>
+          <appears-execute-create>False</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for ID</comment>
+          <is-compare-to>True</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>name</name-database>
+          <type-database>NVarChar</type-database>
+          <size-database>100</size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>True</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for Name</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>email</name-database>
+          <type-database>NVarChar</type-database>
+          <size-database>255</size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>True</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for Email</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>contact_no</name-database>
+          <type-database>NVarChar</type-database>
+          <size-database>30</size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>True</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for ContactNo</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>subject</name-database>
+          <type-database>NVarChar</type-database>
+          <size-database>50</size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>True</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for Subject</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>message</name-database>
+          <type-database>NVarChar</type-database>
+          <size-database>250</size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>True</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for Message</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>date</name-database>
+          <type-database>DateTime</type-database>
+          <size-database></size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>False</appears-execute-create>
+          <auto-current-date>True</auto-current-date>
+          <comment>No information available for DateCreated</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>False</list-by-this-column>
+          <primary-table-name />
+        </column>
+        <column>
+          <name-database>read_status</name-database>
+          <type-database>Int</type-database>
+          <size-database></size-database>
+          <is-identity>False</is-identity>
+          <appears-execute-create>True</appears-execute-create>
+          <auto-current-date>False</auto-current-date>
+          <comment>No information available for ReadStatus</comment>
+          <is-compare-to>False</is-compare-to>
+          <list-by-this-column>True</list-by-this-column>
+          <primary-table-name />
+        </column>
+      </columns>
+    </table>
+  </tables>
+</framework>

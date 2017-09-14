@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Active\HR\Account.cs" />
     <Compile Include="Content\Category.cs" />
+    <Compile Include="Content\Contact.cs" />
     <Compile Include="Content\Order.cs" />
     <Compile Include="Content\OrderItem.cs" />
     <Compile Include="Content\Product.cs" />

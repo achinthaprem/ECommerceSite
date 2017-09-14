@@ -9,9 +9,7 @@ namespace ECommerce.Tables.Content.Helpers
 {
 	public class CategoryHelper
 	{
-		public CategoryHelper()
-		{
-		}
+		public CategoryHelper() { }
 
 		public Task<Category> GetCategoryAsync(int ID)
 		{
@@ -97,7 +95,7 @@ namespace ECommerce.Tables.Content.Helpers
 				Category            category                = Category.ExecuteCreate(ID);
 				category.Delete();
 
-				category									= Category.ExecuteCreate(ID);
+				category                                    = Category.ExecuteCreate(ID);
 
 				return (category == null) ? true : false;
 			});
