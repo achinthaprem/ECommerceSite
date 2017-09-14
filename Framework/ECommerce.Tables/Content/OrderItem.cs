@@ -34,35 +34,35 @@ namespace ECommerce.Tables.Content
 		/// <summary>
 		/// No information available for ID
 		/// </summary>
-		protected const string Field_ID                                                                      = "ID";
+		protected const string Field_ID																		 = "ID";
 		/// <summary>
 		/// No information available for OrderID
 		/// </summary>
-		protected const string Field_order_id                                                                = "order_id";
+		protected const string Field_order_id  																 = "order_id";
 		/// <summary>
 		/// Relation between OrderItem and Order By OrderID
 		/// </summary>
-		protected const string Relation_OrderItem_OrderByOrderID                                             = "FK_OrderItem_OrderByOrderID";
+		protected const string Relation_OrderItem_OrderByOrderID   											 = "FK_OrderItem_OrderByOrderID";
 		/// <summary>
 		/// No information available for ProductID
 		/// </summary>
-		protected const string Field_product_id                                                              = "product_id";
+		protected const string Field_product_id																 = "product_id";
 		/// <summary>
 		/// Relation between OrderItem and Product By ProductID
 		/// </summary>
-		protected const string Relation_OrderItem_ProductByProductID                                         = "FK_OrderItem_ProductByProductID";
+		protected const string Relation_OrderItem_ProductByProductID   										 = "FK_OrderItem_ProductByProductID";
 		/// <summary>
 		/// No information available for Quantity
 		/// </summary>
-		protected const string Field_quantity                                                                = "quantity";
+		protected const string Field_quantity  																 = "quantity";
 		/// <summary>
 		/// No information available for UnitCost
 		/// </summary>
-		protected const string Field_unit_cost                                                               = "unit_cost";
+		protected const string Field_unit_cost 																 = "unit_cost";
 		/// <summary>
 		/// No information available for Subtotal
 		/// </summary>
-		protected const string Field_subtotal                                                                = "subtotal";
+		protected const string Field_subtotal  																 = "subtotal";
 		// V2Generator: Section End :Database Column Field Names
 		#endregion
 
@@ -72,35 +72,35 @@ namespace ECommerce.Tables.Content
 		/// <summary>
 		/// No information available for ID
 		/// </summary>
-		protected int       m_ID                                         = -1;
+		protected int 		m_ID										 = -1;
 		/// <summary>
 		/// No information available for OrderID
 		/// </summary>
-		protected int       m_OrderID                                    = -1;
+		protected int 		m_OrderID   								 = -1;
 		/// <summary>
 		/// DataRow for Primary Table Order By OrderID
 		/// </summary>
-		protected DataRow   m_OrderRowByOrderID                          = null ;
+		protected DataRow 	m_OrderRowByOrderID 						 = null ;
 		/// <summary>
 		/// No information available for ProductID
 		/// </summary>
-		protected int       m_ProductID                                  = -1;
+		protected int 		m_ProductID 								 = -1;
 		/// <summary>
 		/// DataRow for Primary Table Product By ProductID
 		/// </summary>
-		protected DataRow   m_ProductRowByProductID                      = null ;
+		protected DataRow 	m_ProductRowByProductID 					 = null ;
 		/// <summary>
 		/// No information available for Quantity
 		/// </summary>
-		protected int       m_Quantity                                   = -1;
+		protected int 		m_Quantity  								 = -1;
 		/// <summary>
 		/// No information available for UnitCost
 		/// </summary>
-		protected decimal   m_UnitCost                                   = -1;
+		protected decimal 	m_UnitCost  								 = -1;
 		/// <summary>
 		/// No information available for Subtotal
 		/// </summary>
-		protected decimal   m_Subtotal                                   = -1;
+		protected decimal 	m_Subtotal  								 = -1;
 		// V2Generator: Section End :Protected fields section
 		#endregion
 
@@ -125,7 +125,7 @@ namespace ECommerce.Tables.Content
 		/// <param name="Subtotal">No information available for Subtotal</param>
 		/// <returns></returns>
 		// V2Generator: Section Start : Constructor using all the fields
-		protected OrderItem(
+		protected OrderItem (
 			int ID,
 			int OrderID,
 			DataRow OrderRowByOrderID,
@@ -136,14 +136,14 @@ namespace ECommerce.Tables.Content
 			decimal Subtotal)
 		{
 			// V2Generator: Body Start
-			this.m_ID                                    = ID;
-			this.m_OrderID                               = OrderID;
-			this.m_OrderRowByOrderID                     = OrderRowByOrderID;
-			this.m_ProductID                             = ProductID;
-			this.m_ProductRowByProductID                 = ProductRowByProductID;
-			this.m_Quantity                              = Quantity;
-			this.m_UnitCost                              = UnitCost;
-			this.m_Subtotal                              = Subtotal;
+			this.m_ID   								 = ID;
+			this.m_OrderID  							 = OrderID;
+			this.m_OrderRowByOrderID					 = OrderRowByOrderID;
+			this.m_ProductID							 = ProductID;
+			this.m_ProductRowByProductID				 = ProductRowByProductID;
+			this.m_Quantity 							 = Quantity;
+			this.m_UnitCost 							 = UnitCost;
+			this.m_Subtotal 							 = Subtotal;
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Constructor using all the fields
@@ -158,7 +158,7 @@ namespace ECommerce.Tables.Content
 		/// <param name="Subtotal">No information available for Subtotal</param>
 		/// <returns></returns>
 		// V2Generator: Section Start : Constructor for insert
-		protected OrderItem(
+		protected OrderItem (
 			int OrderID,
 			int ProductID,
 			int Quantity,
@@ -166,11 +166,11 @@ namespace ECommerce.Tables.Content
 			decimal Subtotal)
 		{
 			// V2Generator: Body Start
-			this.m_OrderID                          = OrderID;
-			this.m_ProductID                        = ProductID;
-			this.m_Quantity                         = Quantity;
-			this.m_UnitCost                         = UnitCost;
-			this.m_Subtotal                         = Subtotal;
+			this.m_OrderID  						= OrderID;
+			this.m_ProductID						= ProductID;
+			this.m_Quantity 						= Quantity;
+			this.m_UnitCost 						= UnitCost;
+			this.m_Subtotal 						= Subtotal;
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Constructor for insert
@@ -185,17 +185,17 @@ namespace ECommerce.Tables.Content
 		/// <param name="ID">No information available for ID</param>
 		/// <returns>null or a new OrderItem object</returns>
 		// V2Generator: Section Start : ExecuteCreate By ID
-		public static OrderItem ExecuteCreate(int ID)
+		public static OrderItem ExecuteCreate (int ID)
 		{
 			// V2Generator: Body Start
-			OrderItem                     result     = null;
+			OrderItem   				  result     = null;
 
-			DataSet                       ds          = ECommerce.SQL.Content.OrderItem.OrderItemGetByID(ID);
+			DataSet 					  ds  		  = ECommerce.SQL.Content.OrderItem.OrderItemGetByID(ID);
 
-			DataTable                     dt          = AddRelation(ds);
+			DataTable   				  dt  		  = AddRelation(ds);
 			if (dt.Rows.Count>0)
 			{
-				result                                  = Create(dt.Rows[0]);
+				result									= Create(dt.Rows[0]);
 			}
 
 			return result;
@@ -213,7 +213,7 @@ namespace ECommerce.Tables.Content
 		/// <param name="Subtotal">No information available for Subtotal</param>
 		/// <returns>null or a new OrderItem object</returns>
 		// V2Generator: Section Start : ExecuteCreate Insert
-		public static OrderItem ExecuteCreate(
+		public static OrderItem ExecuteCreate (
 			int OrderID,
 			int ProductID,
 			int Quantity,
@@ -221,13 +221,13 @@ namespace ECommerce.Tables.Content
 			decimal Subtotal)
 		{
 			// V2Generator: Body Start
-			OrderItem   result      = null;
+			OrderItem	result		= null;
 
 			#region Validate the input parameter(s)
 
 			#endregion
 
-			result          = new OrderItem(OrderID, ProductID, Quantity, UnitCost, Subtotal);
+			result			= new OrderItem(OrderID, ProductID, Quantity, UnitCost, Subtotal);
 			return result;
 			// V2Generator: Body End
 		}
@@ -239,7 +239,7 @@ namespace ECommerce.Tables.Content
 		/// <param name="row"></param>
 		/// <returns>null or a new OrderItem object</returns>
 		// V2Generator: Section Start : ExecuteCreate Row
-		internal static OrderItem ExecuteCreate(DataRow row)
+		internal static OrderItem ExecuteCreate (DataRow row)
 		{
 			// V2Generator: Body Start
 			return Create(row);
@@ -252,17 +252,17 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		/// <returns>null or a new Order object</returns>
 		// V2Generator: Section Start : ExecuteCreate Primary Table object OrderByOrderID
-		public ECommerce.Tables.Content.Order ExecuteCreateOrderByOrderID()
+		public ECommerce.Tables.Content.Order ExecuteCreateOrderByOrderID ()
 		{
 			// V2Generator: Body Start
 			ECommerce.Tables.Content.Order Result = null;
 			if (m_OrderRowByOrderID!=null)
 			{
-				Result                                                 = ECommerce.Tables.Content.Order.ExecuteCreate(m_OrderRowByOrderID);
+				Result  											   = ECommerce.Tables.Content.Order.ExecuteCreate(m_OrderRowByOrderID);
 			}
 			else
 			{
-				Result                                                 = ECommerce.Tables.Content.Order.ExecuteCreate(m_OrderID);
+				Result  											   = ECommerce.Tables.Content.Order.ExecuteCreate(m_OrderID);
 			}
 			return Result;
 			// V2Generator: Body End
@@ -274,17 +274,17 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		/// <returns>null or a new Product object</returns>
 		// V2Generator: Section Start : ExecuteCreate Primary Table object ProductByProductID
-		public ECommerce.Tables.Content.Product ExecuteCreateProductByProductID()
+		public ECommerce.Tables.Content.Product ExecuteCreateProductByProductID ()
 		{
 			// V2Generator: Body Start
 			ECommerce.Tables.Content.Product Result = null;
 			if (m_ProductRowByProductID!=null)
 			{
-				Result                                                 = ECommerce.Tables.Content.Product.ExecuteCreate(m_ProductRowByProductID);
+				Result  											   = ECommerce.Tables.Content.Product.ExecuteCreate(m_ProductRowByProductID);
 			}
 			else
 			{
-				Result                                                 = ECommerce.Tables.Content.Product.ExecuteCreate(m_ProductID);
+				Result  											   = ECommerce.Tables.Content.Product.ExecuteCreate(m_ProductID);
 			}
 			return Result;
 			// V2Generator: Body End
@@ -302,42 +302,42 @@ namespace ECommerce.Tables.Content
 		/// <param name="row"></param>
 		/// <returns>null or a OrderItem object</returns>
 		// V2Generator: Section Start : Create section
-		private static OrderItem Create(DataRow row)
+		private static OrderItem Create (DataRow row)
 		{
 			// V2Generator: Body Start
-			OrderItem  result            = null;
-
-			int        ID                = -1;
-			int        OrderID           = -1;
-			int        ProductID         = -1;
-			int        Quantity          = -1;
-			decimal    UnitCost          = -1;
-			decimal    Subtotal          = -1;
+			OrderItem  result  			 = null;
+			
+			int 	   ID  				 = -1;
+			int 	   OrderID 			 = -1;
+			int 	   ProductID   		 = -1;
+			int 	   Quantity			 = -1;
+			decimal    UnitCost			 = -1;
+			decimal    Subtotal			 = -1;
 
 			#region get the values
-			ID                               = (int)row[Field_ID];
+			ID  							 = (int) row[Field_ID];
 			if (row[Field_order_id]!=System.DBNull.Value)
 			{
-				OrderID                      = (int)row[Field_order_id];
+				OrderID 					 = (int) row[Field_order_id];
 			}
 			if (row[Field_product_id]!=System.DBNull.Value)
 			{
-				ProductID                    = (int)row[Field_product_id];
+				ProductID   				 = (int) row[Field_product_id];
 			}
 			if (row[Field_quantity]!=System.DBNull.Value)
 			{
-				Quantity                     = (int)row[Field_quantity];
+				Quantity					 = (int) row[Field_quantity];
 			}
 			if (row[Field_unit_cost]!=System.DBNull.Value)
 			{
-				UnitCost                     = (decimal)row[Field_unit_cost];
+				UnitCost					 = (decimal) row[Field_unit_cost];
 			}
 			if (row[Field_subtotal]!=System.DBNull.Value)
 			{
-				Subtotal                     = (decimal)row[Field_subtotal];
+				Subtotal					 = (decimal) row[Field_subtotal];
 			}
 			#endregion
-			result                           = new OrderItem(ID, OrderID, row.GetParentRow(Relation_OrderItem_OrderByOrderID), ProductID, row.GetParentRow(Relation_OrderItem_ProductByProductID), Quantity, UnitCost, Subtotal);
+			result  						 = new OrderItem(ID, OrderID, row.GetParentRow(Relation_OrderItem_OrderByOrderID), ProductID, row.GetParentRow(Relation_OrderItem_ProductByProductID), Quantity, UnitCost, Subtotal);
 
 			return result;
 			// V2Generator: Body End
@@ -354,17 +354,17 @@ namespace ECommerce.Tables.Content
 		/// <param name="ds"></param>
 		/// <returns>null or a OrderItemDataTable</returns>
 		// V2Generator: Section Start : Relations
-		protected static DataTable AddRelation(DataSet ds)
+		protected static DataTable  AddRelation (DataSet ds)
 		{
 			// V2Generator: Body Start
 			ds.Relations.Add(new DataRelation(
 					Relation_OrderItem_OrderByOrderID,
 					ds.Tables[1].Columns["ID"],
-					ds.Tables[0].Columns[Field_order_id], false));
+					ds.Tables[0].Columns[Field_order_id],false));
 			ds.Relations.Add(new DataRelation(
 					Relation_OrderItem_ProductByProductID,
 					ds.Tables[2].Columns["ID"],
-					ds.Tables[0].Columns[Field_product_id], false));
+					ds.Tables[0].Columns[Field_product_id],false));
 			return ds.Tables[0];
 			// V2Generator: Body End
 		}
@@ -379,16 +379,16 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		/// <returns></returns>
 		// V2Generator: Section Start : List all
-		public static List<OrderItem> List()
+		public static List<OrderItem> List ()
 		{
 			// V2Generator: Body Start
-			List<OrderItem>         list                = new List<OrderItem>();
-			DataSet             ds                  = ECommerce.SQL.Content.OrderItem.OrderItemList();
+			List<OrderItem>			list				= new List<OrderItem>();
+			DataSet				ds					= ECommerce.SQL.Content.OrderItem.OrderItemList();
 
-			DataTable           dt                  = AddRelation(ds);
-			for (int i = 0; i<dt.Rows.Count; i++)
+			DataTable			dt					= AddRelation(ds);
+			for (int i=0; i<dt.Rows.Count; i++)
 			{
-				OrderItem       result              = Create(dt.Rows[i]);
+				OrderItem   	result				= Create(dt.Rows[i]);
 				if (result!=null)
 				{
 					list.Add(result);
@@ -408,11 +408,40 @@ namespace ECommerce.Tables.Content
 		/// <param name="OrderID">The condition element in the database</param>
 		/// <returns></returns>
 		// V2Generator: Section Start : ListAllByOrderID
-		public static List<OrderItem> ListByOrderID(int OrderID)
+		public static List<OrderItem> ListByOrderID (int OrderID)
+		{
+			// V2Generator: Body Start
+			List<OrderItem>			list				= new List<OrderItem>();
+			DataSet				ds					= ECommerce.SQL.Content.OrderItem.OrderItemListByOrderID(OrderID);
+
+			DataTable			dt					= AddRelation(ds);
+			for (int i=0; i<dt.Rows.Count; i++)
+			{
+				OrderItem   	result				= Create(dt.Rows[i]);
+				if (result!=null)
+				{
+					list.Add(result);
+				}
+			}
+
+			list.Sort();
+
+			return list;
+			// V2Generator: Body End
+		}
+		// V2Generator: Section End :ListAllByOrderID
+
+		/// <summary>
+		/// Lists all the records from the database
+		/// </summary>
+		/// <param name="ProductID">The condition element in the database</param>
+		/// <returns></returns>
+		// V2Generator: Section Start : ListAllByProductID
+		public static List<OrderItem> ListByProductID(int ProductID)
 		{
 			// V2Generator: Body Start
 			List<OrderItem>         list                = new List<OrderItem>();
-			DataSet             ds                  = ECommerce.SQL.Content.OrderItem.OrderItemListByOrderID(OrderID);
+			DataSet             ds                  = ECommerce.SQL.Content.OrderItem.OrderItemListByProductID(ProductID);
 
 			DataTable           dt                  = AddRelation(ds);
 			for (int i = 0; i<dt.Rows.Count; i++)
@@ -429,8 +458,7 @@ namespace ECommerce.Tables.Content
 			return list;
 			// V2Generator: Body End
 		}
-		// V2Generator: Section End :ListAllByOrderID
-
+		// V2Generator: Section End :ListAllByProductID
 
 		#endregion
 
@@ -441,10 +469,10 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		/// <returns></returns>
 		// V2Generator: Section Start : Delete
-		public void Delete()
+		public void Delete ()
 		{
 			// V2Generator: Body Start
-			ECommerce.SQL.Content.OrderItem.OrderItemDelete(this.m_ID);
+			ECommerce.SQL.Content.OrderItem.OrderItemDelete (this.m_ID);
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Delete
@@ -459,7 +487,7 @@ namespace ECommerce.Tables.Content
 		/// <param name="Subtotal">No information available for Subtotal</param>
 		/// <returns></returns>
 		// V2Generator: Section Start : Update
-		protected void Update(
+		protected void Update (
 			int OrderID,
 			int ProductID,
 			int Quantity,
@@ -467,7 +495,7 @@ namespace ECommerce.Tables.Content
 			decimal Subtotal)
 		{
 			// V2Generator: Body Start
-			ECommerce.SQL.Content.OrderItem.OrderItemUpdate(ID, OrderID, ProductID, Quantity, UnitCost, Subtotal);
+			ECommerce.SQL.Content.OrderItem.OrderItemUpdate (ID, OrderID, ProductID, Quantity, UnitCost, Subtotal);
 
 			if (this.m_OrderID != OrderID)
 			{
@@ -477,11 +505,11 @@ namespace ECommerce.Tables.Content
 			{
 				m_ProductRowByProductID = null;
 			}
-			this.m_OrderID                = OrderID;
-			this.m_ProductID              = ProductID;
-			this.m_Quantity               = Quantity;
-			this.m_UnitCost               = UnitCost;
-			this.m_Subtotal               = Subtotal;
+			this.m_OrderID  			  = OrderID;
+			this.m_ProductID			  = ProductID;
+			this.m_Quantity 			  = Quantity;
+			this.m_UnitCost 			  = UnitCost;
+			this.m_Subtotal 			  = Subtotal;
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Update
@@ -499,10 +527,10 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		/// <returns></returns>
 		// V2Generator: Section Start : Insert
-		public void Insert()
+		public void Insert ()
 		{
 			// V2Generator: Body Start
-			this.m_ID           = ECommerce.SQL.Content.OrderItem.OrderItemInsert(this.m_OrderID, this.m_ProductID, this.m_Quantity, this.m_UnitCost, this.m_Subtotal);
+			this.m_ID			= ECommerce.SQL.Content.OrderItem.OrderItemInsert (this.m_OrderID, this.m_ProductID, this.m_Quantity, this.m_UnitCost, this.m_Subtotal);
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Insert
@@ -517,10 +545,10 @@ namespace ECommerce.Tables.Content
 		/// <param name="row">The OrderItem object to compare with</param>
 		/// <returns>The compared difference between the OrderItem objects</returns>
 		// V2Generator: Section Start : CompareTo
-		public int CompareTo(object row)
+		public int CompareTo (object row)
 		{
 			// V2Generator: Body Start
-			if (row is OrderItem)
+			if(row is OrderItem)
 			{
 				OrderItem temp = (OrderItem) row;
 				return ID.CompareTo(temp.ID);
@@ -538,10 +566,10 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		/// <returns>HashCode</returns>
 		// V2Generator: Section Start : GetHashCode
-		public override int GetHashCode()
+		public override int  GetHashCode ()
 		{
 			// V2Generator: Body Start
-			return base.GetHashCode();
+		return base.GetHashCode ();
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :GetHashCode
@@ -552,15 +580,15 @@ namespace ECommerce.Tables.Content
 		/// <param name="obj">The OrderItem object to compare with</param>
 		/// <returns>True if equal else false</returns>
 		// V2Generator: Section Start : Equals
-		public override bool Equals(object obj)
+		public override bool  Equals (object obj)
 		{
 			// V2Generator: Body Start
-			bool  result     = false;
-			if (this.ID ==((OrderItem)obj).ID)
-			{
-				result     = true;
-			}
-			return result;
+		bool  result     = false;
+		if (this.ID ==((OrderItem)obj).ID)
+		{
+			result     = true;
+		}
+		 return result;
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Equals
@@ -575,42 +603,42 @@ namespace ECommerce.Tables.Content
 		/// </summary>
 		public int ID
 		{
-			get { return this.m_ID; }
+			get{return this.m_ID;}
 		}
 		/// <summary>
 		/// No information available for OrderID
 		/// </summary>
 		public int OrderID
 		{
-			get { return this.m_OrderID; }
+			get{return this.m_OrderID;}
 		}
 		/// <summary>
 		/// No information available for ProductID
 		/// </summary>
 		public int ProductID
 		{
-			get { return this.m_ProductID; }
+			get{return this.m_ProductID;}
 		}
 		/// <summary>
 		/// No information available for Quantity
 		/// </summary>
 		public int Quantity
 		{
-			get { return this.m_Quantity; }
+			get{return this.m_Quantity;}
 		}
 		/// <summary>
 		/// No information available for UnitCost
 		/// </summary>
 		public decimal UnitCost
 		{
-			get { return this.m_UnitCost; }
+			get{return this.m_UnitCost;}
 		}
 		/// <summary>
 		/// No information available for Subtotal
 		/// </summary>
 		public decimal Subtotal
 		{
-			get { return this.m_Subtotal; }
+			get{return this.m_Subtotal;}
 		}
 		// V2Generator: Section End :Assessors section
 		// V2Generator: Section Start : List Item Assessor

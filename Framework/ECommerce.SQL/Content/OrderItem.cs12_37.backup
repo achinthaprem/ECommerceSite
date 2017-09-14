@@ -44,7 +44,6 @@ namespace ECommerce.SQL.Content
 		// V2Generator: Section End :List
 
 
-
 		/// <summary>
 		/// Accesses the stored procedure in the database OrderItemListByOrderID to list all the records from OrderItem and the related records from primary Tables
 		/// </summary>
@@ -65,7 +64,6 @@ namespace ECommerce.SQL.Content
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :ListByOrderID
-
 
 
 
@@ -92,7 +90,6 @@ namespace ECommerce.SQL.Content
 		}
 		// V2Generator: Section End :Get By ID
 
-
 		/// <summary>
 		/// Deletes a single record from OrderItem by selecting it by it's identifier
 		/// </summary>
@@ -113,7 +110,6 @@ namespace ECommerce.SQL.Content
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Delete
-
 
 		/// <summary>
 		/// Accesses the stored procedure in the database OrderItemInsert to insert a record into OrderItem
@@ -163,7 +159,6 @@ namespace ECommerce.SQL.Content
 		}
 		// V2Generator: Section End :Insert
 
-
 		/// <summary>
 		/// Accesses the stored procedure in the database OrderItemUpdate to update a record from OrderItem
 		/// </summary>
@@ -205,28 +200,6 @@ namespace ECommerce.SQL.Content
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Update
-
-
-		/// <summary>
-		/// Accesses the stored procedure in the database OrderItemListByProductID to list all the records from OrderItem and the related records from primary Tables
-		/// </summary>
-		/// <param name="ProductID"></param>
-		/// <returns>A DataSet object, or possibly null. The DataSet returned is a collection of Tables 1) OrderItem 2)Order 3)Product</returns>
-		// V2Generator: Section Start : ListByProductID
-		public static DataSet OrderItemListByProductID(int ProductID)
-		{
-			// V2Generator: Body Start
-			SqlParameter[] param            =
-				{
-					new SqlParameter("@product_id", SqlDbType.Int)
-				};
-
-			param[0].Value                  = ProductID;
-
-			return SqlData.getSelectDataSet(SqlData.MASTER, "OrderItemListByProductID", param);
-			// V2Generator: Body End
-		}
-		// V2Generator: Section End :ListByProductID
 
 		#endregion
 
