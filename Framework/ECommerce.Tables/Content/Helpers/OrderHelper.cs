@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ECommerce.Tables.Content.Helpers
 {
 	public class OrderHelper
 	{
-		public OrderHelper()
-		{
-		}
+		#region Constructors
+
+		public OrderHelper() { }
+
+		#endregion
+
+		#region Order helper methods
 
 		public Task<List<Order>> GetOrdersAsync()
 		{
@@ -20,30 +21,6 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
-		public Task<List<OrderItem>> GetOrderItemsAsync()
-		{
-			return Task.Run(() =>
-			{
-				return OrderItem.List();
-			});
-		}
-
-		public Task<OrderItem> GetOrderItemAsync(int OrderItemID)
-		{
-			return Task.Run(() =>
-			{
-				return OrderItem.ExecuteCreate(OrderItemID);
-			});
-		}
-
-		public Task<List<OrderItem>> GetOrderItemsByOrderIDAsync(int OrderID)
-		{
-			return Task.Run(() =>
-			{
-				return OrderItem.ListByOrderID(OrderID);
-			});
-		}
-		
 		public Task<Order> GetOrderAsync(int ID)
 		{
 			return Task.Run(() =>
@@ -84,26 +61,6 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
-		public Task<bool> CreateOrderItemAsync(
-			int OrderID,
-			int ProductID,
-			int Quantity,
-			decimal UnitCost,
-			decimal Subtotal)
-		{
-			return Task.Run(async () =>
-			{
-				bool                result              = false;
-				OrderItem           orderItem           = OrderItem.ExecuteCreate(OrderID, ProductID, Quantity, UnitCost, Subtotal);
-				orderItem.Insert();
-
-				await UpdateTotalOfOrder(orderItem.OrderID);
-
-				result                                  = true;
-				return result;
-			});
-		}
-
 		public Task<bool> UpdateOrderAsync(
 			int ID,
 			int Status,
@@ -122,6 +79,75 @@ namespace ECommerce.Tables.Content.Helpers
 					result                              = true;
 				}
 
+				return result;
+			});
+		}
+
+		public Task<bool> DeleteOrderAsync(int ID)
+		{
+			return Task.Run(() =>
+			{
+				Order               order               = Order.ExecuteCreate(ID);
+				order.Delete();
+
+				order                                   = Order.ExecuteCreate(ID);
+
+				return (order == null) ? true : false;
+			});
+		}
+
+		#endregion
+
+		#region OrderItem helper methods
+
+		public Task<List<OrderItem>> GetOrderItemsAsync()
+		{
+			return Task.Run(() =>
+			{
+				return OrderItem.List();
+			});
+		}
+
+		public Task<OrderItem> GetOrderItemAsync(int OrderItemID)
+		{
+			return Task.Run(() =>
+			{
+				return OrderItem.ExecuteCreate(OrderItemID);
+			});
+		}
+
+		public Task<List<OrderItem>> GetOrderItemsByOrderIDAsync(int OrderID)
+		{
+			return Task.Run(() =>
+			{
+				return OrderItem.ListByOrderID(OrderID);
+			});
+		}
+
+		public Task<List<OrderItem>> GetOrderItemsByProductIDAsync(int ProductID)
+		{
+			return Task.Run(() =>
+			{
+				return OrderItem.ListByProductID(ProductID);
+			});
+		}
+
+		public Task<bool> CreateOrderItemAsync(
+			int OrderID,
+			int ProductID,
+			int Quantity,
+			decimal UnitCost,
+			decimal Subtotal)
+		{
+			return Task.Run(async () =>
+			{
+				bool                result              = false;
+				OrderItem           orderItem           = OrderItem.ExecuteCreate(OrderID, ProductID, Quantity, UnitCost, Subtotal);
+				orderItem.Insert();
+
+				await UpdateTotalOfOrder(orderItem.OrderID);
+
+				result                                  = true;
 				return result;
 			});
 		}
@@ -150,19 +176,6 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
-		public Task<bool> DeleteOrderAsync(int ID)
-		{
-			return Task.Run(() =>
-			{
-				Order               order               = Order.ExecuteCreate(ID);
-				order.Delete();
-
-				order                                   = Order.ExecuteCreate(ID);
-
-				return (order == null) ? true : false;
-			});
-		}
-
 		public Task<bool> DeleteOrderItemAsync(int ID)
 		{
 			return Task.Run(async () =>
@@ -178,6 +191,10 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		#endregion
+
+		#region Common helper methods
+
 		public async Task UpdateTotalOfOrder(int OrderID)
 		{
 			Order                   order               = await GetOrderAsync(OrderID);
@@ -191,5 +208,7 @@ namespace ECommerce.Tables.Content.Helpers
 
 			order.Update(order.Status, order.PaymentMethod, total);
 		}
+
+		#endregion
 	}
 }

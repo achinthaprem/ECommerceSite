@@ -528,7 +528,7 @@
           <auto-current-date>False</auto-current-date>
           <comment>No information available for CategoryID</comment>
           <is-compare-to>False</is-compare-to>
-          <list-by-this-column>False</list-by-this-column>
+          <list-by-this-column>True</list-by-this-column>
           <primary-table-name>ECommerce.Tables.Content.Category</primary-table-name>
         </column>
         <column>

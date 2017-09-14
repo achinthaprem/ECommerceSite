@@ -592,6 +592,35 @@ namespace ECommerce.Tables.Content
 		}
 		// V2Generator: Section End :ListAllByStatus
 
+		/// <summary>
+		/// Lists all the records from the database
+		/// </summary>
+		/// <param name="CategoryID">The condition element in the database</param>
+		/// <returns></returns>
+		// V2Generator: Section Start : ListAllByCategoryID
+		public static List<Product> ListByCategoryID(int CategoryID)
+		{
+			// V2Generator: Body Start
+			List<Product>           list                = new List<Product>();
+			DataSet             ds                  = ECommerce.SQL.Content.Product.ProductListByCategoryID(CategoryID);
+
+			DataTable           dt                  = AddRelation(ds);
+			for (int i = 0; i<dt.Rows.Count; i++)
+			{
+				Product         result              = Create(dt.Rows[i]);
+				if (result!=null)
+				{
+					list.Add(result);
+				}
+			}
+
+			list.Sort();
+
+			return list;
+			// V2Generator: Body End
+		}
+		// V2Generator: Section End :ListAllByCategoryID
+
 
 		#endregion
 
@@ -841,4 +870,3 @@ namespace ECommerce.Tables.Content
 	}
 
 }
-

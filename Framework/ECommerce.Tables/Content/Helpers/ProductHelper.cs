@@ -9,9 +9,7 @@ namespace ECommerce.Tables.Content.Helpers
 {
 	public class ProductHelper
 	{
-		public ProductHelper()
-		{
-		}
+		public ProductHelper() { }
 
 		public Task<Product> GetProductAsync(int ID)
 		{
@@ -115,6 +113,14 @@ namespace ECommerce.Tables.Content.Helpers
 			return Task.Run(() =>
 			{
 				return Product.List();
+			});
+		}
+
+		public Task<List<Product>> GetProductListByCategoryAsync(int CategoryID)
+		{
+			return Task.Run(() =>
+			{
+				return Product.ListByCategoryID(CategoryID);
 			});
 		}
 	}

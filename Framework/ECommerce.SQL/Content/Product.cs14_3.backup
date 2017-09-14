@@ -49,7 +49,6 @@ namespace ECommerce.SQL.Content
 
 
 
-
 		/// <summary>
 		/// Accesses the stored procedure in the database ProductListByStatus to list all the records from Product and the related records from primary Tables
 		/// </summary>
@@ -70,7 +69,6 @@ namespace ECommerce.SQL.Content
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :ListByStatus
-
 
 
 
@@ -97,7 +95,6 @@ namespace ECommerce.SQL.Content
 		}
 		// V2Generator: Section End :Get By ID
 
-
 		/// <summary>
 		/// Deletes a single record from Product by selecting it by it's identifier
 		/// </summary>
@@ -118,7 +115,6 @@ namespace ECommerce.SQL.Content
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Delete
-
 
 		/// <summary>
 		/// Accesses the stored procedure in the database ProductInsert to insert a record into Product
@@ -188,7 +184,6 @@ namespace ECommerce.SQL.Content
 		}
 		// V2Generator: Section End :Insert
 
-
 		/// <summary>
 		/// Accesses the stored procedure in the database ProductUpdate to update a record from Product
 		/// </summary>
@@ -250,28 +245,6 @@ namespace ECommerce.SQL.Content
 			// V2Generator: Body End
 		}
 		// V2Generator: Section End :Update
-
-		/// <summary>
-		/// Accesses the stored procedure in the database ProductListByCategoryID to list all the records from Product and the related records from primary Tables
-		/// </summary>
-		/// <param name="CategoryID"></param>
-		/// <returns>A DataSet object, or possibly null. The DataSet returned is a collection of Tables 1) Product 2)Category 3)Account 4)Account</returns>
-		// V2Generator: Section Start : ListByCategoryID
-		public static DataSet ProductListByCategoryID(int CategoryID)
-		{
-			// V2Generator: Body Start
-			SqlParameter[] param            =
-				{
-					new SqlParameter("@category_id", SqlDbType.Int)
-				};
-
-			param[0].Value                  = CategoryID;
-
-			return SqlData.getSelectDataSet(SqlData.MASTER, "ProductListByCategoryID", param);
-			// V2Generator: Body End
-		}
-		// V2Generator: Section End :ListByCategoryID
-
 
 		#endregion
 

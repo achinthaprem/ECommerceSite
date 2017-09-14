@@ -129,5 +129,6 @@
     <Build Include="dbo\Stored Procedures\ContactGetByID.sql" />
     <Build Include="dbo\Stored Procedures\ContactDelete.sql" />
     <Build Include="dbo\Stored Procedures\OrderItemListByProductID.sql" />
+    <Build Include="dbo\Stored Procedures\ProductListByCategoryID.sql" />
   </ItemGroup>
 </Project>
