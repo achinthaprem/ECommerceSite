@@ -24,7 +24,7 @@ textarea {
     max-width: 350px;
 }
 
-/* Custom Styles */
+/* Custom Styles *************************************************************************************************************************** */
 .navbar-fixed-bottom {
     background: #444;
     height: 40px;
@@ -67,7 +67,7 @@ textarea {
     margin: inherit;
 }
 
-/*Checkbox*/
+/* Checkbox *************************************************************************************************************************** */
 
 
 .switch {
@@ -127,7 +127,7 @@ textarea {
     transition: transform .4s cubic-bezier(0.44,-0.12, 0.07, 1.15);
 }
 
-/* type 1 */
+/* type 1 *************************************************************************************************************************** */
 
 .switch_type1 {
     --uiSwitchBorderRadius: var(--switchBorderRadius, 60px);
@@ -166,14 +166,14 @@ textarea {
         transform: translate3d(100%, -50%, 0);
     }
 
-/* demo styles for switch */
+/* demo styles for switch *************************************************************************************************************************** */
 
 .switch {
     --switchSize: 64px;
     margin-top: 0px;
 }
 
-/* table fix */
+/* table fix *************************************************************************************************************************** */
 .table, tbody, tr, td {
     vertical-align: middle !important;
 }
@@ -182,7 +182,7 @@ th {
     text-align: center;
 }
 
-/* text summary */
+/* text summary *************************************************************************************************************************** */
 .summary {
     width: 500px;
     white-space: nowrap;
@@ -192,4 +192,57 @@ th {
 
 .table {
     table-layout: fixed;
+}
+
+/* Contact form ****************************************************************************************************************************/
+.red {
+    color: red;
+}
+
+/* Dropdown search */
+.bootstrap-select .dropdown-menu > li > a small.muted {
+    display: none;
+}
+
+.bootstrap-select .dropdown-toggle .filter-option {
+    position: relative;
+    padding-left: 38px;
+}
+
+    .bootstrap-select .dropdown-toggle .filter-option:before {
+        content: "Size:";
+        font-size: 14px;
+        font-weight: 700;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+
+/* Clearable text inputs */
+.clearable {
+    position: relative;
+    display: inline-block;
+}
+
+    .clearable input[type=text] {
+        padding-right: 24px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+.clearable__clear {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0 8px;
+    font-style: normal;
+    font-size: 1.8em;
+    user-select: none;
+    cursor: pointer;
+}
+
+.clearable input::-ms-clear { /* Remove IE default X */
+    display: none;
 }

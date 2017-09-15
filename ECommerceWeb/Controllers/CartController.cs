@@ -255,12 +255,9 @@ namespace ECommerceWeb.Controllers
 
 			if (order == null)
 			{
-				order                                                       = Order.ExecuteCreate(
-																						Common.Session.Account.ID,
-																						Order.STATUS_PENDING,
-																						Order.PAYMENT_METHOD_DEFAULT,
-																						0);
-				order.Insert();
+				await OrderHelper.CreateOrderAsync(Common.Session.Account.ID, Order.STATUS_PENDING, Order.PAYMENT_METHOD_DEFAULT, 0.00m);
+
+				await CheckPendingOrders();
 			}
 
 			Common.Session.CurrentOrderID                                   = order.ID;

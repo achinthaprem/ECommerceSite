@@ -1,17 +1,69 @@
-﻿@{
+﻿@model ECommerceWeb.Models.Home.CreateContactFormViewModel
+
+@{
     ViewBag.Title = "Contact";
 }
+
+@if (TempData["alert-success"] != null)
+{
+    <div class="alert alert-success" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-success"]</li>
+        </ul>
+    </div>
+}
+else if (TempData["alert-fail"] != null)
+{
+    <div class="alert alert-danger" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-fail"]</li>
+        </ul>
+    </div>
+}
+
 <h2>@ViewBag.Title</h2>
-<h3>Fill the form to contact site administrator.</h3>
+<h4>Fill the form to contact the site administrator.</h4>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+    <div class="container" style="margin-top: 20px;">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Name" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", placeholder = "Contact No" } })
+            @Html.ValidationMessageFor(model => model.ContactNo, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control", placeholder = "Subject" } })
+            @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", placeholder = "Message", maxlength = "250", rows = "6" } })
+            <span class="help-block"><p id="characterLeft" class="help-block ">You have reached the limit</p></span>
+            @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Send <span class="glyphicon glyphicon-send"></span></button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

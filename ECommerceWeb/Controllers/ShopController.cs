@@ -48,6 +48,7 @@ namespace ECommerceWeb.Controllers
 						element.Status                                                          = (product.Status == Product.STATUS_ACTIVE) ? true : false;
 
 						list.Add(element);
+						list.Shuffle();
 					}
 
 					ViewBag.FilterList                                                          = FilterActiveCategoryList(await CategoryHelper.GetCategoryListAsync());
@@ -111,7 +112,7 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
-		private List<SelectListItem> FilterActiveCategoryList(List<Category> list)
+		public static List<SelectListItem> FilterActiveCategoryList(List<Category> list)
 		{
 			List<SelectListItem>            result                          = new List<SelectListItem>();
 
