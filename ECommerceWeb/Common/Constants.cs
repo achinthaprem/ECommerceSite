@@ -45,6 +45,7 @@ namespace ECommerceWeb.Common
 		public const string             ACTION_PRODUCT_VIEW             = "ProductView";
 		public const string             ACTION_REMOVE_ITEM				= "RemoveItem";
 		public const string             ACTION_REMOVE_ORDER             = "RemoveOrder";
+		public const string             ACTION_EXPORT_TO_EXCEL          = "ExportToExcel";
 
 		// Controllers
 		public const string             CONTROLLER_HOME                 = "Home";

@@ -8,6 +8,10 @@ using ECommerceWeb.Common;
 using ECommerceWeb.Models.Home;
 using ECommerce.Tables.Content;
 using ECommerce.Tables.Content.Helpers;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Web.UI;
+using System.Net;
 
 namespace ECommerceWeb.Controllers
 {
@@ -48,6 +52,57 @@ namespace ECommerceWeb.Controllers
 				result                                      = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
+			return result;
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult ExportToExcel(string name)
+		{
+			ActionResult				result                  = null;
+
+			if (Common.Session.IsAdmin)
+			{
+				if (name == null)
+				{
+					result                                      = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+				}
+
+				List<TopSellingProductViewModel> list           = TempData[name] as List<TopSellingProductViewModel>;
+
+				if (list != null && list.Count > 0)
+				{
+					GridView            gridView                = new GridView();
+					gridView.DataSource                         = list;
+					gridView.DataBind();
+
+					Response.ClearContent();
+					Response.Buffer                                 = true;
+					Response.AddHeader("content-disposition", "attachment; filename=Report.xls");
+					Response.ContentType = "application/ms-excel";
+					Response.Charset = "";
+
+					StringWriter        objStringWriter         = new StringWriter();
+					HtmlTextWriter      objHtmlTextWriter       = new HtmlTextWriter(objStringWriter);
+
+					gridView.RenderControl(objHtmlTextWriter);
+
+					Response.Output.Write(objStringWriter.ToString());
+					Response.Flush();
+					Response.End();
+
+					result                                      = RedirectToAction(Request.Url.PathAndQuery);
+				}
+				else
+				{
+					result										= new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+				}
+			}
+			else
+			{
+				result											= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+			
 			return result;
 		}
 

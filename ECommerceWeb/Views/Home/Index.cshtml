@@ -1,6 +1,6 @@
 ﻿@using ECommerceWeb.Common
 @using ECommerceWeb.Models.Home
-@model IEnumerable<ECommerceWeb.Models.Home.TopSellingProductViewModel>
+@model IList<ECommerceWeb.Models.Home.TopSellingProductViewModel>
 
 @{
     ViewBag.Title = (ViewBag.IsAdmin) ? "Admin Home Page" : "User Home Page";
@@ -84,6 +84,12 @@
 }
                     else
                     {
+                        TempData["ReportData1"] = Model;
+                        using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @name = "ReportData1" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken();
+                            <input type="submit" value="Export to Excel" class="btn btn-default pull-right" style="margin-bottom: 14px; padding: 3px;" />
+}
 
                         <table class="table table-striped" style="vertical-align: middle;">
                             <tr>
@@ -125,9 +131,9 @@
                                         @item.Sellings
                                     </td>
                                 </tr>
-}
+                            }
 
-                        </table>  }
+                        </table>}
 
                 </div>
             </div>
@@ -154,7 +160,7 @@
                                 foreach (SelectListItem item in list)
                                 {
                                     <option data-value="@item.Value">@item.Text</option>
-}
+                                }
                             }
                         </datalist>
 
@@ -163,13 +169,24 @@
                     <button class="btn btn-default pull-right" onclick="SearchProduct()">Search <i class="glyphicon glyphicon-search"></i></button>
 
                 </div>
-                <div class="panel-body" style="height: 400px; overflow-y: scroll; text-align: center;">
+                <div class="panel-body" style="height: 400px; overflow-y: scroll; text-align: left;">
 
                     @{  TopSellingProductViewModel      selectedProduct     = ViewData["SelectedProduct"] as TopSellingProductViewModel;
+                        List<TopSellingProductViewModel> tempList = new List<TopSellingProductViewModel>();
+                        tempList.Add(selectedProduct);
 
                         if (selectedProduct != null)
                         {
-                            <img src="@Url.Content(selectedProduct.ImageSrc)" alt="Image" style="height: 100px; padding:1px; border:1px solid #021a40; background-color:#ccc;" />
+                            TempData["ReportData2"] = tempList;
+                            using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @name = "ReportData2" }, FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken();
+                                <input type="submit" value="Export to Excel" class="btn btn-default pull-right" style="margin-bottom: 14px; padding: 3px;" />
+                            }
+
+                            <br /><br />
+
+                            <img src="@Url.Content(selectedProduct.ImageSrc)" alt="Image" style="height: 100px; padding:1px; /*border:1px solid #021a40; */background-color:#ccc;" />
                             <br /><br />
 
                             <label>Name: </label>
@@ -183,13 +200,14 @@
                             <label>Sellings: </label>
                             <text>@selectedProduct.Sellings</text>
                             <br />
-    }
-    else
-    {
+
+                        }
+                        else
+                        {
                             <div style="text-align: center; margin-top: 10px;">
                                 <img src="~/Filestore/Images/cloud_search.png" style="height: 140px;" alt="NO_Data" />
                             </div>
-}
+                        }
                     }
 
                 </div>
@@ -197,8 +215,8 @@
         </div>
     </div>
 
-                        }
-                        else
-                        {
+}
+else
+{
 
-                        }
+}
