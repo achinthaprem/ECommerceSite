@@ -120,7 +120,77 @@ else if (TempData["alert-fail"] != null)
 
     <hr />
 
-    <button type="button" class="btn btn-block btn-primary" @if (PendingOrderItems == 0) { <text> disabled </text> } style="margin-bottom: 16px;">Checkout</button>
+    <button type="button" data-toggle="modal" data-target=".bs-checkout-modal-md" class="btn btn-block btn-primary" @if (PendingOrderItems == 0) { <text> disabled </text> } style="margin-bottom: 16px;">Checkout</button>
 
 </div>
 
+
+@* Checkout confirmation popup *@
+<div class="modal bs-checkout-modal-md" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header"><h4>Confirm Checkout <span class="glyphicon glyphicon-ok glyphi-1"></span></h4></div>
+            <div class="modal-body">
+
+                <h4>Shipping Information</h4>
+
+                <dl class="dl-horizontal">
+                    <dt>
+                        Name: 
+                    </dt>
+                    <dd>
+                        @ECommerceWeb.Common.Session.FullName
+                    </dd>
+
+                    <dt>
+                        Shipping Address: 
+                    </dt>
+                    <dd>
+                        @Model.User.ShippingAddress, @Model.User.Country
+                    </dd>
+
+                    <dt>
+                        Contact Number: 
+                    </dt>
+                    <dd>
+                        @Model.User.ContactNo
+                    </dd>
+
+                    <dt>
+                        Email: 
+                    </dt>
+                    <dd>
+                        @Model.User.Email
+                    </dd>
+                </dl>
+
+                <h4>Order Information</h4>
+
+                <dl class="dl-horizontal">
+                    <dt>
+                        Total Items: 
+                    </dt>
+                    <dd>
+                        @ECommerceWeb.Common.Session.PendingOrderItems
+                    </dd>
+
+                    <dt>
+                        Total Amount: 
+                    </dt>
+                    <dd>
+                        @ECommerceWeb.Common.Func.Currencyfy(Model.TotalAmount)
+                    </dd>
+                </dl>
+
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm(Constants.ACTION_CHECKOUT, Constants.CONTROLLER_CART, new { @OrderID = Model.Order.ID }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary btn-block">Confirm &amp; Pay</button>
+                }
+                <button type="button" data-toggle="modal" data-target=".bs-checkout-modal-md" style="margin-top: 10px;" class="btn btn-block btn-default" >Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

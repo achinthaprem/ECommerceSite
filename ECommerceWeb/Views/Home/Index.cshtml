@@ -119,7 +119,7 @@
                                         #@i
                                     </td>
                                     <td style="text-align:center;">
-                                        @item.Name
+                                        @Html.ActionLink(item.Name, Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { ID = item.ID }, null)
                                     </td>
                                     <td style="text-align:center;">
                                         <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
@@ -177,20 +177,24 @@
 
                         if (selectedProduct != null)
                         {
-                            TempData["ReportData2"] = tempList;
-                            using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @name = "ReportData2" }, FormMethod.Post))
-                            {
-                                @Html.AntiForgeryToken();
-                                <input type="submit" value="Export to Excel" class="btn btn-default pull-right" style="margin-bottom: 14px; padding: 3px;" />
-                            }
+                            <div class="clearfix">
+                                @{  TempData["ReportData2"] = tempList;
+                                }
+                                @using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @name = "ReportData2" }, FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken();
+                                    <input type="submit" value="Export to Excel" class="btn btn-default pull-right" style="margin-bottom: 14px; padding: 3px;" />
+                                }
+                            
+                                <h4 class="pull-left">Search Results</h4>
+                            </div>
+                            <hr style="margin-top: 0px;" />
 
-                            <br /><br />
-
-                            <img src="@Url.Content(selectedProduct.ImageSrc)" alt="Image" style="height: 100px; padding:1px; /*border:1px solid #021a40; */background-color:#ccc;" />
+                            <img src="@Url.Content(selectedProduct.ImageSrc)" alt="Image" style="height: 100px;" />
                             <br /><br />
 
                             <label>Name: </label>
-                            <text>@selectedProduct.Name</text>
+                            @Html.ActionLink(selectedProduct.Name, Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { ID = selectedProduct.ID }, null)
                             <br />
 
                             <label>Price: </label>

@@ -20,6 +20,10 @@ namespace ECommerceWeb.Models.Cart
 
 		public decimal TotalAmount { get; set; }
 
+		public Order Order { get; set; }
+
 		public List<OrderItem> OrderItems { get; set; }
+
+		public ECommerce.Tables.Active.HR.Account User { get; set; }
 	}
 }

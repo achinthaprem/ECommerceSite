@@ -99,28 +99,32 @@ namespace ECommerceWeb.Common
 
 		public static void CountItemsInCart()
 		{
-			OrderHelper             OrderHelper                 = new OrderHelper();
-			List<Order>             orders                      = OrderHelper.GetOrdersByAccountAsync(Account.ID).Result;
-			Order                   order                       = null;
+			OrderHelper					OrderHelper                 = new OrderHelper();
+			List<Order>					orders                      = OrderHelper.GetOrdersByAccountAsync(Account.ID).Result;
+			Order						order                       = null;
 
 			foreach (Order _order in orders)
 			{
 				if (_order.Status == Order.STATUS_PENDING)
 				{
-					order                                       = _order;
+					order											= _order;
 					break;
 				}
 			}
 
-			List<OrderItem>         items                       = OrderHelper.GetOrderItemsByOrderIDAsync(order.ID).Result;
-			int                     count                       = 0;
+			int							count                       = 0;
 
-			foreach(OrderItem item in items)
+			if (order != null)
 			{
-				count                                           += item.Quantity;
+				List<OrderItem>         items                       = OrderHelper.GetOrderItemsByOrderIDAsync(order.ID).Result;
+
+				foreach (OrderItem item in items)
+				{
+					count                                           += item.Quantity;
+				}
 			}
 
-			PendingOrderItems                                   = count;
+			PendingOrderItems										= count;
 		}
 
 		//public static Account ValidateCookie(HttpRequestBase request)

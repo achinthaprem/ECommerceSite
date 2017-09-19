@@ -33,10 +33,57 @@ namespace ECommerceWeb.Controllers
 				model.PaymentMethod                                                     = order.PaymentMethod;
 				model.TotalAmount                                                       = order.TotalAmount;
 				model.OrderItems                                                        = await OrderHelper.GetOrderItemsByOrderIDAsync(order.ID);
-
-				// TODO: Complete here
+				model.User                                                              = Common.Session.Account;
+				model.Order                                                             = order;
 				
 				result                                                                  = View("View", model);
+			}
+			else
+			{
+				result                                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+			}
+
+			return result;
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> Checkout(int? OrderID)
+		{
+			ActionResult                            result                              = null;
+
+			if (Common.Session.Authorized)
+			{
+				if (OrderID != null)
+				{
+					Order                           order                               = await OrderHelper.GetOrderAsync(OrderID ?? default(int));
+
+					if (order != null)
+					{
+						if (await OrderHelper.UpdateOrderAsync(order.ID, Order.STATUS_COMPLETED, order.PaymentMethod, order.TotalAmount))
+						{
+							Common.Session.CountItemsInCart();
+							TempData["alert-success"]                                   = "Order placed successfully!";
+
+							// TODO: Create new shipping info record for the order
+						}
+						else
+						{
+							Common.Session.CountItemsInCart();
+							TempData["alert-fail"]										= "Error occured while placing the order!";
+						}
+
+						result                                                          = Redirect(Request.UrlReferrer.ToString());
+					}
+					else
+					{
+						result                                                          = new HttpNotFoundResult();
+					}
+				}
+				else
+				{
+					result                                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+				}
 			}
 			else
 			{
@@ -259,8 +306,11 @@ namespace ECommerceWeb.Controllers
 
 				await CheckPendingOrders();
 			}
+			else
+			{
+				Common.Session.CurrentOrderID								= order.ID;
+			}
 
-			Common.Session.CurrentOrderID                                   = order.ID;
 		}
 
 		private ActionResult GetAuthorizeRedirect(string returnUrl)
