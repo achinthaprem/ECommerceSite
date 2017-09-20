@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using ECommerce.Tables.Content;
+using ECommerce.Tables.Content.Helpers;
 using ECommerceWeb.Common;
 using ECommerceWeb.Models.Home;
-using ECommerce.Tables.Content;
-using ECommerce.Tables.Content.Helpers;
-using System.Web.UI.WebControls;
-using System.IO;
-using System.Web.UI;
+using Syncfusion.XlsIO;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Web.Hosting;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace ECommerceWeb.Controllers
 {
@@ -40,6 +39,15 @@ namespace ECommerceWeb.Controllers
 
 				ViewData["SelectedProduct"]                 = await SearchProduct(SelectedProduct);
 
+				if (TopSellingFilterBy == null || TopSellingFilterBy == 0)
+				{
+					ViewBag.CategoryReportName              = "All Categories";
+				}
+				else
+				{
+					ViewBag.CategoryReportName              = (await CategoryHelper.GetCategoryAsync(TopSellingFilterBy ?? default(int))).Name;
+				}
+
 				result                                      = View(list);
 			}
 			else if (Common.Session.Authorized)
@@ -57,53 +65,135 @@ namespace ECommerceWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult ExportToExcel(string name)
+		public ActionResult ExportToExcel(string DataName, string ReportName)
 		{
-			ActionResult				result                  = null;
+			ActionResult                result                  = null;
 
 			if (Common.Session.IsAdmin)
 			{
-				if (name == null)
+				if (DataName == null)
 				{
 					result                                      = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 
-				List<TopSellingProductViewModel> list           = TempData[name] as List<TopSellingProductViewModel>;
+				List<TopSellingProductViewModel> list           = TempData[DataName] as List<TopSellingProductViewModel>;
 
 				if (list != null && list.Count > 0)
 				{
-					GridView            gridView                = new GridView();
-					gridView.DataSource                         = list;
-					gridView.DataBind();
-
-					Response.ClearContent();
-					Response.Buffer                                 = true;
-					Response.AddHeader("content-disposition", "attachment; filename=Report.xls");
-					Response.ContentType = "application/ms-excel";
-					Response.Charset = "";
-
-					StringWriter        objStringWriter         = new StringWriter();
-					HtmlTextWriter      objHtmlTextWriter       = new HtmlTextWriter(objStringWriter);
-
-					gridView.RenderControl(objHtmlTextWriter);
-
-					Response.Output.Write(objStringWriter.ToString());
-					Response.Flush();
-					Response.End();
+					GenerateReport(list, ReportName);
 
 					result                                      = RedirectToAction(Request.Url.PathAndQuery);
 				}
 				else
 				{
-					result										= new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					result                                      = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
 			{
-				result											= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                          = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
-			
+
 			return result;
+		}
+
+		private void GenerateReport(List<TopSellingProductViewModel> list, string ReportName)
+		{
+			using (ExcelEngine excelEngine = new ExcelEngine())
+			{
+				excelEngine.Excel.DefaultVersion								= ExcelVersion.Excel2016;
+
+				IWorkbook						workbook						= excelEngine.Excel.Workbooks.Create(1);
+
+				IWorksheet						worksheet						= workbook.Worksheets[0];
+
+				#region Cell Styles
+
+				IStyle							headerStyle						= workbook.Styles.Add("HeaderStyle");
+				headerStyle.Font.Bold											= true;
+				headerStyle.Font.Size											= 12;
+				headerStyle.HorizontalAlignment									= ExcelHAlign.HAlignCenter;
+				headerStyle.Color												= Color.FromArgb(255, 174, 33);
+
+				IStyle                          contentStyle                    = workbook.Styles.Add("ContentStyle");
+				contentStyle.VerticalAlignment                                  = ExcelVAlign.VAlignTop;
+
+				#endregion
+
+				#region Header Cells
+
+				worksheet.Range[1, 1].Text                                      = "ID";
+				worksheet.Range[1, 1].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(1, 4.0);
+
+				worksheet.Range[1, 2].Text                                      = "Name";
+				worksheet.Range[1, 2].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(2, 28.0);
+
+				worksheet.Range[1, 3].Text                                      = "Description";
+				worksheet.Range[1, 3].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(3, 38.0);
+
+				worksheet.Range[1, 4].Text                                      = "Price";
+				worksheet.Range[1, 4].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(4, 16.0);
+
+				worksheet.Range[1, 5].Text                                      = "Image";
+				worksheet.Range[1, 5].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(5, 27.86);
+
+				worksheet.Range[1, 6].Text                                      = "Category";
+				worksheet.Range[1, 6].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(6, 24.0);
+
+				worksheet.Range[1, 7].Text                                      = "Status";
+				worksheet.Range[1, 7].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(7, 8.0);
+
+				worksheet.Range[1, 8].Text                                      = "Sellings";
+				worksheet.Range[1, 8].CellStyle                                 = headerStyle;
+				worksheet.SetColumnWidth(8, 8.0);
+
+				#endregion
+
+				int								startRowIndex					= 2;
+
+				for (int i = startRowIndex; i < (list.Count + startRowIndex); i++) // rows
+				{
+					worksheet.Range[i, 1].Text                                  = list[i-startRowIndex].ID.ToString();
+					worksheet.Range[i, 1].CellStyle                             = contentStyle;
+					worksheet.Range[i, 1].CellStyle.HorizontalAlignment			= ExcelHAlign.HAlignCenter;
+
+					worksheet.Range[i, 2].Text                                  = list[i-startRowIndex].Name;
+					worksheet.Range[i, 2].CellStyle                             = contentStyle;
+
+					worksheet.Range[i, 3].Text                                  = list[i-startRowIndex].Description;
+					worksheet.Range[i, 3].CellStyle                             = contentStyle;
+
+					worksheet.Range[i, 4].Text                                  = Func.Currencyfy(list[i-startRowIndex].Price);
+					worksheet.Range[i, 4].CellStyle                             = contentStyle;
+					worksheet.Range[i, 4].CellStyle.HorizontalAlignment			= ExcelHAlign.HAlignCenter;
+
+					System.Drawing.Image		image							= System.Drawing.Image.FromFile(HostingEnvironment.MapPath(list[i-startRowIndex].ImageSrc));
+					System.Drawing.Image        image_r                         = Imager.Resize(image, 200, 150, true);
+					IPictureShape				shape							= worksheet.Pictures.AddPicture(i, 5, image_r);
+					worksheet.SetRowHeightInPixels(i, image_r.Height);
+
+					worksheet.Range[i, 6].Text									= list[i-startRowIndex].Category;
+					worksheet.Range[i, 6].CellStyle                             = contentStyle;
+
+					worksheet.Range[i, 7].Text									= (list[i-startRowIndex].Status) ? "Active" : "Inactive";
+					worksheet.Range[i, 7].CellStyle                             = contentStyle;
+					worksheet.Range[i, 7].CellStyle.HorizontalAlignment         = ExcelHAlign.HAlignCenter;
+
+					worksheet.Range[i, 8].Text									= list[i-startRowIndex].Sellings.ToString();
+					worksheet.Range[i, 8].CellStyle                             = contentStyle;
+					worksheet.Range[i, 8].CellStyle.HorizontalAlignment         = ExcelHAlign.HAlignCenter;
+
+				}
+
+				workbook.SaveAs($"Report - {ReportName}.xlsx", HttpContext.ApplicationInstance.Response, ExcelDownloadType.Open);
+			}
 		}
 
 		public ActionResult About()
@@ -162,7 +252,7 @@ namespace ECommerceWeb.Controllers
 					result.Name                                         = product.Name;
 					result.Description                                  = product.Description;
 					result.Price                                        = product.Price;
-					result.ImageSrc										= $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
+					result.ImageSrc                                     = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
 					result.Category                                     = product.ExecuteCreateCategoryByCategoryID().Name;
 					result.CategoryID                                   = product.CategoryID;
 					result.Status                                       = (product.Status == Product.STATUS_ACTIVE) ? true : false;
@@ -181,7 +271,7 @@ namespace ECommerceWeb.Controllers
 			{
 				result.Add(new SelectListItem { Value = model.ID.ToString(), Text = model.Name });
 			}
-			
+
 			return result;
 		}
 
@@ -202,7 +292,7 @@ namespace ECommerceWeb.Controllers
 			foreach (Product product in productList)
 			{
 				int                                 sellings                = await CountSellsAsync(product);
-				
+
 				if (sellings == 0 && !IncludeNotSold)
 				{
 					continue;
@@ -227,16 +317,16 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
-		private async Task<int> CountSellsAsync (Product product)
+		private async Task<int> CountSellsAsync(Product product)
 		{
-			List<OrderItem>							orderItemList           = await OrderHelper.GetOrderItemsByProductIDAsync(product.ID);
-			int										sellings                = 0;
+			List<OrderItem>                         orderItemList           = await OrderHelper.GetOrderItemsByProductIDAsync(product.ID);
+			int                                     sellings                = 0;
 
 			foreach (OrderItem item in orderItemList)
 			{
 				if (item.ExecuteCreateOrderByOrderID().Status == Order.STATUS_COMPLETED)
 				{
-					sellings												+= item.Quantity;
+					sellings                                                += item.Quantity;
 				}
 			}
 
