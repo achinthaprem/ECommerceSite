@@ -502,11 +502,12 @@ namespace ECommerce.Tables.Content
 		// V2Generator: Section End :Update
 
 		public void Update(
+			DateTime DateCreated,
 			int Status,
 			int PaymentMethod,
 			decimal TotalAmount)
 		{
-			this.Update(this.m_AccountID, this.m_DateCreated, Status, PaymentMethod, TotalAmount);
+			this.Update(this.m_AccountID, DateCreated, Status, PaymentMethod, TotalAmount);
 		}
 
 		/// <summary>

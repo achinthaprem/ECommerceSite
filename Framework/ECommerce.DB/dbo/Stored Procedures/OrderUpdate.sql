@@ -12,6 +12,7 @@ AS
 
 	UPDATE [Order] SET
 		[account_id] = @account_id,
+		[date_created] = @date_created,
 		[status] = @status,
 		[payment_method] = @payment_method,
 		[total_amount] = @total_amount

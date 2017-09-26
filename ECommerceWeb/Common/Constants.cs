@@ -3,6 +3,11 @@ namespace ECommerceWeb.Common
 {
 	public class Constants
 	{
+		// Defaults
+		public const int                DEFAULT_VALUE_INT               = -1;
+		public const decimal			DEFAULT_VALUE_DECIMAL			= 0.00m;
+		public const bool               DEFAULT_VALUE_BOOL              = false;
+
 		// Other
 		public const string             CONST_TMP_REG_SUCESS            = "RegSuccsess";
 		public const string             CONST_ADMIN_ONLY_LOGIN          = "AdminOnlyLogin";

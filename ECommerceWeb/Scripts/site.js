@@ -26,7 +26,7 @@ function test() {
 }
 
 // Show more
-$('#more').click(function () {
+$('.more').click(function () {
     var text = $(this).prev('.text');
     text.toggleClass('summary');
     if (text.hasClass('summary')) {
@@ -40,9 +40,9 @@ $('#more').click(function () {
 function FilterBy(val) {
 
     if (val != 0) {
-        window.location.href = "/Shop/Index?filterBy=" + val;
+        window.location.href = baseUrl + "Shop/Index?filterBy=" + val;
     } else {
-        window.location.href = "/Shop/Index";
+        window.location.href = baseUrl + "Shop/Index";
     }
 }
 
@@ -66,11 +66,15 @@ function SearchProduct() {
 }
 
 function insertParam(key, value) {
-    key = encodeURI(key); value = encodeURI(value);
+    key = encodeURI(key);
+    value = encodeURI(value);
 
     var kvp = document.location.search.substr(1).split('&');
 
-    var i = kvp.length; var x; while (i--) {
+    var i = kvp.length;
+    var x;
+
+    while (i--) {
         x = kvp[i].split('=');
 
         if (x[0] == key) {
@@ -80,7 +84,9 @@ function insertParam(key, value) {
         }
     }
 
-    if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
+    if (i < 0) {
+        kvp[kvp.length] = [key, value].join('=');
+    }
 
     //this will reload the page, it's likely better to store this until finished
     document.location.search = kvp.join('&');

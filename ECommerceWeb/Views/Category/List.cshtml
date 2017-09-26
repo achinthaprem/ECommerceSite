@@ -5,6 +5,23 @@
     ViewBag.Title = "Category List";
 }
 
+@if (TempData["alert-success"] != null)
+{
+    <div class="alert alert-success" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-success"]</li>
+        </ul>
+    </div>
+}
+else if (TempData["alert-fail"] != null)
+{
+    <div class="alert alert-danger" style="margin-top: 20px">
+        <ul>
+            <li>@TempData["alert-fail"]</li>
+        </ul>
+    </div>
+}
+
 <h2>@ViewBag.Title</h2>
 <h4>List of all Categories.</h4>
 
@@ -43,14 +60,14 @@
             </td>
             <td>
                 <div class="summary text">@Html.DisplayFor(modelItem => item.Description)</div>
-                <a href="#" id="more">more</a>
+                <a href="#" class="more">more</a>
             </td>
             <td style="text-align: center;">
                 <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
             </td>
             <td>
                 <div class="checkbox" style="padding-top: 0px; text-align: center;">
-                    <label class="switch switch_type1" role="switch">
+                    <label class="switch switch_type1" role="switch" style="cursor: not-allowed;">
                         @Html.EditorFor(modelItem => item.Status, new { htmlAttributes = new { @class = "switch__toggle", @id = "status-checkbox", @disabled = "disabled" } })
                         <span class="switch__label"></span>
                     </label>

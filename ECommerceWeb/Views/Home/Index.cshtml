@@ -1,16 +1,16 @@
 ﻿@using ECommerceWeb.Common
 @using ECommerceWeb.Models.Home
-@model IList<ECommerceWeb.Models.Home.TopSellingProductViewModel>
+@model ECommerceWeb.Models.Home.ReportViewModel
 
 @{
-    ViewBag.Title = (ViewBag.IsAdmin) ? "Admin Home Page" : "User Home Page";
+    ViewBag.Title = (Model.IsAdmin) ? "Admin Home Page" : "User Home Page";
 }
 
 <h2>@ViewBag.Title</h2>
 
 <hr />
 
-@if (ViewBag.IsAdmin)
+@if (Model.IsAdmin)
 {
     <h4 style="margin-top: 30px;">Quick Links</h4>
 
@@ -69,14 +69,14 @@
 
                     <div class="input-group pull-right">
                         <label for="FilterBy">Filter by : &nbsp;</label>
-                        @Html.DropDownList("FilterBy", new SelectList(ViewBag.FilterList as List<SelectListItem>, "Value", "Text", ViewBag.selectedCategoryID),
+                        @Html.DropDownList("FilterBy", new SelectList(Model.ActiveCategoryList, "Value", "Text", Model.SelectedCategoryID),
      htmlAttributes: new { @class = "btn btn-default dropdown-toggle", @onchange = "TopSellingFilterBy(this.value)", @style = "" })
                     </div>
 
                 </div>
                 <div class="panel-body" style="height: 400px; overflow-y: scroll;">
 
-                    @if (ViewBag.listCount == 0)
+                    @if (Model.ProductList.Count == 0)
                     {
                         <div style="text-align: center; margin-top: 20px;">
                             <img src="~/Filestore/Images/no_data.png" alt="NO_Data" />
@@ -84,8 +84,7 @@
 }
                     else
                     {
-                        TempData["ReportData1"] = Model;
-                        using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @DataName = "ReportData1", @ReportName = ViewBag.CategoryReportName }, FormMethod.Post))
+                        using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @reportMode = 1, @TopSellingFilterBy = Model.SelectedCategoryID }, FormMethod.Post))
                         {
                             @Html.AntiForgeryToken();
                             <input type="submit" value="Export to Excel" class="btn btn-default pull-right" style="margin-bottom: 14px; padding: 3px;" />
@@ -111,7 +110,7 @@
                             </tr>
 
                             @{ int i = 0; }
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.ProductList)
                             {
                                 i++;
                                 <tr>
@@ -146,7 +145,7 @@
                     @*<h3 class="panel-title pull-left" style="margin-top: 7px;">Search Product</h3>*@
 
                     <div class="input-group pull-left">
-                        @*@Html.DropDownList("ProductList", new SelectList(ViewData["ProductSearchList"] as List<SelectListItem>, "Value", "Text"), "Select a Product",
+                        @*@Html.DropDownList("ProductList", new SelectList(Model.ProductOptionList, "Value", "Text"), "Select a Product",
                             htmlAttributes: new { @class = "btn btn-default", data_show_subtext = "true", data_live_search = "true", onchange = "", style = "margin-bottom: 10px; margin-top: 7px;" })*@
 
                         <span class="clearable">
@@ -156,7 +155,7 @@
 
                         <datalist id="products">
 
-                            @{  List<SelectListItem> list = ViewData["ProductSearchList"] as List<SelectListItem>;
+                            @{  List<SelectListItem> list = Model.ProductOptionList;
                                 foreach (SelectListItem item in list)
                                 {
                                     <option data-value="@item.Value">@item.Text</option>
@@ -171,16 +170,11 @@
                 </div>
                 <div class="panel-body" style="height: 400px; overflow-y: scroll; text-align: left;">
 
-                    @{  TopSellingProductViewModel      selectedProduct     = ViewData["SelectedProduct"] as TopSellingProductViewModel;
-                        List<TopSellingProductViewModel> tempList = new List<TopSellingProductViewModel>();
-                        tempList.Add(selectedProduct);
-
-                        if (selectedProduct != null)
+                    @{  
+                        if (Model.SelectedProduct != null)
                         {
                             <div class="clearfix">
-                                @{  TempData["ReportData2"] = tempList;
-                                }
-                                @using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @DataName = "ReportData2", @ReportName = selectedProduct.Name }, FormMethod.Post))
+                                @using (Html.BeginForm(Constants.ACTION_EXPORT_TO_EXCEL, Constants.CONTROLLER_HOME, new { @reportMode = 2, @SelectedProduct = Model.SelectedProduct.ID }, FormMethod.Post))
                                 {
                                     @Html.AntiForgeryToken();
                                     <input type="submit" value="Export to Excel" class="btn btn-default pull-right" style="margin-bottom: 14px; padding: 3px;" />
@@ -190,19 +184,19 @@
                             </div>
                             <hr style="margin-top: 0px;" />
 
-                            <img src="@Url.Content(selectedProduct.ImageSrc)" alt="Image" style="height: 100px;" />
+                            <img src="@Url.Content(Model.SelectedProduct.ImageSrc)" alt="Image" style="height: 100px;" />
                             <br /><br />
 
                             <label>Name: </label>
-                            @Html.ActionLink(selectedProduct.Name, Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { ID = selectedProduct.ID }, null)
+                            @Html.ActionLink(Model.SelectedProduct.Name, Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { ID = Model.SelectedProduct.ID }, null)
                             <br />
 
                             <label>Price: </label>
-                            <text>@Func.Currencyfy(selectedProduct.Price)</text>
+                            <text>@Func.Currencyfy(Model.SelectedProduct.Price)</text>
                             <br />
 
                             <label>Sellings: </label>
-                            <text>@selectedProduct.Sellings</text>
+                            <text>@Model.SelectedProduct.Sellings</text>
                             <br />
 
                         }

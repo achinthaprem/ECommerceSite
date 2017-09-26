@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -9,8 +7,20 @@ namespace ECommerce.Tables.Content.Helpers
 {
 	public class CategoryHelper
 	{
+
+		#region Constructors
+
 		public CategoryHelper() { }
 
+		#endregion
+
+		#region Public Access Methods
+
+		/// <summary>
+		/// Get Category by ID
+		/// </summary>
+		/// <param name="ID">ID of the Category</param>
+		/// <returns></returns>
 		public Task<Category> GetCategoryAsync(int ID)
 		{
 			return Task.Run(() =>
@@ -19,6 +29,15 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Create Category
+		/// </summary>
+		/// <param name="Name">Name</param>
+		/// <param name="Description">Description</param>
+		/// <param name="Image">Image</param>
+		/// <param name="Status">Status</param>
+		/// <param name="CreatingAccountID">Account ID of whose creating</param>
+		/// <returns></returns>
 		public Task<bool> CreateCategoryAsync(
 			string Name,
 			string Description,
@@ -44,6 +63,16 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Update Category
+		/// </summary>
+		/// <param name="ID">Category ID about to Update</param>
+		/// <param name="Name">New Name</param>
+		/// <param name="Description">New Description</param>
+		/// <param name="Image">New Image</param>
+		/// <param name="Status">New Status</param>
+		/// <param name="ModifyingAccountID">Account ID of whose modifying</param>
+		/// <returns></returns>
 		public Task<bool> UpdateCategoryAsync(
 			int ID,
 			string Name,
@@ -87,7 +116,11 @@ namespace ECommerce.Tables.Content.Helpers
 				return result;
 			});
 		}
-
+		/// <summary>
+		/// Delete Category
+		/// </summary>
+		/// <param name="ID">Category ID about to Delete</param>
+		/// <returns></returns>
 		public Task<bool> DeleteCategoryAsync(int ID)
 		{
 			return Task.Run(() =>
@@ -101,6 +134,10 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get Category List
+		/// </summary>
+		/// <returns></returns>
 		public Task<List<Category>> GetCategoryListAsync()
 		{
 			return Task.Run(() =>
@@ -108,5 +145,8 @@ namespace ECommerce.Tables.Content.Helpers
 				return Category.List();
 			});
 		}
+
+		#endregion
+
 	}
 }

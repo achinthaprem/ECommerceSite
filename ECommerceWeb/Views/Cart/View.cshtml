@@ -1,11 +1,9 @@
 ﻿@using ECommerceWeb.Common
 @using ECommerce.Tables.Content
-@using ECommerce.Tables.Content.Helpers
 @model ECommerceWeb.Models.Cart.OrderViewModel
 
 @{
     ViewBag.Title = "My Cart";
-    ProductHelper           ProductHelper           = new ProductHelper();
     int                     PendingOrderItems       = ECommerceWeb.Common.Session.PendingOrderItems ?? default (int);
 }
 
@@ -57,7 +55,7 @@ else if (TempData["alert-fail"] != null)
             </tr>
             @for (int i = 0; i < Model.OrderItems.Count; i++)
             {
-                Product     product     = ProductHelper.GetProductAsync(Model.OrderItems[i].ProductID).Result;
+                Product     product     = Product.ExecuteCreate(Model.OrderItems[i].ProductID);
                 OrderItem   item        = Model.OrderItems[i];
                 int         num         = i + 1;
 
@@ -78,7 +76,10 @@ else if (TempData["alert-fail"] != null)
                         @item.Quantity
                     </td>
                     <td style="white-space: nowrap; text-align: center;">
-                        @Html.ActionLink(" ", Constants.ACTION_REMOVE_ITEM, Constants.CONTROLLER_CART, new { OrderItemID = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
+                        @using (Html.BeginForm(Constants.ACTION_REMOVE_ITEM, Constants.CONTROLLER_CART, new { OrderItemID = item.ID }, FormMethod.Post, null))
+                        {
+                            <button type="submit" class="glyphicon glyphicon-trash btn-link" style="font-size: 25px;"> </button>
+                        }
                     </td>
                 </tr>}
         </table>

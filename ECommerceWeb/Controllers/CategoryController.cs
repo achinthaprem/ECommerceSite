@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
+﻿using ECommerceWeb.Common;
+using ECommerceWeb.Models.Category;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using ECommerceWeb.Common;
-using ECommerceWeb.Models.Category;
-using ECommerce.Tables.Content.Helpers;
-using ECommerce.Tables.Content;
-using System.Net;
 
 namespace ECommerceWeb.Controllers
 {
 	public class CategoryController : Controller
 	{
-		CategoryHelper                  CategoryHelper                  = new CategoryHelper();
+
+		#region Add
 
 		// GET: Category/Add
 		public ActionResult Add()
@@ -24,10 +18,7 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.IsAdmin)
 			{
-				AddCategoryViewModel        temp                        = new AddCategoryViewModel();
-				temp.Status												= true;
-
-				result                                                  = View(temp);
+				result                                                  = View(new AddCategoryViewModel());
 			}
 			else
 			{
@@ -49,16 +40,16 @@ namespace ECommerceWeb.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					if (await CategoryHelper.CreateCategoryAsync(
-													model.Name,
-													model.Description,
-													model.Image,
-													model.Status,
-													Common.Session.Account.ID))
+					if (model.Save())
 					{
-						result                                          = View(model);
-						ViewBag.Message                                 = "Category added successfully!";
+						TempData["alert-success"]                       = "Category added successfully!";
 					}
+					else
+					{
+						TempData["alert-fail"]                          = "Failed to add new category!";
+					}
+
+					result												= RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
 				}
 				else
 				{
@@ -73,81 +64,59 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		#endregion
+
+		#region List
+
 		// GET: Category/List
 		public async Task<ActionResult> List()
 		{
-			ActionResult									result								= null;
+			ActionResult				result					= null;
 
 			if (Common.Session.IsAdmin)
 			{
-				List<ListCategoryViewModel>                 list                                = new List<ListCategoryViewModel>();
-				List<Category>                              categories                          = await CategoryHelper.GetCategoryListAsync();
-
-				if (categories.Count > 0)
-				{
-					foreach (Category category in categories)
-					{
-						ListCategoryViewModel                   element                         = new ListCategoryViewModel();
-						element.ID                                                              = category.ID;
-						element.Name                                                            = category.Name;
-						element.Description                                                     = category.Description;
-						element.ImageSrc                                                        = $@"~/Filestore/Images/Category/{category.ID}/{category.ImageName}";
-						element.Status                                                          = (category.Status == Category.STATUS_ACTIVE) ? true : false;
-
-						list.Add(element);
-					}
-
-					result                                                                      = View(list);
-				}
-				else
-				{
-					// TODO: If no categories
-				}
+				result                                          = View(ListCategoryViewModel.GetList());
 			}
 			else
 			{
-				result																			= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result											= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
 		}
 
+		#endregion
+
+		#region Edit
+
 		// GET: Category/Edit
 		public async Task<ActionResult> Edit(int? ID)
 		{
-			ActionResult                        result                  = View();
+			ActionResult                        result				= View();
 
 			if (Common.Session.IsAdmin)
 			{
 				if (ID != null)
 				{
-					Category                    category                = await CategoryHelper.GetCategoryAsync(ID ?? default(int));
+					EditCategoryViewModel		model               = EditCategoryViewModel.ExecuteCreate(ID ?? -1);
 
-					if (category != null)
+					if (model != null)
 					{
-						EditCategoryViewModel   view                    = new EditCategoryViewModel();
-
-						view.ID                                         = category.ID;
-						view.Name                                       = category.Name;
-						view.Description                                = category.Description;
-						view.ImageSrc                                   = $@"~/Filestore/Images/Category/{category.ID}/{category.ImageName}";
-						view.Status                                     = (category.Status == Category.STATUS_ACTIVE) ? true : false;
-
-						result                                          = View(view);
+						result                                      = View(model);
 					}
 					else
 					{
-						result                                          = new HttpNotFoundResult();
+						result                                      = new HttpNotFoundResult();
 					}
 				}
 				else
 				{
-					result												= new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					result											= new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                              = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
@@ -169,22 +138,16 @@ namespace ECommerceWeb.Controllers
 
 				if (ModelState.IsValid)
 				{
-					if (await CategoryHelper.UpdateCategoryAsync(
-													model.ID, 
-													model.Name, 
-													model.Description,
-													model.Image,
-													model.Status, 
-													Common.Session.Account.ID))
+					if (model.Save())
 					{
-						ViewBag.MessageSuccess                          = "Category updated successfully!";
-						result                                          = View(model);
+						TempData["alert-success"]						= "Category updated successfully!";
 					}
 					else
 					{
-						ViewBag.MessageSuccess                          = "Something went wrong! Try again later.";
-						result                                          = View(model);
+						TempData["alert-fail"]                          = "Something went wrong! Try again later.";
 					}
+
+					result                                              = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
 				}
 				else
 				{
@@ -200,42 +163,38 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		#endregion
+
+		#region Delete
+
 		// GET: Category/Delete
 		public async Task<ActionResult> Delete(int? ID)
 		{
-			ActionResult                        result                  = null;
+			ActionResult                        result              = null;
 
 			if (Common.Session.IsAdmin)
 			{
 				if (ID != null)
 				{
-					Category                    category                = await CategoryHelper.GetCategoryAsync(ID ?? default(int));
+					DeleteCategoryViewModel     model				= DeleteCategoryViewModel.ExecuteCreate(ID ?? 0);
 
-					if (category != null)
+					if (model != null)
 					{
-						DeleteCategoryViewModel model                   = new DeleteCategoryViewModel();
-
-						model.ID                                        = category.ID;
-						model.Name                                      = category.Name;
-						model.Description                               = category.Description;
-						model.ImageSrc                                  = $@"~/Filestore/Images/Category/{category.ID}/{category.ImageName}";
-						model.Status                                    = (category.Status == Category.STATUS_ACTIVE) ? true : false;
-
-						result                                          = View(model);
+						result                                      = View(model);
 					}
 					else
 					{
-						result                                          = new HttpNotFoundResult();
+						result                                      = new HttpNotFoundResult();
 					}
 				}
 				else
 				{
-					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					result                                          = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                              = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
@@ -246,28 +205,32 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Delete(DeleteCategoryViewModel model)
 		{
-			ActionResult                        result                  = View();
+			ActionResult                    result                  = View();
 
 			if (Common.Session.IsAdmin)
 			{
-				if (await CategoryHelper.DeleteCategoryAsync(model.ID))
+				if (model.Delete())
 				{
-					ViewBag.MessageSuccess								= "Category Deleted successfully!";
-					result												= View(model);
+					TempData["alert-success"]						= "Category Deleted successfully!";
 				}
 				else
 				{
-					ViewBag.MessageSuccess								= "Something went wrong! Try again later.";
-					result												= View(model);
+					TempData["alert-fail"]                          = "Something went wrong! Try again later.";
 				}
+
+				result                                              = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
 			}
 			else
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                              = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
 		}
+
+		#endregion
+
+		#region Internal Methods
 
 		private ActionResult GetAdminAuthorizeRedirect(string returnUrl)
 		{
@@ -275,5 +238,7 @@ namespace ECommerceWeb.Controllers
 
 			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
 		}
+
+		#endregion
 	}
 }

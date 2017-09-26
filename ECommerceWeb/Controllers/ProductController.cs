@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using ECommerceWeb.Common;
+using ECommerceWeb.Models.Product;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using ECommerceWeb.Common;
-using ECommerceWeb.Models.Product;
-using ECommerce.Tables.Content.Helpers;
-using ECommerce.Tables.Content;
-using System.Net;
 
 namespace ECommerceWeb.Controllers
 {
 	public class ProductController : Controller
 	{
-		CategoryHelper						CategoryHelper                  = new CategoryHelper();
-		ProductHelper                       ProductHelper                   = new ProductHelper();
+		
+		#region Add
 
 		// GET: Product/Add
 		public async Task<ActionResult> Add()
@@ -24,11 +18,7 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.IsAdmin)
 			{
-				AddProductViewModel         temp                            = new AddProductViewModel();
-				temp.Status                                                 = true;
-				temp.CategoryList                                           = ConvertToSelectList(await CategoryHelper.GetCategoryListAsync());
-
-				result                                                      = View(temp);
+				result                                                      = View(new AddProductViewModel());
 			}
 			else
 			{
@@ -49,18 +39,16 @@ namespace ECommerceWeb.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					if (await ProductHelper.CreateProductAsync(
-						model.CategoryID,
-						model.Name,
-						model.Description,
-						model.Price,
-						model.Image,
-						model.Status,
-						Common.Session.Account.ID))
+					if (model.Save())
 					{
-						result												= View(model);
-						ViewBag.Message										= "Category added successfully!";
+						TempData["alert-success"]                           = "Category added successfully!";
 					}
+					else
+					{
+						TempData["alert-fail"]                              = "Failed to add new product!";
+					}
+
+					result													= RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
 				}
 				else
 				{
@@ -75,47 +63,31 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		#endregion
+
+		#region List
+
 		// GET: Product/List
 		public async Task<ActionResult> List()
 		{
-			ActionResult                                    result                              = null;
+			ActionResult					result							= null;
 
 			if (Common.Session.IsAdmin)
 			{
-				List<ListProductViewModel>					list                                = new List<ListProductViewModel>();
-				List<Product>								products							= await ProductHelper.GetProductListAsync();
-
-				if (products.Count > 0)
-				{
-					foreach (Product product in products)
-					{
-						ListProductViewModel                element								= new ListProductViewModel();
-						element.ID                                                              = product.ID;
-						element.Name                                                            = product.Name;
-						element.Description                                                     = product.Description;
-						element.Price                                                           = product.Price;
-						element.ImageSrc                                                        = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
-						element.Category                                                        = (await CategoryHelper.GetCategoryAsync(product.CategoryID)).Name;
-						element.Status                                                          = (product.Status == Product.STATUS_ACTIVE) ? true : false;
-
-						list.Add(element);
-					}
-
-					result                                                                      = View(list);
-				}
-				else
-				{
-					// TODO: If no products
-				}
+				result                                                      = View(ListProductViewModel.GetList());
 			}
 			else
 			{
-				result                                                                          = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                                      = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
 
 			return result;
 		}
-		
+
+		#endregion
+
+		#region Edit
+
 		// GET: Product/Edit
 		public async Task<ActionResult> Edit(int? ID)
 		{
@@ -125,22 +97,11 @@ namespace ECommerceWeb.Controllers
 			{
 				if (ID != null)
 				{
-					Product						product					= await ProductHelper.GetProductAsync(ID ?? default(int));
+					EditProductViewModel		model                   = EditProductViewModel.ExecuteCreate(ID ?? -1);
 
-					if (product != null)
+					if (model != null)
 					{
-						EditProductViewModel	view                    = new EditProductViewModel();
-
-						view.ID                                         = product.ID;
-						view.Name                                       = product.Name;
-						view.Description                                = product.Description;
-						view.Price                                      = product.Price;
-						view.ImageSrc                                   = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
-						view.CategoryList                               = ConvertToSelectList(await CategoryHelper.GetCategoryListAsync());
-						view.CategoryID                                 = product.CategoryID;
-						view.Status                                     = (product.Status == Product.STATUS_ACTIVE) ? true : false;
-
-						result                                          = View(view);
+						result                                          = View(model);
 					}
 					else
 					{
@@ -176,24 +137,16 @@ namespace ECommerceWeb.Controllers
 
 				if (ModelState.IsValid)
 				{
-					if (await ProductHelper.UpdateProductAsync(
-													model.ID,
-													model.CategoryID,
-													model.Name,
-													model.Description,
-													model.Price,
-													model.Image,
-													model.Status,
-													Common.Session.Account.ID))
+					if (model.Save())
 					{
-						ViewBag.MessageSuccess                          = "Product updated successfully!";
-						result                                          = View(model);
+						TempData["alert-success"]                       = "Product updated successfully!";
 					}
 					else
 					{
-						ViewBag.MessageSuccess                          = "Something went wrong! Try again later.";
-						result                                          = View(model);
+						TempData["alert-fail"]                          = "Something went wrong! Try again later.";
 					}
+
+					result                                              = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
 				}
 				else
 				{
@@ -209,6 +162,10 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		#endregion
+
+		#region Delete
+
 		// GET: Product/Delete
 		public async Task<ActionResult> Delete(int? ID)
 		{
@@ -218,20 +175,10 @@ namespace ECommerceWeb.Controllers
 			{
 				if (ID != null)
 				{
-					Product						product					= await ProductHelper.GetProductAsync(ID ?? default(int));
+					DeleteProductViewModel		model                   = DeleteProductViewModel.ExecuteCreate(ID ?? -1);
 
-					if (product != null)
+					if (model != null)
 					{
-						DeleteProductViewModel model					= new DeleteProductViewModel();
-
-						model.ID                                        = product.ID;
-						model.Name                                      = product.Name;
-						model.Description                               = product.Description;
-						model.Price                                     = product.Price;
-						model.ImageSrc                                  = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
-						model.Category									= (await CategoryHelper.GetCategoryAsync(product.CategoryID)).Name;
-						model.Status                                    = (product.Status == Product.STATUS_ACTIVE) ? true : false;
-
 						result                                          = View(model);
 					}
 					else
@@ -261,16 +208,16 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.IsAdmin)
 			{
-				if (await ProductHelper.DeleteProductAsync(model.ID))
+				if (model.Delete())
 				{
-					ViewBag.MessageSuccess                              = "Product Deleted successfully!";
-					result                                              = View(model);
+					TempData["alert-success"]                           = "Product Deleted successfully!";
 				}
 				else
 				{
-					ViewBag.MessageSuccess                              = "Something went wrong! Try again later.";
-					result                                              = View(model);
+					TempData["alert-fail"]                              = "Something went wrong! Try again later.";
 				}
+
+				result                                                  = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
 			}
 			else
 			{
@@ -280,17 +227,9 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
-		private List<SelectListItem> ConvertToSelectList(List<Category> list)
-		{
-			List<SelectListItem>            result                          = new List<SelectListItem>();
+		#endregion
 
-			foreach (Category category in list)
-			{
-				result.Add(new SelectListItem { Value = category.ID.ToString(), Text = category.Name });
-			}
-
-			return result;
-		}
+		#region Internal Methods
 
 		private ActionResult GetAdminAuthorizeRedirect(string returnUrl)
 		{
@@ -298,5 +237,8 @@ namespace ECommerceWeb.Controllers
 
 			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
 		}
+
+		#endregion
+
 	}
 }

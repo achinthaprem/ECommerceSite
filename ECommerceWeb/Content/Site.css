@@ -246,3 +246,9 @@ th {
 .clearable input::-ms-clear { /* Remove IE default X */
     display: none;
 }
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #069;
+}

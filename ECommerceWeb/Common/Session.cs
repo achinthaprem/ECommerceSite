@@ -1,22 +1,30 @@
 ﻿using ECommerce.Tables.Active.HR;
 using ECommerce.Tables.Content;
-using ECommerce.Tables.Content.Helpers;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace ECommerceWeb.Common
 {
 	public static class Session
 	{
+		/// <summary>
+		/// Current logged in User
+		/// </summary>
 		public static Account Account
 		{
 			get
 			{
 				return HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] as Account;
 			}
+			set
+			{
+				HttpContext.Current.Session[Constants.CURRENT_ACCOUNT]              = value;
+			}
 		}
 
+		/// <summary>
+		/// If any user is logged in
+		/// </summary>
 		public static bool Authorized
 		{
 			get
@@ -32,6 +40,9 @@ namespace ECommerceWeb.Common
 			}
 		}
 
+		/// <summary>
+		/// If admin user is logged in
+		/// </summary>
 		public static bool IsAdmin
 		{
 			get
@@ -47,6 +58,9 @@ namespace ECommerceWeb.Common
 			}
 		}
 
+		/// <summary>
+		/// Current Order ID
+		/// </summary>
 		public static int? CurrentOrderID
 		{
 			get
@@ -59,6 +73,9 @@ namespace ECommerceWeb.Common
 			}
 		}
 
+		/// <summary>
+		/// Count of Pending OrderItems (Total Quantity)
+		/// </summary>
 		public static int? PendingOrderItems
 		{
 			get
@@ -71,6 +88,9 @@ namespace ECommerceWeb.Common
 			}
 		}
 
+		/// <summary>
+		/// Current User's Full name (First Name + Last Name)
+		/// </summary>
 		public static string FullName
 		{
 			get
@@ -85,27 +105,36 @@ namespace ECommerceWeb.Common
 			}
 		}
 
+		/// <summary>
+		/// Starts the Session
+		/// </summary>
+		/// <param name="account">Logged in User</param>
 		public static void Start(Account account)
 		{
-			HttpContext.Current.Session[Constants.CURRENT_ACCOUNT]          = account;
+			Session.Account							= account;
 			CountItemsInCart();
 		}
 
+		/// <summary>
+		/// End the Current Session
+		/// </summary>
 		public static void Destroy()
 		{
 			HttpContext.Current.Session.Contents.RemoveAll();
 			HttpContext.Current.Session.Abandon();
 		}
 
+		/// <summary>
+		/// Count Total Quantity in the Cart and Update PendingOrderItems
+		/// </summary>
 		public static void CountItemsInCart()
 		{
-			OrderHelper					OrderHelper                 = new OrderHelper();
-			List<Order>					orders                      = OrderHelper.GetOrdersByAccountAsync(Account.ID).Result;
+			List<Order>					orders                      = Order.ListByAccountID(Account.ID);
 			Order						order                       = null;
 
-			foreach (Order _order in orders)
+			foreach (Order _order in orders) // For all the Orders from Current User
 			{
-				if (_order.Status == Order.STATUS_PENDING)
+				if (_order.Status == Order.STATUS_PENDING) // If any Pending Order
 				{
 					order											= _order;
 					break;
@@ -114,11 +143,11 @@ namespace ECommerceWeb.Common
 
 			int							count                       = 0;
 
-			if (order != null)
+			if (order != null) // If there is an Pending Order
 			{
-				List<OrderItem>         items                       = OrderHelper.GetOrderItemsByOrderIDAsync(order.ID).Result;
+				List<OrderItem>         items                       = OrderItem.ListByOrderID(order.ID);
 
-				foreach (OrderItem item in items)
+				foreach (OrderItem item in items) // For all the OrderItems in the Pending Order
 				{
 					count                                           += item.Quantity;
 				}

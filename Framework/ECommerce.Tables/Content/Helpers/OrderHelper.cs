@@ -11,8 +11,12 @@ namespace ECommerce.Tables.Content.Helpers
 
 		#endregion
 
-		#region Order helper methods
+		#region Order Helper Public Methods
 
+		/// <summary>
+		/// Get Order List
+		/// </summary>
+		/// <returns></returns>
 		public Task<List<Order>> GetOrdersAsync()
 		{
 			return Task.Run(() =>
@@ -21,6 +25,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get Order by ID
+		/// </summary>
+		/// <param name="ID">ID of the Order</param>
+		/// <returns></returns>
 		public Task<Order> GetOrderAsync(int ID)
 		{
 			return Task.Run(() =>
@@ -29,6 +38,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get Order List by Status
+		/// </summary>
+		/// <param name="Status">Status of Orders</param>
+		/// <returns></returns>
 		public Task<List<Order>> GetOrdersByStatusAsync(int Status)
 		{
 			return Task.Run(() =>
@@ -37,6 +51,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get Order List by Account ID
+		/// </summary>
+		/// <param name="AccountID">Account ID of Orders</param>
+		/// <returns></returns>
 		public Task<List<Order>> GetOrdersByAccountAsync(int AccountID)
 		{
 			return Task.Run(() =>
@@ -45,6 +64,14 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Create new Order
+		/// </summary>
+		/// <param name="AccountID"></param>
+		/// <param name="Status"></param>
+		/// <param name="PaymentMethod"></param>
+		/// <param name="TotalAmount"></param>
+		/// <returns></returns>
 		public Task<bool> CreateOrderAsync(
 			int AccountID,
 			int Status,
@@ -61,6 +88,14 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Update existing Order
+		/// </summary>
+		/// <param name="ID"></param>
+		/// <param name="Status"></param>
+		/// <param name="PaymentMethod"></param>
+		/// <param name="TotalAmount"></param>
+		/// <returns></returns>
 		public Task<bool> UpdateOrderAsync(
 			int ID,
 			int Status,
@@ -83,6 +118,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Delete an Order by ID
+		/// </summary>
+		/// <param name="ID"></param>
+		/// <returns></returns>
 		public Task<bool> DeleteOrderAsync(int ID)
 		{
 			return Task.Run(() =>
@@ -100,6 +140,10 @@ namespace ECommerce.Tables.Content.Helpers
 
 		#region OrderItem helper methods
 
+		/// <summary>
+		/// Get OrderItem List
+		/// </summary>
+		/// <returns></returns>
 		public Task<List<OrderItem>> GetOrderItemsAsync()
 		{
 			return Task.Run(() =>
@@ -108,6 +152,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get OrderItem by ID
+		/// </summary>
+		/// <param name="OrderItemID">OrderItem ID</param>
+		/// <returns></returns>
 		public Task<OrderItem> GetOrderItemAsync(int OrderItemID)
 		{
 			return Task.Run(() =>
@@ -116,6 +165,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get OrderItem List by Order ID
+		/// </summary>
+		/// <param name="OrderID">Order ID</param>
+		/// <returns></returns>
 		public Task<List<OrderItem>> GetOrderItemsByOrderIDAsync(int OrderID)
 		{
 			return Task.Run(() =>
@@ -124,6 +178,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Get OrderItem by ProductID
+		/// </summary>
+		/// <param name="ProductID">Product ID</param>
+		/// <returns></returns>
 		public Task<List<OrderItem>> GetOrderItemsByProductIDAsync(int ProductID)
 		{
 			return Task.Run(() =>
@@ -132,6 +191,15 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Create an OrderItem
+		/// </summary>
+		/// <param name="OrderID"></param>
+		/// <param name="ProductID"></param>
+		/// <param name="Quantity"></param>
+		/// <param name="UnitCost"></param>
+		/// <param name="Subtotal"></param>
+		/// <returns></returns>
 		public Task<bool> CreateOrderItemAsync(
 			int OrderID,
 			int ProductID,
@@ -152,6 +220,14 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Update an Existing OrderItem
+		/// </summary>
+		/// <param name="ID"></param>
+		/// <param name="Quantity"></param>
+		/// <param name="UnitCost"></param>
+		/// <param name="Subtotal"></param>
+		/// <returns></returns>
 		public Task<bool> UpdateOrderItemAsync(
 			int ID,
 			int Quantity,
@@ -176,6 +252,11 @@ namespace ECommerce.Tables.Content.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Delete an OrderItem
+		/// </summary>
+		/// <param name="ID"></param>
+		/// <returns></returns>
 		public Task<bool> DeleteOrderItemAsync(int ID)
 		{
 			return Task.Run(async () =>
@@ -195,6 +276,11 @@ namespace ECommerce.Tables.Content.Helpers
 
 		#region Common helper methods
 
+		/// <summary>
+		/// Updates the Total Amount by Order ID
+		/// </summary>
+		/// <param name="OrderID">Order ID</param>
+		/// <returns></returns>
 		public async Task UpdateTotalOfOrder(int OrderID)
 		{
 			Order                   order               = await GetOrderAsync(OrderID);

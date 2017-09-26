@@ -1,92 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using ECommerce.Tables.Active.HR;
+﻿using ECommerce.Tables.Active.HR;
 using ECommerceWeb.Common;
 using ECommerceWeb.Models.Account;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace ECommerceWeb.Controllers
 {
 	public class AccountController : Controller
 	{
-		private AccountService AccountService = new AccountService();
 
+		#region Login
+
+		// GET : Account/Login
+		/// <summary>
+		/// Log in page
+		/// </summary>
+		/// <param name="returnUrl">After Successful login redirect to</param>
+		/// <returns></returns>
 		public ActionResult Login(string returnUrl)
 		{
-			// TODO: if (!loggedIn) Then validate cookies
-
 			ViewBag.ReturnUrl                               = returnUrl;
 			return View();
 		}
 
+		// POST : Account/Login
+		/// <summary>
+		/// Log in page
+		/// </summary>
+		/// <param name="model"></param>
+		/// <param name="returnUrl"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
 		{
+			ActionResult            result                  = null;
+
 			if (!ModelState.IsValid)
 			{
-				return View(model);
+				result                                      = View(model);
 			}
-			
-			ActionResult            result                  = View(model);
-
-			Account                 account                 = null;// Common.Session.ValidateCookie(Request);
-
-			//if (account == null)
-			//{
-			account                                     = await AccountService.GetAccountAsync(model.Email);
-
-			//	Response.Cookies.Add(Common.Session.CreateCookie(account, model.RememberMe));
-			//}
-
-			SignInStatus            status                  = await AccountService.SignInUserAsync(account, model.Password);
-
-			switch (status)
+			else
 			{
-				case SignInStatus.Deactivated:
+				switch (await model.ValidateLogin())
+				{
+					case SignInStatus.Deactivated:
 
-					// TODO: Do something for deactivated(inactive) accounts
-					break;
+						// TODO: Do something for deactivated(inactive) accounts
+						break;
 
-				case SignInStatus.Success:
+					case SignInStatus.Success:
 
-					Common.Session.Start(account);
+						Common.Session.Start(Account.ExecuteCreateByEmail(model.Email));
 
-					if (Url.IsLocalUrl(returnUrl))
-					{
-						result                              = Redirect(returnUrl);
-					}
-					else
-					{
-						if (Common.Session.IsAdmin)
+						if (Url.IsLocalUrl(returnUrl)) // If there is a Return Url
 						{
-							result                          = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+							result                          = Redirect(returnUrl);
 						}
-						else
+						else // Default page after Log in
 						{
-							result                          = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP);
+							if (Common.Session.IsAdmin) // For Admin User redirects to Admin home page
+							{
+								result                      = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+							}
+							else // For Normal User redirects to product listing page (Shop/Index)
+							{
+								result                      = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP);
+							}
 						}
-					}
-					break;
+						break;
 
-				case SignInStatus.Failure:
-				default:
+					case SignInStatus.Failure:
+					default:
 
-					ModelState.AddModelError("", Constants.MSG_LOGIN_FAIL_USR_PSW);
-					break;
+						ModelState.AddModelError("", Constants.MSG_LOGIN_FAIL_USR_PSW);
+						break;
+				}
 			}
 
 			return result;
 		}
 
+		#endregion
+
+		#region Register
+
+		// GET : Account/Register
+		/// <summary>
+		/// New User Registration Page
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult Register()
 		{
 			return View();
 		}
 
+		// POST : Account/Register
+		/// <summary>
+		/// New User Registration Page
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register(RegisterViewModel model)
@@ -98,36 +112,29 @@ namespace ECommerceWeb.Controllers
 				return View(model);
 			}
 
-			if (await AccountService.CheckEmailAsync(model.Email))
+			if (await model.Save())
 			{
-				if (await AccountService.CreateAccountAsync(model.FirstName,
-				model.LastName,
-				model.Email,
-				model.Password,
-				model.ContactNo,
-				model.ShippingAddress,
-				model.Country,
-				(int)Account.RoleCode.All,
-				AccountService.SELF_REGISTERED))
-				{
-					result                                      = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
-					TempData[Constants.CONST_TMP_REG_SUCESS]    = Constants.MSG_REG_SUCCESS;
-				}
-				else
-				{
-					ModelState.AddModelError("", Constants.MSG_REG_FAIL);
-					result                                      = View(model);
-				}
+				result                                          = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
+				TempData[Constants.CONST_TMP_REG_SUCESS]        = model.successMsg;
 			}
 			else
 			{
-				ModelState.AddModelError("", Constants.MSG_REG_FAIL_EMAIL_EXIST);
+				ModelState.AddModelError("", model.modelError);
 				result                                          = View(model);
 			}
 
 			return result;
 		}
 
+		#endregion
+
+		#region Logout
+
+		// POST : Account/Logout
+		/// <summary>
+		/// Logout the current User
+		/// </summary>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Logout()
@@ -136,35 +143,29 @@ namespace ECommerceWeb.Controllers
 
 			if (Common.Session.Authorized)
 			{
+				// Logout the User if only Logged in
 				Common.Session.Destroy();
-			}
-			else
-			{
-				result                                      = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
 			}
 
 			return result;
 		}
 
+		#endregion
+
+		#region Manage
+
+		// GET : Account/Manage
+		/// <summary>
+		/// To Manage Current user's account information
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult Manage()
 		{
 			ActionResult            result                  = null;
 
 			if (Common.Session.Authorized)
 			{
-				Account             account                 = Common.Session.Account;
-
-				EditViewModel       editView                = new EditViewModel();
-
-				editView.ID                                 = account.ID.ToString();
-				editView.FirstName                          = account.FirstName;
-				editView.LastName                           = account.LastName;
-				editView.Email                              = account.Email;
-				editView.ContactNo                          = account.ContactNo;
-				editView.ShippingAddress                    = account.ShippingAddress;
-				editView.Country                            = account.Country;
-
-				result                                      = View(editView);
+				result                                      = View(new EditViewModel(Common.Session.Account));
 			}
 			else
 			{
@@ -173,46 +174,31 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		// POST : Account/Manage
+		/// <summary>
+		/// To Manage Current user's account information
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Manage(EditViewModel model)
 		{
 			ActionResult            result                  = View(model);
 
-			if (Common.Session.Authorized)
+			if (Common.Session.Authorized) // If logged in
 			{
-				int                 ID                      = int.Parse(model.ID);
-
-				if (await AccountService.CheckEmailAsync(ID, model.Email))
+				if (await model.Save())
 				{
-					if (await AccountService.UpdateAccountAsync(
-					ID,
-					model.FirstName,
-					model.LastName,
-					model.Email,
-					model.ContactNo,
-					model.ShippingAddress,
-					model.Country,
-					Account.STATUS_ACTIVE,
-					(int)Account.RoleCode.All,
-					ID))
-					{
-						ViewBag.ID                          = ID;
-						ViewBag.Success                     = Constants.MSG_MANAGE_SUCCESS;
-
-						Common.Session.Start(Account.ExecuteCreate(ID));
-					}
-					else
-					{
-						ModelState.AddModelError("", Constants.MSG_MANAGE_FAIL);
-					}
+					Common.Session.Start(Account.ExecuteCreate(model.ID));
+					ViewBag.Success                         = model.successMsg;
 				}
 				else
 				{
-					ModelState.AddModelError("", Constants.MSG_MANAGE_FAIL_EMAIL_EXIST);
+					ModelState.AddModelError("", model.modelError);
 				}
 			}
-			else
+			else // Not logged in
 			{
 				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
@@ -220,50 +206,57 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		#endregion
+
+		#region Change Password
+
+		// GET : Account/ChangePassword
+		/// <summary>
+		/// Change password Page
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult ChangePassword()
 		{
 			ActionResult            result                  = null;
 
 			if (Common.Session.Authorized)
 			{
-				ChangePasswordViewModel view                = new ChangePasswordViewModel();
-				view.ID                                     = Common.Session.Account.ID.ToString();
-				result                                      = View(view);
+				result                                      = View(new ChangePasswordViewModel(Common.Session.Account.ID));
 			}
 			else
 			{
 				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
+
 			return result;
 		}
 
+		// POST : Account/ChangePassword
+		/// <summary>
+		/// Change Password Page
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
 		{
 			ActionResult            result                  = View(model);
 
-			if (Common.Session.Authorized)
+			if (Common.Session.Authorized) // If logged in
 			{
-				int                 ID                      = int.Parse(model.ID);
+				int                 ID                      = model.ID;
 
-				if (await AccountService.ValidatePasswordAsync(ID, model.CurrentPassword))
+				if (await model.Save())
 				{
-					if (await AccountService.ChangePasswordAsync(ID, model.NewPassword, Common.Session.Account.ID))
-					{
-						ViewBag.Success                     = Constants.MSG_CHANGE_PSW_SUCCESS;
-					}
-					else
-					{
-						ModelState.AddModelError("", Constants.MSG_CHANGE_PSW_FAIL);
-					}
+					ViewBag.Success                         = Constants.MSG_CHANGE_PSW_SUCCESS;
 				}
 				else
 				{
-					ModelState.AddModelError("", Constants.MSG_CHANGE_PSW_INVALID_PSW);
+					ModelState.AddModelError("", Constants.MSG_CHANGE_PSW_FAIL);
 				}
 			}
-			else
+			else // If not logged in
 			{
 				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
 			}
@@ -271,10 +264,22 @@ namespace ECommerceWeb.Controllers
 			return result;
 		}
 
+		#endregion
+
+		#region Common
+
+		/// <summary>
+		/// Redirects User to login page with  return Url
+		/// </summary>
+		/// <param name="returnUrl"></param>
+		/// <returns></returns>
 		private ActionResult GetAuthorizeRedirect(string returnUrl)
 		{
 			// GetAuthorizeRedirect(Request.Url.PathAndQuery);
 			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
 		}
+
+		#endregion
+
 	}
 }

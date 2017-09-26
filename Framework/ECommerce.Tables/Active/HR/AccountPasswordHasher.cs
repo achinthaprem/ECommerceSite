@@ -16,8 +16,9 @@ namespace ECommerce.Tables.Active.HR
 		#endregion
 
 		#region Public Methods for Hashing
+
 		/// <summary>
-		/// Use this methods to hash user entered password with salt from database
+		/// Hash password with given salt
 		/// </summary>
 		/// <param name="password">User entered password</param>
 		/// <param name="_salt">Salt from database</param>
@@ -36,7 +37,7 @@ namespace ECommerce.Tables.Active.HR
 		}
 
 		/// <summary>
-		/// Use this method to create a new hashed password to save in database
+		/// Create new Hash and a Salt
 		/// </summary>
 		/// <param name="password">User Entered Password</param>
 		/// <param name="_salt">New salt to be stored in database</param>
@@ -56,6 +57,7 @@ namespace ECommerce.Tables.Active.HR
 
 			return result;
 		}
+
 		#endregion
 
 		#region Internal Methods
