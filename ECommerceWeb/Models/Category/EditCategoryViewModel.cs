@@ -125,6 +125,8 @@ namespace ECommerceWeb.Models.Category
 					imageName, 
 					((Status == true) ? ETC.Category.STATUS_ACTIVE : ETC.Category.STATUS_INACTIVE), 
 					Common.Session.Account.ID);
+
+				result                                          = true;
 			}
 
 			return result;
