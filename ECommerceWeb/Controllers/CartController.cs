@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace ECommerceWeb.Controllers
 {
+	[VerifyUser]
 	public class CartController : Controller
 	{
 
@@ -17,20 +18,9 @@ namespace ECommerceWeb.Controllers
 		/// Cart view page
 		/// </summary>
 		/// <returns></returns>
-		new public async Task<ActionResult> View()
+		new public ActionResult View()
 		{
-			ActionResult                            result                              = null;
-
-			if (Common.Session.Authorized) // If logged in
-			{
-				result                                                                  = View("View", new OrderViewModel());
-			}
-			else
-			{
-				result                                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
+			return View("View", new OrderViewModel());
 		}
 
 		#endregion
@@ -41,38 +31,27 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Checkout(OrderViewModel model)
 		{
-			ActionResult                            result                              = null;
-
-			if (Common.Session.Authorized)
+			if (model != null)
 			{
-				if (model != null)
+				if (await model.CheckOut())
 				{
-					if (await model.CheckOut())
-					{
-						Common.Session.CountItemsInCart();
-						TempData["alert-success"]                                       = "Order placed successfully!";
+					Common.Session.CountItemsInCart();
+					TempData["alert-success"]                       = "Order placed successfully!";
 
-						// TODO: Create new shipping info record for the order
-					}
-					else
-					{
-						Common.Session.CountItemsInCart();
-						TempData["alert-fail"]                                          = "Error occured while placing the order!";
-					}
-
-					result                                                              = Redirect(Request.UrlReferrer.ToString());
+					// TODO: Create new shipping info record for the order
 				}
 				else
 				{
-					result                                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					Common.Session.CountItemsInCart();
+					TempData["alert-fail"]                          = "Error occured while placing the order!";
 				}
+
+				return Redirect(Request.UrlReferrer.ToString());
 			}
 			else
 			{
-				result                                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
-
-			return result;
 		}
 
 		#endregion
@@ -83,33 +62,20 @@ namespace ECommerceWeb.Controllers
 		[HttpPost]
 		public async Task<ActionResult> Add(int? ProductID, int? Quantity)
 		{
-			ActionResult                    result                          = null;
-
-			if (Common.Session.Authorized)
+			bool                    completed                           = await ProductViewModel.AddToCart(ProductID, Quantity ?? 1);
+			// TODO: Use Ajax
+			if (completed)
 			{
-				bool                    completed                           = await ProductViewModel.AddToCart(ProductID, Quantity ?? 1);
-
-				if (completed)
-				{
-					TempData["alert-success"]                               = "Item(s) added to the cart successfully!";
-
-					result                                                  = Redirect(Request.UrlReferrer.ToString());
-				}
-				else
-				{
-					TempData["alert-fail"]                                  = "Failed to add Item(s) to the cart!";
-
-					result                                                  = Redirect(Request.UrlReferrer.ToString());
-				}
-
-				Common.Session.CountItemsInCart();
+				TempData["alert-success"]                               = "Item(s) added to the cart successfully!";
 			}
 			else
 			{
-				result                                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				TempData["alert-fail"]                                  = "Failed to add Item(s) to the cart!";
 			}
 
-			return result;
+			Common.Session.CountItemsInCart();
+
+			return Redirect(Request.UrlReferrer.ToString());
 		}
 
 		#endregion
@@ -119,31 +85,18 @@ namespace ECommerceWeb.Controllers
 		[HttpPost]
 		public async Task<ActionResult> RemoveItem(int? OrderItemID)
 		{
-			ActionResult                        result                          = null;
-
-			if (Common.Session.Authorized)
+			if (await ProductViewModel.RemoveFromCart(OrderItemID))
 			{
-				if (await ProductViewModel.RemoveFromCart(OrderItemID))
-				{
-					TempData["alert-success"]                                   = "Item(s) removed from the cart successfully!";
-
-					result                                                      = Redirect(Request.UrlReferrer.ToString());
-				}
-				else
-				{
-					TempData["alert-fail"]                                      = "Failed to remove Item(s) from the cart!";
-
-					result                                                      = Redirect(Request.UrlReferrer.ToString());
-				}
-
-				Common.Session.CountItemsInCart();
+				TempData["alert-success"]               = "Item(s) removed from the cart successfully!";
 			}
 			else
 			{
-				result                                                          = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				TempData["alert-fail"]                  = "Failed to remove Item(s) from the cart!";
 			}
 
-			return result;
+			Common.Session.CountItemsInCart();
+
+			return Redirect(Request.UrlReferrer.ToString());
 		}
 
 		#endregion
@@ -152,42 +105,21 @@ namespace ECommerceWeb.Controllers
 
 		public async Task<ActionResult> RemoveOrder(int? orderID)
 		{
-			ActionResult                        result                          = null;
-
-			if (Common.Session.Authorized)
+			if (await OrderViewModel.RemoveOrder(orderID))
 			{
-				if (await OrderViewModel.RemoveOrder(orderID))
-				{
-					TempData["alert-success"]                                   = "The Order cancelled successfully!";
-
-					result                                                      = Redirect(Request.UrlReferrer.ToString());
-				}
-				else
-				{
-					TempData["alert-fail"]                                      = "Failed to cancel the order!";
-
-					result                                                      = Redirect(Request.UrlReferrer.ToString());
-				}
-
-				Common.Session.CountItemsInCart();
+				TempData["alert-success"]               = "The Order cancelled successfully!";
 			}
 			else
 			{
-				result                                                          = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				TempData["alert-fail"]					= "Failed to cancel the order!";
 			}
 
-			return result;
+			Common.Session.CountItemsInCart();
+
+			return Redirect(Request.UrlReferrer.ToString());
 		}
 
 		#endregion
-
-		#region Internal Methods
-
-		private ActionResult GetAuthorizeRedirect(string returnUrl)
-		{
-			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
-		}
-
-		#endregion
+		
 	}
 }

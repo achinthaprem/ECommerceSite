@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Web.Mvc;
+using Volume.Toolkit.Paths;
+using ECommerce.Tables.Utility.System;
 
 namespace ECommerceWeb.Common
 {
@@ -59,15 +61,13 @@ namespace ECommerceWeb.Common
 		/// Saves the Image to the given Path
 		/// </summary>
 		/// <param name="Image">Uploaded Image file</param>
-		/// <param name="_Path">Path to the file</param>
-		/// <param name="_FileName">Image file name</param>
-		public static void SaveImage(System.Web.HttpPostedFileBase Image, string _Path, string _FileName)
+		/// <param name="Path">Path to the file</param>
+		/// <param name="FileName">Image file name</param>
+		public static void SaveImage(System.Web.HttpPostedFileBase Image, string Path, string FileName)
 		{
-			_Path                                           = $@"~\Filestore\{_Path}";
+			Directory.CreateDirectory(PathUtility.CombinePaths(Config.StoragePath, Path));
 
-			Directory.CreateDirectory(System.Web.Hosting.HostingEnvironment.MapPath(_Path));
-
-			Image.SaveAs(System.Web.Hosting.HostingEnvironment.MapPath($@"{_Path}\{_FileName}"));
+			Image.SaveAs(PathUtility.CombinePaths(Config.StoragePath, Path, FileName));
 		}
 
 		/// <summary>

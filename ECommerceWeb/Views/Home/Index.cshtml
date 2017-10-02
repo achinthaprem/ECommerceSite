@@ -20,7 +20,7 @@
                 <div class="panel-heading">Manage Categories</div>
                 <div class="panel-body">
                     <ul>
-                        <li>@Html.ActionLink("Add", Constants.ACTION_ADD, Constants.CONTROLLER_CATEGORY)</li>
+                        <li>@Html.ActionLink("Add", Constants.ACTION_EDITOR, Constants.CONTROLLER_CATEGORY)</li>
                     </ul>
                     <ul>
                         <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY)</li>
@@ -33,7 +33,7 @@
                 <div class="panel-heading">Manage Products</div>
                 <div class="panel-body">
                     <ul>
-                        <li>@Html.ActionLink("Add", Constants.ACTION_ADD, Constants.CONTROLLER_PRODUCT)</li>
+                        <li>@Html.ActionLink("Add", Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT)</li>
                     </ul>
                     <ul>
                         <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT)</li>
@@ -118,7 +118,7 @@
                                         #@i
                                     </td>
                                     <td style="text-align:center;">
-                                        @Html.ActionLink(item.Name, Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { ID = item.ID }, null)
+                                        @Html.ActionLink(item.Name, Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT, new { ID = item.ID }, null)
                                     </td>
                                     <td style="text-align:center;">
                                         <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
@@ -188,7 +188,7 @@
                             <br /><br />
 
                             <label>Name: </label>
-                            @Html.ActionLink(Model.SelectedProduct.Name, Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { ID = Model.SelectedProduct.ID }, null)
+                            @Html.ActionLink(Model.SelectedProduct.Name, Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT, new { ID = Model.SelectedProduct.ID }, null)
                             <br />
 
                             <label>Price: </label>

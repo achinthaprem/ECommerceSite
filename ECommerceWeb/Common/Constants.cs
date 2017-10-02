@@ -7,20 +7,23 @@ namespace ECommerceWeb.Common
 		public const int                DEFAULT_VALUE_INT               = -1;
 		public const decimal			DEFAULT_VALUE_DECIMAL			= 0.00m;
 		public const bool               DEFAULT_VALUE_BOOL              = false;
+		public const string				DEFAULT_IMAGE_URL				= "http://placehold.it/300x200";
 
 		// Other
 		public const string             CONST_TMP_REG_SUCESS            = "RegSuccsess";
 		public const string             CONST_ADMIN_ONLY_LOGIN          = "AdminOnlyLogin";
 
 		// Session
-		public const string             USER_ID							= "UserID";
-		public const string             USER_NAME                       = "UserName";
-		public const string             USER_EMAIL                      = "UserEmail";
-		public const string             USER_REMEMBER_ME                = "RememberMe";
-		public const string             USER_COOCKIE_NAME               = "ECOM_User_Info";
-		public const string             CURRENT_ACCOUNT                 = "CurrentAccount";
-		public const string             CURRENT_ORDER_ID                = "CurrentOrderID";
-		public const string             PENDING_ORDER_ITEMS             = "PendingOrderItems";
+		public const string             SESSION_USER_ID					= "_UserID";
+		public const string             SESSION_USER_NAME               = "_UserName";
+		public const string             SESSION_USER_EMAIL              = "_UserEmail";
+		public const string             SESSION_USER_REMEMBER_ME        = "_RememberMe";
+		public const string             SESSION_USER_COOCKIE_NAME       = "_ECOM_User_Info";
+		public const string             SESSION_CURRENT_ACCOUNT         = "_CurrentAccount";
+		public const string             SESSION_CURRENT_ORDER_ID        = "_CurrentOrderID";
+		public const string             SESSION_PENDING_ORDER_ITEMS     = "_PendingOrderItems";
+		public const string				SESSION_TEMP_CATEGORY			= "_TempEditorCategory";
+		public const string				SESSION_TEMP_PRODUCT			= "_TempEditorProduct";
 
 		// Messages
 		public const string             MSG_LOGIN_FAIL_USR_PSW          = "Invalid user credentials!";
@@ -42,8 +45,8 @@ namespace ECommerceWeb.Common
 		public const string             ACTION_REGISTER                 = "Register";
 		public const string             ACTION_MANAGE                   = "Manage";
 		public const string             ACTION_CHANGE_PSW               = "ChangePassword";
-		public const string             ACTION_ADD                      = "Add";
-		public const string             ACTION_EDIT                     = "Edit";
+		public const string             ACTION_ADD						= "Add";
+		public const string             ACTION_EDITOR                   = "Editor";
 		public const string             ACTION_LIST                     = "List";
 		public const string             ACTION_DELETE                   = "Delete";
 		public const string             ACTION_VIEW						= "View";

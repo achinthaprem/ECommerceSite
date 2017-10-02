@@ -1,8 +1,7 @@
-﻿using ECommerceWeb.Common;
-using ECommerceWeb.Models.Home;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using System.Web.Mvc;
+using ECommerceWeb.Common;
+using ECommerceWeb.Models.Home;
 
 namespace ECommerceWeb.Controllers
 {
@@ -12,25 +11,17 @@ namespace ECommerceWeb.Controllers
 		#region Home Page
 
 		// GET: Home/Index
-		public async Task<ActionResult> Index(int? TopSellingFilterBy, int? SelectedProduct)
+		[VerifyUser]
+		public ActionResult Index(int? TopSellingFilterBy, int? SelectedProduct)
 		{
-			ActionResult            result                  = null;
+			ReportViewModel         result                  = new ReportViewModel();
 
 			if (Common.Session.IsAdmin)
 			{
-				result                                      = View("Index", new ReportViewModel(TopSellingFilterBy, SelectedProduct));
-			}
-			else if (Common.Session.Authorized)
-			{
-				// TODO: new view/model for user
-				result                                      = View();
-			}
-			else
-			{
-				result                                      = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                      = new ReportViewModel(TopSellingFilterBy, SelectedProduct);
 			}
 
-			return result;
+			return View();
 		}
 
 		#endregion
@@ -38,30 +29,22 @@ namespace ECommerceWeb.Controllers
 		#region Export Excel
 
 		[HttpPost]
+		[VerifyAdmin]
 		[ValidateAntiForgeryToken]
 		public ActionResult ExportToExcel(int? reportMode, int? TopSellingFilterBy, int? SelectedProduct)
 		{
-			ActionResult                result                  = null;
+			ReportViewModel			model			= new ReportViewModel(TopSellingFilterBy, SelectedProduct);
 
-			if (Common.Session.IsAdmin)
+			if (model != null)
 			{
-				ReportViewModel         model                   = new ReportViewModel(TopSellingFilterBy, SelectedProduct);
-
-				if (model != null)
-				{
-					model.GenerateReport(reportMode, HttpContext.ApplicationInstance);
-				}
-				else
-				{
-					result                                      = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-				}
+				model.GenerateReport(reportMode, HttpContext.ApplicationInstance);
 			}
 			else
 			{
-				result                                          = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			return result;
+			return View(model);
 		}
 
 		#endregion
@@ -76,7 +59,7 @@ namespace ECommerceWeb.Controllers
 		#endregion
 
 		#region Contact
-
+		
 		public ActionResult Contact()
 		{
 			return View();
@@ -84,10 +67,8 @@ namespace ECommerceWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Contact(CreateContactFormViewModel model)
+		public ActionResult Contact(CreateContactFormViewModel model)
 		{
-			ActionResult                    result                      = Redirect(Request.UrlReferrer.ToString());
-
 			if (ModelState.IsValid)
 			{
 				if (model.Save())
@@ -101,24 +82,13 @@ namespace ECommerceWeb.Controllers
 			}
 			else
 			{
-				result                                                  = View(model);
+				return View(model);
 			}
 
-			return result;
+			return Redirect(Request.UrlReferrer.ToString());
 		}
 
 		#endregion
-
-		#region Internal Methods
-
-		private ActionResult GetAdminAuthorizeRedirect(string returnUrl)
-		{
-			TempData[Constants.CONST_ADMIN_ONLY_LOGIN]                  = Constants.MSG_ADMIN_ONLY_LOGIN;
-
-			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
-		}
-
-		#endregion
-
+		
 	}
 }

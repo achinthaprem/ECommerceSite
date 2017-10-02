@@ -44,7 +44,7 @@ DECLARE		@ThreadNodePollIntervalMinutes		NVARCHAR(255);
 SET			@SMTPServer							= 'mail.volume.co.uk';
 SET			@EmailAdministrator					= 'developers@volumeglobal.com';
 SET			@EmailBcc							= 'developers@volumeglobal.com';
-SET			@EmailDevelopment					= 'developers@volumeglobal.com';
+SET			@EmailDevelopment					= 'Achintha.Premarathne@volume.co.uk';
 SET			@EmailFrom							= 'developers@volumeglobal.com';
 SET			@EmailNotifications					= 'developers@volumeglobal.com';
 
@@ -52,7 +52,8 @@ SET			@MasterAccount						= 'developers@volumeglobal.com';
 
 /* Folder Related */
 SET			@FolderTemp							= 'Temp/';
-SET			@StorageURL							= 'http://localhost/[WEBPROJECT]/filestore/';
+SET			@StoragePath						= 'C:\Users\achintha.premarathne\Documents\Visual Studio 2017\Projects\ECommerceSite\ECommerceWeb\Filestore';
+SET			@StorageURL							= 'http://localhost/ECommerceWeb/Filestore/';
 
 /* Maintenance Messages */
 SET			@MaintenanceDeliveryDate			= '2020-06-06 10:00:00'
@@ -103,6 +104,11 @@ INSERT INTO Config
 	([name], [value])
 VALUES
 	('FolderTemp', @FolderTemp);
+	
+INSERT INTO Config
+	([name], [value])
+VALUES
+	('StoragePath', @StoragePath);
 
 INSERT INTO Config
 	([name], [value])

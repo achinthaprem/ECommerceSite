@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ECommerceWeb.Common
 {
@@ -41,4 +44,41 @@ namespace ECommerceWeb.Common
 			return result;
 		}
 	}
+
+	#region Custom Authentication Attributes
+
+	public class VerifyUserAttribute : ActionFilterAttribute
+	{
+		public override void OnActionExecuting(ActionExecutingContext filterContext)
+		{
+			if (!Session.Authorized && !SkipVerification(filterContext))
+			{
+				filterContext.Result            = new RedirectResult(string.Format("~/Account/Login?returnUrl={0}", HttpUtility.UrlEncode(filterContext.HttpContext.Request.Url.AbsolutePath)));
+			}
+		}
+
+		private static bool SkipVerification(ActionExecutingContext filterContext)
+		{
+			Contract.Assert(filterContext != null);
+
+			return filterContext.ActionDescriptor.IsDefined(typeof(AllowAnyAttribute), inherit: true) ||
+				filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnyAttribute), inherit: true);
+		}
+	}
+
+	public class VerifyAdminAttribute : ActionFilterAttribute
+	{
+		public override void OnActionExecuting(ActionExecutingContext filterContext)
+		{
+			if (!Session.IsAdmin)
+			{
+				filterContext.Result            = new RedirectResult(string.Format("~/Account/Login?returnUrl={0}", HttpUtility.UrlEncode(filterContext.HttpContext.Request.Url.AbsolutePath)));
+			}
+		}
+	}
+
+	public sealed class AllowAnyAttribute : Attribute {	}
+
+	#endregion
+
 }

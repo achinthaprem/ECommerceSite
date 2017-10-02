@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace ECommerceWeb.Controllers
 {
+	[VerifyUser]
 	public class ShopController : Controller
 	{
 
@@ -14,18 +15,7 @@ namespace ECommerceWeb.Controllers
 		// GET: Shop/Index
 		public async Task<ActionResult> Index(int? filterBy)
 		{
-			ActionResult                result                  = null;
-
-			if (Common.Session.Authorized)
-			{
-				result                                          = View(await ProductViewModel.List(filterBy ?? 0));
-			}
-			else
-			{
-				result                                          = GetAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
+			return View(await ProductViewModel.List(filterBy ?? 0));
 		}
 
 		#endregion
@@ -35,46 +25,26 @@ namespace ECommerceWeb.Controllers
 		// GET: Shop/Product
 		public ActionResult ProductView(int? ID)
 		{
-			ActionResult                        result                  = View();
+			ProductViewModel            result              = null;
 
-			if (Common.Session.Authorized)
+			if (ID.HasValue)
 			{
-				if (ID != null)
-				{
-					ProductViewModel            model                   = new ProductViewModel(ID ?? default (int));
+				result										= new ProductViewModel(ID.Value);
 
-					if (model.ID != Constants.DEFAULT_VALUE_INT)
-					{
-						result                                          = View(model);
-					}
-					else
-					{
-						result                                          = new HttpNotFoundResult();
-					}
-				}
-				else
+				if (result.ID == Constants.DEFAULT_VALUE_INT)
 				{
-					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					return new HttpNotFoundResult();
 				}
 			}
 			else
 			{
-				result                                                  = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			return result;
+			return View(result);
 		}
 
 		#endregion
-
-		#region Internal Methods
-
-		private ActionResult GetAuthorizeRedirect(string returnUrl)
-		{
-			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
-		}
-
-		#endregion
-
+		
 	}
 }

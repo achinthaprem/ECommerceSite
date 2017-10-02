@@ -1,67 +1,35 @@
-﻿using ECommerceWeb.Common;
-using ECommerceWeb.Models.Category;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Web;
 using System.Web.Mvc;
+using ECommerceWeb.Common;
+using ECommerceWeb.Models.Category;
 
 namespace ECommerceWeb.Controllers
 {
+	[VerifyAdmin]
 	public class CategoryController : Controller
 	{
 
-		#region Add
+		#region Properties
 
-		// GET: Category/Add
-		public ActionResult Add()
+		public CategoryViewModel TempSession
 		{
-			ActionResult                    result                      = null;
-
-			if (Common.Session.IsAdmin)
+			get
 			{
-				result                                                  = View(new AddCategoryViewModel());
-			}
-			else
-			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
+				CategoryViewModel               result              = null;
 
-
-			return result;
-		}
-
-		// POST: Category/Add
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Add(AddCategoryViewModel model)
-		{
-			ActionResult                    result                      = null;
-
-			if (Common.Session.IsAdmin)
-			{
-				if (ModelState.IsValid)
+				if (Session[Constants.SESSION_TEMP_CATEGORY] != null)
 				{
-					if (model.Save())
-					{
-						TempData["alert-success"]                       = "Category added successfully!";
-					}
-					else
-					{
-						TempData["alert-fail"]                          = "Failed to add new category!";
-					}
+					result                                          = Session[Constants.SESSION_TEMP_CATEGORY] as CategoryViewModel;
+				}
 
-					result												= RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
-				}
-				else
-				{
-					result                                              = View(model);
-				}
+				return result;
 			}
-			else
+
+			set
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				Session[Constants.SESSION_TEMP_CATEGORY]            = value;
 			}
-
-			return result;
 		}
 
 		#endregion
@@ -69,176 +37,118 @@ namespace ECommerceWeb.Controllers
 		#region List
 
 		// GET: Category/List
-		public async Task<ActionResult> List()
+		public ActionResult List()
 		{
-			ActionResult				result					= null;
-
-			if (Common.Session.IsAdmin)
-			{
-				result                                          = View(ListCategoryViewModel.GetList());
-			}
-			else
-			{
-				result											= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
+			return View(CategoryViewModel.List());
 		}
 
 		#endregion
 
-		#region Edit
+		#region Editor
 
-		// GET: Category/Edit
-		public async Task<ActionResult> Edit(int? ID)
+		// GET: Category/Editor
+		public ActionResult Editor(int? id)
 		{
-			ActionResult                        result				= View();
+			CategoryViewModel                   result              = null;
 
-			if (Common.Session.IsAdmin)
+			if (id.HasValue)
 			{
-				if (ID != null)
+				if (this.TempSession != null &&
+					this.TempSession.ID == id.Value)
 				{
-					EditCategoryViewModel		model               = EditCategoryViewModel.ExecuteCreate(ID ?? -1);
-
-					if (model != null)
-					{
-						result                                      = View(model);
-					}
-					else
-					{
-						result                                      = new HttpNotFoundResult();
-					}
+					result                                          = this.TempSession;
 				}
 				else
 				{
-					result											= new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					Session.Remove(Constants.SESSION_TEMP_CATEGORY);
+					result                                          = CategoryViewModel.ExecuteCreate(id.Value);
+					this.TempSession                                = result;
+				}
+
+				if (result == null)
+				{
+					return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
 			{
-				result                                              = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                              = new CategoryViewModel();
+				this.TempSession                                    = result;
 			}
 
-			return result;
+			return View(result);
 		}
 
-		// POST: Category/Edit
+		// POST: Category/Editor
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit(EditCategoryViewModel model)
+		public ActionResult Editor(CategoryViewModel model)
 		{
-			ActionResult                    result                      = null;
-			
-			if (Common.Session.IsAdmin)
+			if (this.TempSession != null &&
+				model.ID == this.TempSession.ID &&
+				ModelState.IsValid)
 			{
-				if (model.Image == null)
-				{
-					ModelState.Remove("Image");
-				}
+				this.TempSession.Sync(model);
 
-				if (ModelState.IsValid)
+				if (this.TempSession.Validate(ModelState))
 				{
-					if (model.Save())
-					{
-						TempData["alert-success"]						= "Category updated successfully!";
-					}
-					else
-					{
-						TempData["alert-fail"]                          = "Something went wrong! Try again later.";
-					}
+					this.TempSession.Save();
+					Session.Remove(Constants.SESSION_TEMP_CATEGORY);
+					TempData["alert-success"]                       = "Category saved successfully!";
 
-					result                                              = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
-				}
-				else
-				{
-					ModelState.AddModelError("", "Please fix the errors below and try again.");
-					result                                              = View(model);
+					return RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
 				}
 			}
-			else
+
+			return View(this.TempSession);
+		}
+
+		#endregion
+
+		#region Upload Image
+
+		// POST: Category/UploadImage
+		[HttpPost]
+		public JsonResult UploadImage()
+		{
+			foreach (string fileObject in Request.Files)
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				HttpPostedFileBase          file            = Request.Files[fileObject] as HttpPostedFileBase;
+
+				if (this.TempSession != null)
+				{
+					this.TempSession.Upload(file);
+				}
 			}
 
-			return result;
+			return Json("File Uploaded Successfully!");
 		}
 
 		#endregion
 
 		#region Delete
 
-		// GET: Category/Delete
-		public async Task<ActionResult> Delete(int? ID)
-		{
-			ActionResult                        result              = null;
-
-			if (Common.Session.IsAdmin)
-			{
-				if (ID != null)
-				{
-					DeleteCategoryViewModel     model				= DeleteCategoryViewModel.ExecuteCreate(ID ?? 0);
-
-					if (model != null)
-					{
-						result                                      = View(model);
-					}
-					else
-					{
-						result                                      = new HttpNotFoundResult();
-					}
-				}
-				else
-				{
-					result                                          = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-				}
-			}
-			else
-			{
-				result                                              = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
-		}
-
 		// POST: Category/Delete
 		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Delete(DeleteCategoryViewModel model)
+		public ActionResult Delete(int? id)
 		{
-			ActionResult                    result                  = View();
+			bool					result              = false;
 
-			if (Common.Session.IsAdmin)
+			if (id.HasValue)
 			{
-				if (model.Delete())
-				{
-					TempData["alert-success"]						= "Category Deleted successfully!";
-				}
-				else
-				{
-					TempData["alert-fail"]                          = "Something went wrong! Try again later.";
-				}
+				CategoryViewModel	model				= CategoryViewModel.ExecuteCreate(id.Value);
 
-				result                                              = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
-			}
-			else
-			{
-				result                                              = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				if (model != null)
+				{
+					model.Delete();
+					result                              = true;
+				}
 			}
 
-			return result;
+			return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
 		}
 
 		#endregion
 
-		#region Internal Methods
-
-		private ActionResult GetAdminAuthorizeRedirect(string returnUrl)
-		{
-			TempData[Constants.CONST_ADMIN_ONLY_LOGIN]					= Constants.MSG_ADMIN_ONLY_LOGIN;
-
-			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
-		}
-
-		#endregion
 	}
 }

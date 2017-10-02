@@ -31,6 +31,7 @@ namespace ECommerce.Tables.Utility.System
 
 		// Storage
 		private const string            KEY_STORAGE_PATH_URL                    = "StorageURL";
+		private const string            KEY_STORAGE_PATH						= "StoragePath";
 
 		// Script/CSS combining
 		private const string            KEY_CSS_COMBINING_ENABLED               = "CssCombiningEnabled";
@@ -189,6 +190,14 @@ namespace ECommerce.Tables.Utility.System
 		public static string DefaultCulture
 		{
 			get { return GetConfigString(KEY_DEFAULT_CULTURE); }
+		}
+
+		/// <summary>
+		/// Gets the Path to the storage location.
+		/// </summary>
+		public static string StoragePath
+		{
+			get { return GetConfigString(KEY_STORAGE_PATH); }
 		}
 
 		/// <summary>

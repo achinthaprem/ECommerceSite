@@ -1,5 +1,5 @@
 ﻿@using ECommerceWeb.Common
-@model IEnumerable<ECommerceWeb.Models.Category.ListCategoryViewModel>
+@model IEnumerable<ECommerceWeb.Models.Category.CategoryViewModel>
 
 @{
     ViewBag.Title = "Category List";
@@ -25,21 +25,18 @@ else if (TempData["alert-fail"] != null)
 <h2>@ViewBag.Title</h2>
 <h4>List of all Categories.</h4>
 
-@Html.ActionLink("Create New", Constants.ACTION_ADD, Constants.CONTROLLER_CATEGORY, null, new { @class = "pull-right btn btn-primary", @style = "margin-bottom: 10px;" })
+@Html.ActionLink("Create New", Constants.ACTION_EDITOR, Constants.CONTROLLER_CATEGORY, null, new { @class = "pull-right btn btn-primary", @style = "margin-bottom: 10px;" })
 
 <table class="table table-striped" style="vertical-align: middle;">
     <tr>
-        <th class="col-md-1">
-            @Html.DisplayNameFor(model => model.ID)
-        </th>
-        <th class="col-md-2">
+        <th class="col-md-3">
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th class="col-md-5">
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th class="col-md-2">
-            @Html.DisplayNameFor(model => model.ImageSrc)
+            @Html.DisplayNameFor(model => model.Image)
         </th>
         <th class="col-md-1">
             @Html.DisplayNameFor(model => model.Status)
@@ -52,9 +49,6 @@ else if (TempData["alert-fail"] != null)
     @foreach (var item in Model)
     {
         <tr>
-            <td style="text-align: center;">
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
             <td style="white-space: nowrap; text-align: center;">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -63,7 +57,7 @@ else if (TempData["alert-fail"] != null)
                 <a href="#" class="more">more</a>
             </td>
             <td style="text-align: center;">
-                <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
+                <img src="@Url.Content(item.GetImageSrc())" alt="Image" style="width: 100px;" />
             </td>
             <td>
                 <div class="checkbox" style="padding-top: 0px; text-align: center;">
@@ -74,8 +68,8 @@ else if (TempData["alert-fail"] != null)
                 </div>
             </td>
             <td style="white-space: nowrap; text-align: center;">
-                @Html.ActionLink(" ", Constants.ACTION_EDIT, Constants.CONTROLLER_CATEGORY, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
-                @Html.ActionLink(" ", "Delete", new { id = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
+                @Html.ActionLink(" ", Constants.ACTION_EDITOR, Constants.CONTROLLER_CATEGORY, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
+                <span class="btn-link glyphicon glyphicon-trash" onclick="DeleteCategory(@item.ID, '@item.Name');" style="font-size: 25px;"></span>
             </td>
         </tr>
     }

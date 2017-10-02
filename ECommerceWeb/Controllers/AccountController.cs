@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace ECommerceWeb.Controllers
 {
+	[VerifyUser]
 	public class AccountController : Controller
 	{
 
@@ -17,6 +18,7 @@ namespace ECommerceWeb.Controllers
 		/// </summary>
 		/// <param name="returnUrl">After Successful login redirect to</param>
 		/// <returns></returns>
+		[AllowAny]
 		public ActionResult Login(string returnUrl)
 		{
 			ViewBag.ReturnUrl                               = returnUrl;
@@ -32,15 +34,10 @@ namespace ECommerceWeb.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AllowAny]
 		public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
 		{
-			ActionResult            result                  = null;
-
-			if (!ModelState.IsValid)
-			{
-				result                                      = View(model);
-			}
-			else
+			if (ModelState.IsValid)
 			{
 				switch (await model.ValidateLogin())
 				{
@@ -55,20 +52,19 @@ namespace ECommerceWeb.Controllers
 
 						if (Url.IsLocalUrl(returnUrl)) // If there is a Return Url
 						{
-							result                          = Redirect(returnUrl);
+							return Redirect(returnUrl);
 						}
 						else // Default page after Log in
 						{
 							if (Common.Session.IsAdmin) // For Admin User redirects to Admin home page
 							{
-								result                      = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+								return RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
 							}
 							else // For Normal User redirects to product listing page (Shop/Index)
 							{
-								result                      = RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP);
+								return RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP);
 							}
 						}
-						break;
 
 					case SignInStatus.Failure:
 					default:
@@ -78,7 +74,7 @@ namespace ECommerceWeb.Controllers
 				}
 			}
 
-			return result;
+			return View(model);
 		}
 
 		#endregion
@@ -90,6 +86,7 @@ namespace ECommerceWeb.Controllers
 		/// New User Registration Page
 		/// </summary>
 		/// <returns></returns>
+		[AllowAny]
 		public ActionResult Register()
 		{
 			return View();
@@ -102,11 +99,10 @@ namespace ECommerceWeb.Controllers
 		/// <param name="model"></param>
 		/// <returns></returns>
 		[HttpPost]
+		[AllowAny]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register(RegisterViewModel model)
 		{
-			ActionResult            result                      = null;
-
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -114,16 +110,13 @@ namespace ECommerceWeb.Controllers
 
 			if (await model.Save())
 			{
-				result                                          = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
 				TempData[Constants.CONST_TMP_REG_SUCESS]        = model.successMsg;
-			}
-			else
-			{
-				ModelState.AddModelError("", model.modelError);
-				result                                          = View(model);
+				return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
 			}
 
-			return result;
+			ModelState.AddModelError("", model.modelError);
+
+			return View(model);
 		}
 
 		#endregion
@@ -139,15 +132,9 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Logout()
 		{
-			ActionResult            result                  = RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
+			Common.Session.Destroy();
 
-			if (Common.Session.Authorized)
-			{
-				// Logout the User if only Logged in
-				Common.Session.Destroy();
-			}
-
-			return result;
+			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
 		}
 
 		#endregion
@@ -161,17 +148,7 @@ namespace ECommerceWeb.Controllers
 		/// <returns></returns>
 		public ActionResult Manage()
 		{
-			ActionResult            result                  = null;
-
-			if (Common.Session.Authorized)
-			{
-				result                                      = View(new EditViewModel(Common.Session.Account));
-			}
-			else
-			{
-				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-			return result;
+			return View(new EditViewModel(Common.Session.Account));
 		}
 
 		// POST : Account/Manage
@@ -184,26 +161,17 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Manage(EditViewModel model)
 		{
-			ActionResult            result                  = View(model);
-
-			if (Common.Session.Authorized) // If logged in
+			if (await model.Save())
 			{
-				if (await model.Save())
-				{
-					Common.Session.Start(Account.ExecuteCreate(model.ID));
-					ViewBag.Success                         = model.successMsg;
-				}
-				else
-				{
-					ModelState.AddModelError("", model.modelError);
-				}
+				Common.Session.Start(Account.ExecuteCreate(model.ID));
+				ViewBag.Success                         = model.successMsg;
 			}
-			else // Not logged in
+			else
 			{
-				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				ModelState.AddModelError("", model.modelError);
 			}
 
-			return result;
+			return View(model);
 		}
 
 		#endregion
@@ -217,18 +185,7 @@ namespace ECommerceWeb.Controllers
 		/// <returns></returns>
 		public ActionResult ChangePassword()
 		{
-			ActionResult            result                  = null;
-
-			if (Common.Session.Authorized)
-			{
-				result                                      = View(new ChangePasswordViewModel(Common.Session.Account.ID));
-			}
-			else
-			{
-				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
+			return View(new ChangePasswordViewModel(Common.Session.Account.ID));
 		}
 
 		// POST : Account/ChangePassword
@@ -241,45 +198,21 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
 		{
-			ActionResult            result                  = View(model);
+			int                 ID                      = model.ID;
 
-			if (Common.Session.Authorized) // If logged in
+			if (await model.Save())
 			{
-				int                 ID                      = model.ID;
-
-				if (await model.Save())
-				{
-					ViewBag.Success                         = Constants.MSG_CHANGE_PSW_SUCCESS;
-				}
-				else
-				{
-					ModelState.AddModelError("", Constants.MSG_CHANGE_PSW_FAIL);
-				}
+				ViewBag.Success                         = Constants.MSG_CHANGE_PSW_SUCCESS;
 			}
-			else // If not logged in
+			else
 			{
-				result                                      = GetAuthorizeRedirect(Request.Url.PathAndQuery);
+				ModelState.AddModelError("", Constants.MSG_CHANGE_PSW_FAIL);
 			}
 
-			return result;
+			return View(model);
 		}
 
 		#endregion
-
-		#region Common
-
-		/// <summary>
-		/// Redirects User to login page with  return Url
-		/// </summary>
-		/// <param name="returnUrl"></param>
-		/// <returns></returns>
-		private ActionResult GetAuthorizeRedirect(string returnUrl)
-		{
-			// GetAuthorizeRedirect(Request.Url.PathAndQuery);
-			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
-		}
-
-		#endregion
-
+		
 	}
 }

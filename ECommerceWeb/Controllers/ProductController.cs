@@ -1,66 +1,35 @@
-﻿using ECommerceWeb.Common;
-using ECommerceWeb.Models.Product;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Web;
 using System.Web.Mvc;
+using ECommerceWeb.Common;
+using ECommerceWeb.Models.Product;
 
 namespace ECommerceWeb.Controllers
 {
+	[VerifyAdmin]
 	public class ProductController : Controller
 	{
-		
-		#region Add
 
-		// GET: Product/Add
-		public async Task<ActionResult> Add()
+		#region Properties
+
+		public ProductViewModel TempSession
 		{
-			ActionResult                    result                          = null;
-
-			if (Common.Session.IsAdmin)
+			get
 			{
-				result                                                      = View(new AddProductViewModel());
-			}
-			else
-			{
-				result														= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
+				ProductViewModel            result              = null;
 
-			return result;
-		}
-
-		// POST: Product/Add
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Add(AddProductViewModel model)
-		{
-			ActionResult                    result							= null;
-
-			if (Common.Session.IsAdmin)
-			{
-				if (ModelState.IsValid)
+				if (Session[Constants.SESSION_TEMP_PRODUCT] != null)
 				{
-					if (model.Save())
-					{
-						TempData["alert-success"]                           = "Category added successfully!";
-					}
-					else
-					{
-						TempData["alert-fail"]                              = "Failed to add new product!";
-					}
+					result                                      = Session[Constants.SESSION_TEMP_PRODUCT] as ProductViewModel;
+				}
 
-					result													= RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
-				}
-				else
-				{
-					result													= View(model);
-				}
+				return result;
 			}
-			else
+
+			set
 			{
-				result														= GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				Session[Constants.SESSION_TEMP_PRODUCT]         = value;
 			}
-
-			return result;
 		}
 
 		#endregion
@@ -68,174 +37,116 @@ namespace ECommerceWeb.Controllers
 		#region List
 
 		// GET: Product/List
-		public async Task<ActionResult> List()
+		public ActionResult List()
 		{
-			ActionResult					result							= null;
-
-			if (Common.Session.IsAdmin)
-			{
-				result                                                      = View(ListProductViewModel.GetList());
-			}
-			else
-			{
-				result                                                      = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
+			return View(ProductViewModel.List());
 		}
 
 		#endregion
 
-		#region Edit
+		#region Editor
 
 		// GET: Product/Edit
-		public async Task<ActionResult> Edit(int? ID)
+		public ActionResult Editor(int? id)
 		{
-			ActionResult                        result                  = View();
+			ProductViewModel					result              = null;
 
-			if (Common.Session.IsAdmin)
+			if (id.HasValue)
 			{
-				if (ID != null)
+				if (this.TempSession != null &&
+					this.TempSession.ID == id.Value)
 				{
-					EditProductViewModel		model                   = EditProductViewModel.ExecuteCreate(ID ?? -1);
-
-					if (model != null)
-					{
-						result                                          = View(model);
-					}
-					else
-					{
-						result                                          = new HttpNotFoundResult();
-					}
+					result                                          = this.TempSession;
 				}
 				else
 				{
-					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+					Session.Remove(Constants.SESSION_TEMP_PRODUCT);
+					result                                          = ProductViewModel.ExecuteCreate(id.Value);
+					this.TempSession                                = result;
+				}
+
+				if (result == null)
+				{
+					return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 				}
 			}
 			else
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				result                                              = new ProductViewModel();
+				this.TempSession                                    = result;
 			}
 
-			return result;
+			return View(result);
 		}
 
 		// POST: Product/Edit
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Edit(EditProductViewModel model)
+		public ActionResult Editor(ProductViewModel model)
 		{
-			ActionResult                    result                      = null;
-
-			if (Common.Session.IsAdmin)
+			if (this.TempSession != null &&
+				model.ID == this.TempSession.ID &&
+				ModelState.IsValid)
 			{
-				if (model.Image == null)
-				{
-					ModelState.Remove("Image");
-				}
+				this.TempSession.Sync(model);
 
-				if (ModelState.IsValid)
+				if (this.TempSession.Validate(ModelState))
 				{
-					if (model.Save())
-					{
-						TempData["alert-success"]                       = "Product updated successfully!";
-					}
-					else
-					{
-						TempData["alert-fail"]                          = "Something went wrong! Try again later.";
-					}
+					this.TempSession.Save();
+					Session.Remove(Constants.SESSION_TEMP_PRODUCT);
+					TempData["alert-success"]                       = "Product saved successfully!";
 
-					result                                              = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
-				}
-				else
-				{
-					ModelState.AddModelError("", "Please fix the errors below and try again.");
-					result                                              = View(model);
+					return RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
 				}
 			}
-			else
+
+			return View(this.TempSession);
+		}
+
+		#endregion
+
+		#region Upload Image
+
+		// POST: Product/UploadImage
+		[HttpPost]
+		public JsonResult UploadImage()
+		{
+			foreach (string fileObject in Request.Files)
 			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				HttpPostedFileBase          file            = Request.Files[fileObject] as HttpPostedFileBase;
+
+				if (this.TempSession != null)
+				{
+					this.TempSession.Upload(file);
+				}
 			}
 
-			return result;
+			return Json("File Uploaded Successfully!");
 		}
 
 		#endregion
 
 		#region Delete
 
-		// GET: Product/Delete
-		public async Task<ActionResult> Delete(int? ID)
-		{
-			ActionResult                        result                  = null;
-
-			if (Common.Session.IsAdmin)
-			{
-				if (ID != null)
-				{
-					DeleteProductViewModel		model                   = DeleteProductViewModel.ExecuteCreate(ID ?? -1);
-
-					if (model != null)
-					{
-						result                                          = View(model);
-					}
-					else
-					{
-						result                                          = new HttpNotFoundResult();
-					}
-				}
-				else
-				{
-					result                                              = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-				}
-			}
-			else
-			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
-			}
-
-			return result;
-		}
-
 		// POST: Product/Delete
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Delete(DeleteProductViewModel model)
+		public ActionResult Delete(int? id)
 		{
-			ActionResult                        result                  = View();
+			bool                    result              = false;
 
-			if (Common.Session.IsAdmin)
+			if (id.HasValue)
 			{
-				if (model.Delete())
-				{
-					TempData["alert-success"]                           = "Product Deleted successfully!";
-				}
-				else
-				{
-					TempData["alert-fail"]                              = "Something went wrong! Try again later.";
-				}
+				ProductViewModel	model               = ProductViewModel.ExecuteCreate(id.Value);
 
-				result                                                  = RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
-			}
-			else
-			{
-				result                                                  = GetAdminAuthorizeRedirect(Request.Url.PathAndQuery);
+				if (model != null)
+				{
+					model.Delete();
+					result                              = true;
+				}
 			}
 
-			return result;
-		}
-
-		#endregion
-
-		#region Internal Methods
-
-		private ActionResult GetAdminAuthorizeRedirect(string returnUrl)
-		{
-			TempData[Constants.CONST_ADMIN_ONLY_LOGIN]                  = Constants.MSG_ADMIN_ONLY_LOGIN;
-
-			return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT, new { returnUrl = returnUrl });
+			return Json(new { Success = result }, JsonRequestBehavior.AllowGet);
 		}
 
 		#endregion

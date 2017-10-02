@@ -136,3 +136,130 @@ $(".clearable").each(function () {
     });
 
 });
+
+// Delete Category script
+function DeleteCategory(id, name) {
+
+    if (confirm('Are you sure you want to delete ' + name + '?')) {
+
+        $.ajax({
+            url: baseUrl + "Category/Delete/" + id,
+            type: "POST",
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                alert('Category deleted successfully!');
+                location.reload();
+            },
+            error: function (response) {
+                alert('Failed to delete the Category!');
+            }
+        });
+    }
+}
+
+// Delete Product script
+function DeleteProduct(id, name) {
+
+    if (confirm('Are you sure you want to delete ' + name + '?')) {
+
+        $.ajax({
+            url: baseUrl + "Product/Delete/" + id,
+            type: "POST",
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                alert('Product deleted successfully!');
+                location.reload();
+            },
+            error: function(response) {
+                alert('Failed to delete the Product!');
+            }
+        });
+    }
+}
+
+/*
+AJAX upload
+*/
+$(document).ready(function () {
+    $('#submit_category').click(function () {
+
+        // Checking whether FormData is available in browser  
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#image_upload_category").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object  
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object  
+            //fileData.append('username', ‘Achintha’);
+
+            $.ajax({
+                url: baseUrl + 'Category/UploadImage',
+                type: "POST",
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                data: fileData,
+                success: function (result) {
+                    $('form#categoryEditorForm').submit();
+                },
+                error: function (err) {
+                    //alert(err.statusText);
+                    $('form#categoryEditorForm').submit();
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    });
+});  
+
+$(document).ready(function() {
+    $('#submit_product').click(function() {
+
+        // Checking whether FormData is available in browser  
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#image_upload_product").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object  
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object  
+            //fileData.append('username', ‘Achintha’);
+
+            $.ajax({
+                url: baseUrl + 'Product/UploadImage',
+                type: "POST",
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                data: fileData,
+                success: function(result) {
+                    $('form#productEditorForm').submit();
+                },
+                error: function(err) {
+                    //alert(err.statusText);
+                    $('form#productEditorForm').submit();
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    });
+});  

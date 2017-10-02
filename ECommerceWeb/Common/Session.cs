@@ -14,11 +14,11 @@ namespace ECommerceWeb.Common
 		{
 			get
 			{
-				return HttpContext.Current.Session[Constants.CURRENT_ACCOUNT] as Account;
+				return HttpContext.Current.Session[Constants.SESSION_CURRENT_ACCOUNT] as Account;
 			}
 			set
 			{
-				HttpContext.Current.Session[Constants.CURRENT_ACCOUNT]              = value;
+				HttpContext.Current.Session[Constants.SESSION_CURRENT_ACCOUNT]              = value;
 			}
 		}
 
@@ -65,11 +65,11 @@ namespace ECommerceWeb.Common
 		{
 			get
 			{
-				return HttpContext.Current.Session[Constants.CURRENT_ORDER_ID] as int?;
+				return HttpContext.Current.Session[Constants.SESSION_CURRENT_ORDER_ID] as int?;
 			}
 			set
 			{
-				HttpContext.Current.Session[Constants.CURRENT_ORDER_ID]         = value;
+				HttpContext.Current.Session[Constants.SESSION_CURRENT_ORDER_ID]         = value;
 			}
 		}
 
@@ -80,11 +80,11 @@ namespace ECommerceWeb.Common
 		{
 			get
 			{
-				return HttpContext.Current.Session[Constants.PENDING_ORDER_ITEMS] as int?;
+				return HttpContext.Current.Session[Constants.SESSION_PENDING_ORDER_ITEMS] as int?;
 			}
 			set
 			{
-				HttpContext.Current.Session[Constants.PENDING_ORDER_ITEMS]      = value;
+				HttpContext.Current.Session[Constants.SESSION_PENDING_ORDER_ITEMS]      = value;
 			}
 		}
 

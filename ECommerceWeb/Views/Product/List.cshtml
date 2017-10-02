@@ -1,5 +1,5 @@
 ﻿@using ECommerceWeb.Common
-@model IEnumerable<ECommerceWeb.Models.Product.ListProductViewModel>
+@model IEnumerable<ECommerceWeb.Models.Product.ProductViewModel>
 
 @{
     ViewBag.Title = "Product List";
@@ -25,7 +25,7 @@ else if (TempData["alert-fail"] != null)
 <h2>@ViewBag.Title</h2>
 <h4>List of all Products.</h4>
 
-@Html.ActionLink("Create New", Constants.ACTION_ADD, Constants.CONTROLLER_PRODUCT, null, new { @class = "pull-right btn btn-primary", @style = "margin-bottom: 10px;" })
+@Html.ActionLink("Create New", Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT, null, new { @class = "pull-right btn btn-primary", @style = "margin-bottom: 10px;" })
 
 <table class="table table-striped" style="vertical-align: middle;">
     <tr>
@@ -39,7 +39,7 @@ else if (TempData["alert-fail"] != null)
             @Html.DisplayNameFor(model => model.Price)
         </th>
         <th class="col-md-2">
-            @Html.DisplayNameFor(model => model.ImageSrc)
+            @Html.DisplayNameFor(model => model.Image)
         </th>
         <th class="col-md-2">
             @Html.DisplayNameFor(model => model.Category)
@@ -66,10 +66,10 @@ else if (TempData["alert-fail"] != null)
                 @Func.Currencyfy(item.Price)
             </td>
             <td style="text-align: center;">
-                <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
+                <img src="@Url.Content(item.GetImageSrc())" alt="Image" style="width: 100px;" />
             </td>
             <td style="text-align: center;">
-                @Html.DisplayFor(modelItem => item.Category)
+                @Html.DisplayFor(modelItem => item.CategoryName)
             </td>
             <td style="text-align: center;">
                 <div class="checkbox" style="padding-top: 0px;">
@@ -80,8 +80,8 @@ else if (TempData["alert-fail"] != null)
                 </div>
             </td>
             <td style="white-space: nowrap; text-align: center;">
-                @Html.ActionLink(" ", Constants.ACTION_EDIT, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
-                @Html.ActionLink(" ", Constants.ACTION_DELETE, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-trash", @style = "font-size: 25px;" })
+                @Html.ActionLink(" ", Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT, new { id = item.ID }, new { @class = "glyphicon glyphicon-edit", @style = "font-size: 25px;" })
+                <span class="btn-link glyphicon glyphicon-trash" onclick="DeleteProduct(@item.ID, '@item.Name');" style="font-size: 25px;"></span>
             </td>
         </tr>
     }
