@@ -14,14 +14,14 @@ namespace ECommerceWeb.Controllers
 		[VerifyUser]
 		public ActionResult Index(int? TopSellingFilterBy, int? SelectedProduct)
 		{
-			ReportViewModel         result                  = new ReportViewModel();
-
 			if (Common.Session.IsAdmin)
 			{
-				result                                      = new ReportViewModel(TopSellingFilterBy, SelectedProduct);
+				return View(new ReportViewModel(TopSellingFilterBy, SelectedProduct));
 			}
-
-			return View();
+			else
+			{
+				return RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_SHOP);
+			}
 		}
 
 		#endregion
@@ -33,18 +33,18 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult ExportToExcel(int? reportMode, int? TopSellingFilterBy, int? SelectedProduct)
 		{
-			ReportViewModel			model			= new ReportViewModel(TopSellingFilterBy, SelectedProduct);
+			ReportViewModel			result			= new ReportViewModel(TopSellingFilterBy, SelectedProduct);
 
-			if (model != null)
+			if (result != null)
 			{
-				model.GenerateReport(reportMode, HttpContext.ApplicationInstance);
+				result.GenerateReport(reportMode, HttpContext.ApplicationInstance);
 			}
 			else
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			return View(model);
+			return View(result);
 		}
 
 		#endregion

@@ -1,8 +1,9 @@
-﻿using ECommerce.Tables.Active.HR;
-using ECommerceWeb.Common;
-using ECommerceWeb.Models.Account;
+﻿using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ECommerce.Tables.Active.HR;
+using ECommerceWeb.Common;
+using ECommerceWeb.Models.Account;
 
 namespace ECommerceWeb.Controllers
 {
@@ -16,13 +17,27 @@ namespace ECommerceWeb.Controllers
 		/// <summary>
 		/// Log in page
 		/// </summary>
-		/// <param name="returnUrl">After Successful login redirect to</param>
+		/// <param name="returnUrl">Requested page</param>
 		/// <returns></returns>
 		[AllowAny]
-		public ActionResult Login(string returnUrl)
+		public ActionResult Login(int? level, string returnUrl)
 		{
-			ViewBag.ReturnUrl                               = returnUrl;
-			return View();
+			if (this.IsLoginRequired(level, ref returnUrl))
+			{
+				ViewBag.ReturnUrl                               = returnUrl;
+				return View();
+			}
+			else
+			{
+				if (Url.IsLocalUrl(returnUrl))
+				{
+					return Redirect(returnUrl);
+				}
+				else
+				{
+					return RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_HOME);
+				}
+			}
 		}
 
 		// POST : Account/Login
@@ -213,6 +228,49 @@ namespace ECommerceWeb.Controllers
 		}
 
 		#endregion
-		
+
+		#region Private methods
+
+		/// <summary>
+		/// Checks whether the login is required with the requested page and required access level
+		/// </summary>
+		/// <param name="level">Access level required</param>
+		/// <param name="returnUrl">Requested page</param>
+		/// <returns></returns>
+		private bool IsLoginRequired(int? level, ref string returnUrl)
+		{
+			bool                result              = true;
+
+			if (level.HasValue &&
+				!String.IsNullOrEmpty(returnUrl))
+			{
+				if (level.Value == Constants.ACCESS_LEVEL_USER &&
+					Common.Session.Authorized)
+				{
+					result                          &= false;
+				}
+				else if (level.Value == Constants.ACCESS_LEVEL_USER &&
+					Common.Session.IsAdmin)
+				{
+					result                          &= false;
+				}
+				else if (level.Value == Constants.ACCESS_LEVEL_ADMIN &&
+					Common.Session.IsAdmin)
+				{
+					result                          &= false;
+				}
+			}
+			else if (Common.Session.Authorized ||
+				Common.Session.IsAdmin)
+			{
+				returnUrl                           = String.Empty;
+				result                              &= false;
+			}
+
+			return result;
+		}
+
+		#endregion
+
 	}
 }

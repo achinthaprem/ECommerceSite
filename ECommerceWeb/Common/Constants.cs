@@ -25,6 +25,10 @@ namespace ECommerceWeb.Common
 		public const string				SESSION_TEMP_CATEGORY			= "_TempEditorCategory";
 		public const string				SESSION_TEMP_PRODUCT			= "_TempEditorProduct";
 
+		// Access levels
+		public const int                ACCESS_LEVEL_ADMIN              = 1;
+		public const int                ACCESS_LEVEL_USER               = 0;
+
 		// Messages
 		public const string             MSG_LOGIN_FAIL_USR_PSW          = "Invalid user credentials!";
 		public const string             MSG_MANAGE_SUCCESS              = "Your account successfully updated!";

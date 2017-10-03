@@ -53,7 +53,11 @@ namespace ECommerceWeb.Common
 		{
 			if (!Session.Authorized && !SkipVerification(filterContext))
 			{
-				filterContext.Result            = new RedirectResult(string.Format("~/Account/Login?returnUrl={0}", HttpUtility.UrlEncode(filterContext.HttpContext.Request.Url.AbsolutePath)));
+				filterContext.Result            = new RedirectResult(
+													string.Format(
+														"~/Account/Login?level={0}&returnUrl={1}",
+														Constants.ACCESS_LEVEL_USER,
+														HttpUtility.UrlEncode(filterContext.HttpContext.Request.Url.AbsolutePath)));
 			}
 		}
 
@@ -72,7 +76,11 @@ namespace ECommerceWeb.Common
 		{
 			if (!Session.IsAdmin)
 			{
-				filterContext.Result            = new RedirectResult(string.Format("~/Account/Login?returnUrl={0}", HttpUtility.UrlEncode(filterContext.HttpContext.Request.Url.AbsolutePath)));
+				filterContext.Result            = new RedirectResult(
+													string.Format(
+														"~/Account/Login?level={0}&returnUrl={1}",
+														Constants.ACCESS_LEVEL_ADMIN,
+														HttpUtility.UrlEncode(filterContext.HttpContext.Request.Url.AbsolutePath)));
 			}
 		}
 	}
