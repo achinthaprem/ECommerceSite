@@ -1,13 +1,14 @@
-﻿using ECommerceWeb.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+using ECommerce.Tables.Utility.System;
+using ECommerceWeb.Common;
+using Volume.Toolkit.Paths;
 using ETC = ECommerce.Tables.Content;
 
 namespace ECommerceWeb.Models.Shop
 {
-	public class ProductViewModel
+	public class ShopViewModel
 	{
 
 		#region Members
@@ -95,9 +96,9 @@ namespace ECommerceWeb.Models.Shop
 
 		#region Constructors
 
-		public ProductViewModel() { }
+		public ShopViewModel() { }
 
-		public ProductViewModel(int productID)
+		public ShopViewModel(int productID)
 		{
 			ETC.Product         product         = ETC.Product.ExecuteCreate(productID);
 
@@ -107,7 +108,7 @@ namespace ECommerceWeb.Models.Shop
 				this.name                       = product.Name;
 				this.description                = product.Description;
 				this.price                      = product.Price;
-				this.imageSrc                   = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
+				this.imageSrc                   = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
 				this.category                   = product.ExecuteCreateCategoryByCategoryID().Name;
 				this.categoryID                 = product.CategoryID;
 				this.status                     = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;
@@ -115,7 +116,7 @@ namespace ECommerceWeb.Models.Shop
 			}
 		}
 
-		public ProductViewModel(ETC.Product product)
+		public ShopViewModel(ETC.Product product)
 		{
 			if (product != null)
 			{
@@ -123,7 +124,7 @@ namespace ECommerceWeb.Models.Shop
 				this.name                       = product.Name;
 				this.description                = product.Description;
 				this.price                      = product.Price;
-				this.imageSrc                   = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
+				this.imageSrc                   = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
 				this.category                   = product.ExecuteCreateCategoryByCategoryID().Name;
 				this.categoryID                 = product.CategoryID;
 				this.status                     = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;
@@ -141,43 +142,40 @@ namespace ECommerceWeb.Models.Shop
 		/// </summary>
 		/// <param name="categoryID"></param>
 		/// <returns></returns>
-		public static Task<List<ProductViewModel>> List(int categoryID)
+		public static List<ShopViewModel> List(int categoryID)
 		{
-			return Task.Run(() =>
+			List<ShopViewModel>				result          = null;
+
+			List<ETC.Product>               products        = (categoryID == 0) ? ETC.Product.List() : ETC.Product.ListByCategoryID(categoryID);
+
+			if (products.Count > 0)
 			{
-				List<ProductViewModel>          result          = null;
+				result                                      = new List<ShopViewModel>();
 
-				List<ETC.Product>               products        = (categoryID == 0) ? ETC.Product.List() : ETC.Product.ListByCategoryID(categoryID);
-
-				if (products.Count > 0)
+				foreach (ETC.Product product in products)
 				{
-					result                                      = new List<ProductViewModel>();
-
-					foreach (ETC.Product product in products)
+					if (product.Status == ETC.Product.STATUS_ACTIVE)
 					{
-						if (product.Status == ETC.Product.STATUS_ACTIVE)
-						{
-							result.Add(new ProductViewModel(product));
-						}
+						result.Add(new ShopViewModel(product));
 					}
-
-					result.Shuffle();
 				}
 
-				return result;
-			});
+				result.Shuffle();
+			}
+
+			return result;
 		}
 
-		public static async Task<bool> AddToCart(int? productID, int quantity)
+		public static bool AddToCart(int? productID, int quantity)
 		{
 			bool                    result                          = false;
 
-			if (productID != null)
+			if (productID.HasValue)
 			{
 				CheckPendingOrders();
 
-				ProductViewModel        model                       = new ProductViewModel(productID ?? 0);
-				ETC.OrderItem           orderItem                   = await CheckPendingOrderItems(model.ID);
+				ShopViewModel           model                       = new ShopViewModel(productID.Value);
+				ETC.OrderItem           orderItem                   = CheckPendingOrderItems(model.ID);
 
 				if (orderItem != null)
 				{
@@ -206,53 +204,44 @@ namespace ECommerceWeb.Models.Shop
 			return result;
 		}
 
-		public static Task<bool> RemoveFromCart(int? orderItemID)
+		public static bool RemoveFromCart(int? orderItemID)
 		{
 			CheckPendingOrders();
-			int                             orderID             = Common.Session.CurrentOrderID ?? default(int);
 
-			return Task.Run(() =>
+			bool                        result              = false;
+
+			if (orderItemID.HasValue && Common.Session.CurrentOrderID.HasValue)
 			{
-				bool                        result              = false;
+				ETC.OrderItem           item                = ETC.OrderItem.ExecuteCreate(orderItemID.Value);
+				item.Delete();
 
-				if (orderItemID != null)
-				{
-					ETC.OrderItem           item                = ETC.OrderItem.ExecuteCreate(orderItemID ?? 0);
-					item.Delete();
+				UpdateTotalAmountInOrder(Common.Session.CurrentOrderID.Value);
 
-					UpdateTotalAmountInOrder(orderID);
+				result                                      = true;
+			}
 
-					result                                      = true;
-				}
-
-				return result;
-			});
+			return result;
 		}
 
-		private static Task<ETC.OrderItem> CheckPendingOrderItems(int ProductID)
+		private static ETC.OrderItem CheckPendingOrderItems(int ProductID)
 		{
-			int                             current_OrderID             = Common.Session.CurrentOrderID ?? default(int);
-			return Task.Run(() =>
+			ETC.OrderItem               result                      = null;
+
+			if (Common.Session.CurrentOrderID.HasValue)
 			{
-				int                         orderID                     = current_OrderID;
-				ETC.OrderItem               result                      = null;
+				List<ETC.OrderItem>         list                    = ETC.OrderItem.ListByOrderID(Common.Session.CurrentOrderID.Value);
 
-				if (orderID != 0)
+				foreach (ETC.OrderItem item in list)
 				{
-					List<ETC.OrderItem>         list                    = ETC.OrderItem.ListByOrderID(orderID);
-
-					foreach (ETC.OrderItem item in list)
+					if (item.ProductID == ProductID)
 					{
-						if (item.ProductID == ProductID)
-						{
-							result                                      = item;
-							break;
-						}
+						result                                      = item;
+						break;
 					}
 				}
+			}
 
-				return result;
-			});
+			return result;
 		}
 
 		private static void CheckPendingOrders()

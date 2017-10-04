@@ -155,37 +155,5 @@ namespace ECommerceWeb.Common
 
 			PendingOrderItems										= count;
 		}
-
-		//public static Account ValidateCookie(HttpRequestBase request)
-		//{
-		//	Account                     result                              = null;
-
-		//	HttpCookie                  cookie                              = request.Cookies[Constants.USER_COOCKIE_NAME];
-
-		//	if (cookie != null)
-		//	{
-		//		if (bool.Parse(cookie[Constants.USER_REMEMBER_ME].ToString()))
-		//		{
-		//			result                                                      = ECommerce.Tables.Active.HR.Account.ExecuteCreate(int.Parse(cookie[Constants.USER_ID].ToString()));
-		//		}
-		//	}
-
-		//	return result;
-		//}
-
-		//public static HttpCookie CreateCookie(Account account, bool rememberMe)
-		//{
-		//	HttpCookie                  userInfo                            = new HttpCookie(Constants.USER_COOCKIE_NAME);
-
-		//	userInfo[Constants.USER_ID]                                     = account.ID.ToString();
-		//	userInfo[Constants.USER_NAME]                                   = account.FirstName + " " + account.LastName;
-		//	userInfo[Constants.USER_EMAIL]                                  = account.Email;
-		//	userInfo[Constants.USER_REMEMBER_ME]                            = rememberMe.ToString();
-
-		//	userInfo.Domain = "localhost";
-		//	userInfo.Expires.Add(new TimeSpan(30, 0, 0, 0));
-
-		//	return userInfo;
-		//}
 	}
 }

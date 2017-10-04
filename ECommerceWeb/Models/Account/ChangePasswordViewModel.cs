@@ -1,8 +1,6 @@
-﻿using ECommerce.Tables.Active.HR;
-using ECommerceWeb.Common;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+using ECommerceWeb.Common;
 using ETAH = ECommerce.Tables.Active.HR;
 
 namespace ECommerceWeb.Models.Account
@@ -71,30 +69,27 @@ namespace ECommerceWeb.Models.Account
 
 		#region Methods
 
-		public Task<bool> Save()
+		public bool Save()
 		{
-			return Task.Run(() =>
+			bool                        result                  = false;
+
+			if (this.id != Constants.DEFAULT_VALUE_INT)
 			{
-				bool                        result                  = false;
+				ETAH.Account            account                 = ETAH.Account.ExecuteCreate(this.id);
+				string                  password                = ETAH.AccountPasswordHasher.HashPassword(this.currentPassword, account.Salt);
 
-				if (this.id != Constants.DEFAULT_VALUE_INT)
+				if (account.Password.Equals(password)) // If current password correct
 				{
-					ETAH.Account            account                 = ETAH.Account.ExecuteCreate(this.id);
-					string                  password                = AccountPasswordHasher.HashPassword(this.currentPassword, account.Salt);
+					string              salt                    = String.Empty;
+					string              hPassword               = ETAH.AccountPasswordHasher.CreatePassword(this.newPassword, out salt);
 
-					if (account.Password.Equals(password)) // If current password correct
-					{
-						string              salt                    = String.Empty;
-						string              hPassword               = AccountPasswordHasher.CreatePassword(this.newPassword, out salt);
+					account.UpdatePasswordSalt(hPassword, salt, Common.Session.Account.ID);
 
-						account.UpdatePasswordSalt(hPassword, salt, Common.Session.Account.ID);
-
-						result                                      = true;
-					}
+					result                                      = true;
 				}
+			}
 
-				return result;
-			});
+			return result;
 		}
 
 		#endregion

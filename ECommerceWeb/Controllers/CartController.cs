@@ -1,9 +1,8 @@
-﻿using ECommerceWeb.Common;
+﻿using System.Net;
+using System.Web.Mvc;
+using ECommerceWeb.Common;
 using ECommerceWeb.Models.Cart;
 using ECommerceWeb.Models.Shop;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web.Mvc;
 
 namespace ECommerceWeb.Controllers
 {
@@ -29,21 +28,21 @@ namespace ECommerceWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Checkout(OrderViewModel model)
+		public ActionResult Checkout(OrderViewModel model)
 		{
 			if (model != null)
 			{
-				if (await model.CheckOut())
+				if (model.CheckOut())
 				{
 					Common.Session.CountItemsInCart();
-					TempData["alert-success"]                       = "Order placed successfully!";
+					TempData[Constants.ALERT_SUCCESS]                       = "Order placed successfully!";
 
 					// TODO: Create new shipping info record for the order
 				}
 				else
 				{
 					Common.Session.CountItemsInCart();
-					TempData["alert-fail"]                          = "Error occured while placing the order!";
+					TempData[Constants.ALERT_FAIL]                          = "Error occured while placing the order!";
 				}
 
 				return Redirect(Request.UrlReferrer.ToString());
@@ -60,17 +59,17 @@ namespace ECommerceWeb.Controllers
 
 		// GET: Cart/Add
 		[HttpPost]
-		public async Task<ActionResult> Add(int? ProductID, int? Quantity)
+		public ActionResult Add(int? ProductID, int? Quantity)
 		{
-			bool                    completed                           = await ProductViewModel.AddToCart(ProductID, Quantity ?? 1);
-			// TODO: Use Ajax
+			bool                    completed                   = ShopViewModel.AddToCart(ProductID, Quantity ?? 1);
+			
 			if (completed)
 			{
-				TempData["alert-success"]                               = "Item(s) added to the cart successfully!";
+				TempData[Constants.ALERT_SUCCESS]               = "Item(s) added to the cart successfully!";
 			}
 			else
 			{
-				TempData["alert-fail"]                                  = "Failed to add Item(s) to the cart!";
+				TempData[Constants.ALERT_FAIL]                  = "Failed to add Item(s) to the cart!";
 			}
 
 			Common.Session.CountItemsInCart();
@@ -83,15 +82,15 @@ namespace ECommerceWeb.Controllers
 		#region Remove Item from Cart
 
 		[HttpPost]
-		public async Task<ActionResult> RemoveItem(int? OrderItemID)
+		public ActionResult RemoveItem(int? OrderItemID)
 		{
-			if (await ProductViewModel.RemoveFromCart(OrderItemID))
+			if (ShopViewModel.RemoveFromCart(OrderItemID))
 			{
-				TempData["alert-success"]               = "Item(s) removed from the cart successfully!";
+				TempData[Constants.ALERT_SUCCESS]               = "Item(s) removed from the cart successfully!";
 			}
 			else
 			{
-				TempData["alert-fail"]                  = "Failed to remove Item(s) from the cart!";
+				TempData[Constants.ALERT_FAIL]                  = "Failed to remove Item(s) from the cart!";
 			}
 
 			Common.Session.CountItemsInCart();
@@ -103,15 +102,15 @@ namespace ECommerceWeb.Controllers
 
 		#region Remove Order
 
-		public async Task<ActionResult> RemoveOrder(int? orderID)
+		public ActionResult RemoveOrder(int? orderID)
 		{
-			if (await OrderViewModel.RemoveOrder(orderID))
+			if (OrderViewModel.RemoveOrder(orderID))
 			{
-				TempData["alert-success"]               = "The Order cancelled successfully!";
+				TempData[Constants.ALERT_SUCCESS]               = "The Order cancelled successfully!";
 			}
 			else
 			{
-				TempData["alert-fail"]					= "Failed to cancel the order!";
+				TempData[Constants.ALERT_FAIL]					= "Failed to cancel the order!";
 			}
 
 			Common.Session.CountItemsInCart();

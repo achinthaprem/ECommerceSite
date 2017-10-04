@@ -1,4 +1,6 @@
-﻿@{
+﻿@using ECommerce.Tables.Utility.System
+@using Volume.Toolkit.Paths
+@{
     ViewBag.Title = "About ECommerce";
 }
 <h2>@ViewBag.Title</h2>
@@ -8,4 +10,4 @@
 
 <p style="font-size: larger;" class="text-justify">E-commerce (electronic commerce or EC) is the buying and selling of goods and services, or the transmitting of funds or data, over an electronic network, primarily the internet. These business transactions occur either as business-to-business, business-to-consumer, consumer-to-consumer or consumer-to-business. The terms e-commerce and e-business are often used interchangeably. The term e-tail is also sometimes used in reference to transactional processes for online shopping.</p>
 
-<img src="~/Filestore/Images/banner-about-ecommerce.png" class="img-responsive" alt="About ECommerce" />
+<img src="@PathUtility.CombineUrls(Config.StorageUrl, "Images/banner-about-ecommerce.png")" class="img-responsive" alt="About ECommerce" />

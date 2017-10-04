@@ -1,8 +1,7 @@
-﻿using ECommerceWeb.Common;
-using ECommerceWeb.Models.Shop;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using System.Web.Mvc;
+using ECommerceWeb.Common;
+using ECommerceWeb.Models.Shop;
 
 namespace ECommerceWeb.Controllers
 {
@@ -13,9 +12,14 @@ namespace ECommerceWeb.Controllers
 		#region Index
 
 		// GET: Shop/Index
-		public async Task<ActionResult> Index(int? filterBy)
+		/// <summary>
+		/// List down the products which, the status is active
+		/// </summary>
+		/// <param name="filterBy"></param>
+		/// <returns></returns>
+		public ActionResult Index(int? filterBy)
 		{
-			return View(await ProductViewModel.List(filterBy ?? 0));
+			return View(ShopViewModel.List(filterBy ?? 0));
 		}
 
 		#endregion
@@ -23,13 +27,18 @@ namespace ECommerceWeb.Controllers
 		#region Product View
 
 		// GET: Shop/Product
+		/// <summary>
+		/// Opens a new page to show an product
+		/// </summary>
+		/// <param name="ID"></param>
+		/// <returns></returns>
 		public ActionResult ProductView(int? ID)
 		{
-			ProductViewModel            result              = null;
+			ShopViewModel				result              = null;
 
 			if (ID.HasValue)
 			{
-				result										= new ProductViewModel(ID.Value);
+				result										= new ShopViewModel(ID.Value);
 
 				if (result.ID == Constants.DEFAULT_VALUE_INT)
 				{

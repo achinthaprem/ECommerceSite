@@ -11,6 +11,12 @@ namespace ECommerceWeb.Controllers
 		#region Home Page
 
 		// GET: Home/Index
+		/// <summary>
+		/// Admin Homepage & Reports
+		/// </summary>
+		/// <param name="TopSellingFilterBy"></param>
+		/// <param name="SelectedProduct"></param>
+		/// <returns></returns>
 		[VerifyUser]
 		public ActionResult Index(int? TopSellingFilterBy, int? SelectedProduct)
 		{
@@ -28,6 +34,13 @@ namespace ECommerceWeb.Controllers
 
 		#region Export Excel
 
+		/// <summary>
+		/// Export to Excel report
+		/// </summary>
+		/// <param name="reportMode"></param>
+		/// <param name="TopSellingFilterBy"></param>
+		/// <param name="SelectedProduct"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[VerifyAdmin]
 		[ValidateAntiForgeryToken]
@@ -51,6 +64,10 @@ namespace ECommerceWeb.Controllers
 
 		#region About
 
+		/// <summary>
+		/// About page
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult About()
 		{
 			return View();
@@ -60,11 +77,20 @@ namespace ECommerceWeb.Controllers
 
 		#region Contact
 		
+		/// <summary>
+		/// Contact page
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult Contact()
 		{
 			return View();
 		}
 
+		/// <summary>
+		/// Contact form submission
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Contact(CreateContactFormViewModel model)
@@ -73,11 +99,11 @@ namespace ECommerceWeb.Controllers
 			{
 				if (model.Save())
 				{
-					TempData["alert-success"]                           = "Thank you for contacting us, we'll be in touch :)";
+					TempData[Constants.ALERT_SUCCESS]                           = "Thank you for contacting us, we'll be in touch :)";
 				}
 				else
 				{
-					TempData["alert-fail"]                              = "Oh Snap! Something went wrong, try again later :/";
+					TempData[Constants.ALERT_FAIL]                              = "Oh Snap! Something went wrong, try again later :/";
 				}
 			}
 			else

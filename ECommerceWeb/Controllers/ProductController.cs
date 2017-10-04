@@ -37,6 +37,10 @@ namespace ECommerceWeb.Controllers
 		#region List
 
 		// GET: Product/List
+		/// <summary>
+		/// List All Products
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult List()
 		{
 			return View(ProductViewModel.List());
@@ -47,6 +51,11 @@ namespace ECommerceWeb.Controllers
 		#region Editor
 
 		// GET: Product/Edit
+		/// <summary>
+		/// Add or Edit by ID
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public ActionResult Editor(int? id)
 		{
 			ProductViewModel					result              = null;
@@ -94,7 +103,7 @@ namespace ECommerceWeb.Controllers
 				{
 					this.TempSession.Save();
 					Session.Remove(Constants.SESSION_TEMP_PRODUCT);
-					TempData["alert-success"]                       = "Product saved successfully!";
+					TempData[Constants.ALERT_SUCCESS]                       = "Product saved successfully!";
 
 					return RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
 				}
@@ -108,6 +117,10 @@ namespace ECommerceWeb.Controllers
 		#region Upload Image
 
 		// POST: Product/UploadImage
+		/// <summary>
+		/// Upload Image to current Product (Sessions)
+		/// </summary>
+		/// <returns></returns>
 		[HttpPost]
 		public JsonResult UploadImage()
 		{
@@ -129,6 +142,11 @@ namespace ECommerceWeb.Controllers
 		#region Delete
 
 		// POST: Product/Delete
+		/// <summary>
+		/// Delete Product by ID
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Delete(int? id)

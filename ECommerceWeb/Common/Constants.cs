@@ -1,6 +1,8 @@
-﻿
-namespace ECommerceWeb.Common
+﻿namespace ECommerceWeb.Common
 {
+	/// <summary>
+	/// Constant Values used through out the project
+	/// </summary>
 	public class Constants
 	{
 		// Defaults
@@ -28,6 +30,10 @@ namespace ECommerceWeb.Common
 		// Access levels
 		public const int                ACCESS_LEVEL_ADMIN              = 1;
 		public const int                ACCESS_LEVEL_USER               = 0;
+
+		// Alerts
+		public const string             ALERT_SUCCESS                   = "alert-success";
+		public const string             ALERT_FAIL                      = "alert-fail";
 
 		// Messages
 		public const string             MSG_LOGIN_FAIL_USR_PSW          = "Invalid user credentials!";

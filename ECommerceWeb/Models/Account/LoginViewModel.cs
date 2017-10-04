@@ -1,7 +1,6 @@
-﻿using ECommerceWeb.Common;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+using ECommerceWeb.Common;
 using ETAH = ECommerce.Tables.Active.HR;
 
 namespace ECommerceWeb.Models.Account
@@ -66,39 +65,36 @@ namespace ECommerceWeb.Models.Account
 
 		#region Methods
 
-		public Task<SignInStatus> ValidateLogin()
+		public SignInStatus ValidateLogin()
 		{
-			return Task.Run(() =>
+			SignInStatus               result                   = SignInStatus.Failure;
+
+			ETAH.Account                account                 = ETAH.Account.ExecuteCreateByEmail(this.email);
+
+			if (account != null)
 			{
-				SignInStatus               result						= SignInStatus.Failure;
-
-				ETAH.Account                    account                 = ETAH.Account.ExecuteCreateByEmail(this.email);
-
-				if (account != null)
+				if (account.Status == ETAH.Account.STATUS_ACTIVE)
 				{
-					if (account.Status == ETAH.Account.STATUS_ACTIVE)
+					if (account.Password.Equals(ETAH.AccountPasswordHasher.HashPassword(this.password, account.Salt)))
 					{
-						if (account.Password.Equals(ETAH.AccountPasswordHasher.HashPassword(this.password, account.Salt)))
-						{
-							result                                      = SignInStatus.Success;
-						}
-						else
-						{
-							result                                      = SignInStatus.Failure;
-						}
+						result                                  = SignInStatus.Success;
 					}
 					else
 					{
-						result                                          = SignInStatus.Deactivated;
+						result                                  = SignInStatus.Failure;
 					}
 				}
 				else
 				{
-					result                                              = SignInStatus.Failure;
+					result                                      = SignInStatus.Deactivated;
 				}
+			}
+			else
+			{
+				result                                          = SignInStatus.Failure;
+			}
 
-				return result;
-			});
+			return result;
 		}
 
 		#endregion

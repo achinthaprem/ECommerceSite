@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using ECommerce.Tables.Active.HR;
 using ECommerceWeb.Common;
@@ -13,7 +12,7 @@ namespace ECommerceWeb.Controllers
 
 		#region Login
 
-		// GET : Account/Login
+		// GET: Account/Login
 		/// <summary>
 		/// Log in page
 		/// </summary>
@@ -40,7 +39,7 @@ namespace ECommerceWeb.Controllers
 			}
 		}
 
-		// POST : Account/Login
+		// POST: Account/Login
 		/// <summary>
 		/// Log in page
 		/// </summary>
@@ -50,11 +49,11 @@ namespace ECommerceWeb.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AllowAny]
-		public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+		public ActionResult Login(LoginViewModel model, string returnUrl)
 		{
 			if (ModelState.IsValid)
 			{
-				switch (await model.ValidateLogin())
+				switch (model.ValidateLogin())
 				{
 					case SignInStatus.Deactivated:
 
@@ -96,7 +95,7 @@ namespace ECommerceWeb.Controllers
 
 		#region Register
 
-		// GET : Account/Register
+		// GET: Account/Register
 		/// <summary>
 		/// New User Registration Page
 		/// </summary>
@@ -107,7 +106,7 @@ namespace ECommerceWeb.Controllers
 			return View();
 		}
 
-		// POST : Account/Register
+		// POST: Account/Register
 		/// <summary>
 		/// New User Registration Page
 		/// </summary>
@@ -116,19 +115,18 @@ namespace ECommerceWeb.Controllers
 		[HttpPost]
 		[AllowAny]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Register(RegisterViewModel model)
+		public ActionResult Register(RegisterViewModel model)
 		{
-			if (!ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				return View(model);
-			}
+				if (model.Save())
+				{
+					TempData[Constants.CONST_TMP_REG_SUCESS]        = model.successMsg;
 
-			if (await model.Save())
-			{
-				TempData[Constants.CONST_TMP_REG_SUCESS]        = model.successMsg;
-				return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
+					return RedirectToAction(Constants.ACTION_LOGIN, Constants.CONTROLLER_ACCOUNT);
+				}
 			}
-
+			
 			ModelState.AddModelError("", model.modelError);
 
 			return View(model);
@@ -174,9 +172,9 @@ namespace ECommerceWeb.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Manage(EditViewModel model)
+		public ActionResult Manage(EditViewModel model)
 		{
-			if (await model.Save())
+			if (model.Save())
 			{
 				Common.Session.Start(Account.ExecuteCreate(model.ID));
 				ViewBag.Success                         = model.successMsg;
@@ -211,11 +209,9 @@ namespace ECommerceWeb.Controllers
 		/// <returns></returns>
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+		public ActionResult ChangePassword(ChangePasswordViewModel model)
 		{
-			int                 ID                      = model.ID;
-
-			if (await model.Save())
+			if (model.Save())
 			{
 				ViewBag.Success                         = Constants.MSG_CHANGE_PSW_SUCCESS;
 			}

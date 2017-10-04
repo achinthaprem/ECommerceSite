@@ -4,19 +4,19 @@
     ViewBag.Title = "Contact";
 }
 
-@if (TempData["alert-success"] != null)
+@if (TempData[Constants.ALERT_SUCCESS] != null)
 {
     <div class="alert alert-success" style="margin-top: 20px">
         <ul>
-            <li>@TempData["alert-success"]</li>
+            <li>@TempData[Constants.ALERT_SUCCESS]</li>
         </ul>
     </div>
 }
-else if (TempData["alert-fail"] != null)
+else if (TempData[Constants.ALERT_FAIL] != null)
 {
     <div class="alert alert-danger" style="margin-top: 20px">
         <ul>
-            <li>@TempData["alert-fail"]</li>
+            <li>@TempData[Constants.ALERT_FAIL]</li>
         </ul>
     </div>
 }

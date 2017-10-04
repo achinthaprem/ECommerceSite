@@ -1,7 +1,6 @@
-﻿using ECommerceWeb.Common;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+using ECommerceWeb.Common;
 using ETAH = ECommerce.Tables.Active.HR;
 
 namespace ECommerceWeb.Models.Account
@@ -112,45 +111,42 @@ namespace ECommerceWeb.Models.Account
 
 		#region Methods
 
-		public Task<bool> Save()
+		public bool Save()
 		{
-			return Task.Run(() =>
+			bool                        result                  = false;
+
+			ETAH.Account                account                 = ETAH.Account.ExecuteCreate(ID);
+			ETAH.Account                accByEmail              = ETAH.Account.ExecuteCreateByEmail(Email);
+
+			if (accByEmail == null || (account.Email == accByEmail.Email))
 			{
-				bool                        result                  = false;
-
-				ETAH.Account                account                 = ETAH.Account.ExecuteCreate(ID);
-				ETAH.Account                accByEmail              = ETAH.Account.ExecuteCreateByEmail(Email);
-
-				if (accByEmail == null || (account.Email == accByEmail.Email))
+				if (account != null)
 				{
-					if (account != null)
-					{
-						account.Update(
-							this.firstName,
-							this.lastName,
-							this.email,
-							this.contactNo,
-							this.shippingAddress,
-							this.country,
-							Common.Session.Account.Status,
-							Common.Session.Account.Role,
-							this.id);
+					account.Update(
+						this.firstName,
+						this.lastName,
+						this.email,
+						this.contactNo,
+						this.shippingAddress,
+						this.country,
+						Common.Session.Account.Status,
+						Common.Session.Account.Role,
+						this.id);
 
-						this.successMsg                             = Constants.MSG_MANAGE_SUCCESS;
-						result                                      = true;
-					}
-					else
-					{
-						this.modelError                             = Constants.MSG_MANAGE_FAIL;
-					}
+					this.successMsg                             = Constants.MSG_MANAGE_SUCCESS;
+					result                                      = true;
 				}
 				else
 				{
-					this.modelError                                 = Constants.MSG_MANAGE_FAIL_EMAIL_EXIST;
+					this.modelError                             = Constants.MSG_MANAGE_FAIL;
 				}
+			}
+			else
+			{
+				this.modelError                                 = Constants.MSG_MANAGE_FAIL_EMAIL_EXIST;
+			}
 
-				return result;
-			});
+			return result;
 		}
 
 		#endregion

@@ -94,7 +94,7 @@ namespace ECommerceWeb.Controllers
 				{
 					this.TempSession.Save();
 					Session.Remove(Constants.SESSION_TEMP_CATEGORY);
-					TempData["alert-success"]                       = "Category saved successfully!";
+					TempData[Constants.ALERT_SUCCESS]                       = "Category saved successfully!";
 
 					return RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
 				}

@@ -1,10 +1,6 @@
-﻿using ECommerceWeb.Common;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+using ECommerceWeb.Common;
 using ETAH = ECommerce.Tables.Active.HR;
 
 namespace ECommerceWeb.Models.Account
@@ -28,7 +24,7 @@ namespace ECommerceWeb.Models.Account
 		public string               contactNo               = String.Empty;
 		public string               shippingAddress         = String.Empty;
 		public string               country                 = String.Empty;
-		
+
 		public string               modelError              = null;
 		public string               successMsg              = null;
 
@@ -119,18 +115,16 @@ namespace ECommerceWeb.Models.Account
 
 		#region Methods
 
-		public Task<bool> Save()
+		public bool Save()
 		{
-			return Task.Run(() =>
+			bool                    result                      = false;
+
+			if (CheckEmailAsync(this.email))
 			{
-				bool                    result                      = false;
+				string              salt                        = String.Empty;
+				string              hPassword                   = ETAH.AccountPasswordHasher.CreatePassword(Password, out salt);
 
-				if (CheckEmailAsync(this.email))
-				{
-					string				salt						= String.Empty;
-					string				hPassword					= ETAH.AccountPasswordHasher.CreatePassword(Password, out salt);
-
-					ETAH.Account        newAccount					= ETAH.Account.ExecuteCreate(
+				ETAH.Account        newAccount                  = ETAH.Account.ExecuteCreate(
 																						this.firstName,
 																						this.lastName,
 																						this.email,
@@ -144,21 +138,20 @@ namespace ECommerceWeb.Models.Account
 																						SELF_REGISTERED,
 																						SELF_REGISTERED);
 
-					newAccount.Insert();
+				newAccount.Insert();
 
-					if (newAccount.ID != -1)
-					{
-						this.successMsg                             = Constants.MSG_REG_SUCCESS;
-						result                                      = true;
-					}
-				}
-				else
+				if (newAccount.ID != Constants.DEFAULT_VALUE_INT)
 				{
-					this.modelError                                 = Constants.MSG_REG_FAIL_EMAIL_EXIST;
+					this.successMsg                             = Constants.MSG_REG_SUCCESS;
+					result                                      = true;
 				}
+			}
+			else
+			{
+				this.modelError                                 = Constants.MSG_REG_FAIL_EMAIL_EXIST;
+			}
 
-				return result;
-			});
+			return result;
 		}
 
 		/// <summary>

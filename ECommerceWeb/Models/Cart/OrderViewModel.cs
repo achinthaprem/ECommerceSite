@@ -1,7 +1,6 @@
-﻿using ECommerceWeb.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using ECommerceWeb.Common;
 using ETAH = ECommerce.Tables.Active.HR;
 using ETC = ECommerce.Tables.Content;
 
@@ -149,38 +148,32 @@ namespace ECommerceWeb.Models.Cart
 			}
 		}
 
-		public Task<bool> CheckOut()
+		public bool CheckOut()
 		{
-			return Task.Run(() =>
+			bool                result                  = false;
+
+			if (this.order != null)
 			{
-				bool                result                  = false;
+				order.Update(DateTime.Now, ETC.Order.STATUS_COMPLETED, this.order.PaymentMethod, this.order.TotalAmount);
+				result                                  = true;
+			}
 
-				if (this.order != null)
-				{
-					order.Update(DateTime.Now, ETC.Order.STATUS_COMPLETED, this.order.PaymentMethod, this.order.TotalAmount);
-					result                                  = true;
-				}
-
-				return result;
-			});
+			return result;
 		}
 
-		public static Task<bool> RemoveOrder(int? orderID)
+		public static bool RemoveOrder(int? orderID)
 		{
-			return Task.Run(() =>
+			bool                    result                  = false;
+
+			if (orderID != null)
 			{
-				bool					result                  = false;
+				ETC.Order           order                   = ETC.Order.ExecuteCreate(orderID ?? 0);
+				order.Delete();
 
-				if (orderID != null)
-				{
-					ETC.Order           order                   = ETC.Order.ExecuteCreate(orderID ?? 0);
-					order.Delete();
+				result                                      = true;
+			}
 
-					result                                      = true;
-				}
-
-				return result;
-			});
+			return result;
 		}
 
 		#endregion

@@ -1,4 +1,6 @@
 ﻿@using ECommerceWeb.Common
+@using ECommerce.Tables.Utility.System
+@using Volume.Toolkit.Paths
 @model ECommerceWeb.Models.Home.ReportViewModel
 
 @{
@@ -78,7 +80,7 @@
                     @if (Model.ProductList.Count == 0)
                     {
                         <div style="text-align: center; margin-top: 20px;">
-                            <img src="~/Filestore/Images/no_data.png" alt="NO_Data" />
+                            <img src="@PathUtility.CombineUrls(Config.StorageUrl, "Images/no_data.png")" alt="NO_Data" />
                         </div>
 }
                     else
@@ -202,7 +204,7 @@
                         else
                         {
                             <div style="text-align: center; margin-top: 10px;">
-                                <img src="~/Filestore/Images/cloud_search.png" style="height: 140px;" alt="NO_Data" />
+                                <img src="@PathUtility.CombineUrls(Config.StorageUrl, "Images/cloud_search.png")" style="height: 140px;" alt="NO_Data" />
                             </div>
                         }
                     }

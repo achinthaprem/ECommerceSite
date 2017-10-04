@@ -1,12 +1,14 @@
-﻿using ECommerceWeb.Common;
-using Syncfusion.XlsIO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using ECommerce.Tables.Utility.System;
+using ECommerceWeb.Common;
+using Syncfusion.XlsIO;
+using Volume.Toolkit.Paths;
 using ETC = ECommerce.Tables.Content;
 
 namespace ECommerceWeb.Models.Home
@@ -182,6 +184,7 @@ namespace ECommerceWeb.Models.Home
 				for (int i = startRowIndex; i < (list.Count + startRowIndex); i++) // rows
 				{
 					#region Feeding Content
+
 					worksheet.Range[i, 1].Text                                  = list[i-startRowIndex].ID.ToString();
 					worksheet.Range[i, 1].CellStyle                             = contentStyle;
 					worksheet.Range[i, 1].CellStyle.HorizontalAlignment         = ExcelHAlign.HAlignCenter;
@@ -211,6 +214,7 @@ namespace ECommerceWeb.Models.Home
 					worksheet.Range[i, 8].Text                                  = list[i-startRowIndex].Sellings.ToString();
 					worksheet.Range[i, 8].CellStyle                             = contentStyle;
 					worksheet.Range[i, 8].CellStyle.HorizontalAlignment         = ExcelHAlign.HAlignCenter;
+
 					#endregion
 				}
 				
@@ -222,9 +226,9 @@ namespace ECommerceWeb.Models.Home
 		{
 			TopSellingProductViewModel      result                      = null;
 
-			if (selectedProduct != null)
+			if (selectedProduct.HasValue)
 			{
-				ETC.Product                 product                     = ETC.Product.ExecuteCreate(selectedProduct ?? default (int));
+				ETC.Product                 product                     = ETC.Product.ExecuteCreate(selectedProduct.Value);
 
 				if (product != null)
 				{
@@ -233,7 +237,7 @@ namespace ECommerceWeb.Models.Home
 					result.Name                                         = product.Name;
 					result.Description                                  = product.Description;
 					result.Price                                        = product.Price;
-					result.ImageSrc                                     = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
+					result.ImageSrc                                     = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
 					result.Category                                     = product.ExecuteCreateCategoryByCategoryID().Name;
 					result.CategoryID                                   = product.CategoryID;
 					result.Status                                       = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;
@@ -261,7 +265,7 @@ namespace ECommerceWeb.Models.Home
 			List<TopSellingProductViewModel>		result                  = new List<TopSellingProductViewModel>();
 			List<ETC.Product>                       productList             = null;
 
-			if (FilterBy == null || FilterBy == 0)
+			if (FilterBy.HasValue || FilterBy == 0)
 			{
 				productList                                                 = ETC.Product.List();
 			}
@@ -284,7 +288,7 @@ namespace ECommerceWeb.Models.Home
 				model.Name                                                  = product.Name;
 				model.Description                                           = product.Description;
 				model.Price                                                 = product.Price;
-				model.ImageSrc                                              = $@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}";
+				model.ImageSrc                                              = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
 				model.Category                                              = product.ExecuteCreateCategoryByCategoryID().Name;
 				model.CategoryID                                            = product.CategoryID;
 				model.Status                                                = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;

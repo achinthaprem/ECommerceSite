@@ -1,5 +1,7 @@
 ﻿@using ECommerceWeb.Common
 @using ECommerce.Tables.Content
+@using ECommerce.Tables.Utility.System
+@using Volume.Toolkit.Paths
 @model ECommerceWeb.Models.Cart.OrderViewModel
 
 @{
@@ -7,19 +9,19 @@
     int                     PendingOrderItems       = ECommerceWeb.Common.Session.PendingOrderItems ?? default (int);
 }
 
-@if (TempData["alert-success"] != null)
+@if (TempData[Constants.ALERT_SUCCESS] != null)
 {
     <div class="alert alert-success" style="margin-top: 20px">
         <ul>
-            <li>@TempData["alert-success"]</li>
+            <li>@TempData[Constants.ALERT_SUCCESS]</li>
         </ul>
     </div>
 }
-else if (TempData["alert-fail"] != null)
+else if (TempData[Constants.ALERT_FAIL] != null)
 {
     <div class="alert alert-danger" style="margin-top: 20px">
         <ul>
-            <li>@TempData["alert-fail"]</li>
+            <li>@TempData[Constants.ALERT_FAIL]</li>
         </ul>
     </div>
 }
@@ -67,7 +69,7 @@ else if (TempData["alert-fail"] != null)
                         @Html.ActionLink(product.Name, Constants.ACTION_PRODUCT_VIEW, Constants.CONTROLLER_SHOP, new { ID = product.ID }, null)
                     </td>
                     <td style="text-align:center;">
-                        <img src="@Url.Content($@"~/Filestore/Images/Product/{product.ID}/{product.ImageName}")" alt="Image" style="width: 100px;" />
+                        <img src="@Url.Content(PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}"))" alt="Image" style="width: 100px;" />
                     </td>
                     <td style="text-align:center;">
                         @Func.Currencyfy(item.UnitCost)
@@ -87,7 +89,7 @@ else if (TempData["alert-fail"] != null)
     else
     {
         <div style="text-align: center; margin-top: 20px;">
-            <img src="~/Filestore/Images/empty_cart.png" alt="Empty_Cart" />
+            <img src="@PathUtility.CombineUrls(Config.StorageUrl, "Images/empty_cart.png")" alt="Empty_Cart" />
             <h2>You don't have anything in your cart :(</h2>
         </div>
     }
