@@ -1,6 +1,6 @@
 ﻿@using ECommerceWeb.Common
 @using ECommerce.Tables.Content
-@model IEnumerable<ECommerceWeb.Models.Shop.ProductViewModel>
+@model IEnumerable<ECommerceWeb.Models.Shop.ShopViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -27,7 +27,7 @@ else if (TempData[Constants.ALERT_FAIL] != null)
 
 <div class="pull-right">
     <label for="FilterBy">Filter by : </label>
-    @Html.DropDownList("FilterBy", Func.FilterActiveCategoryList(Category.ListByStatus(Category.STATUS_ACTIVE)), 
+    @Html.DropDownList("FilterBy", Lists.ListCategories(Category.ListByStatus(Category.STATUS_ACTIVE), Lists.SelectorType.WithAll, null), 
     htmlAttributes: new { @class = "btn btn-default dropdown-toggle", @onchange = "FilterBy(this.value)", @style = "margin-bottom: 10px; margin-top: 7px;" })
 </div>
 
@@ -66,7 +66,7 @@ else if (TempData[Constants.ALERT_FAIL] != null)
                     @Func.Currencyfy(item.Price)
                 </td>
                 <td style="text-align:center;">
-                    <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
+                    <img src="@Url.Content(item.ImageSrc)" alt="Image" class="thumb" />
                 </td>
                 <td style="white-space: nowrap; text-align: center">
                    @using (Html.BeginForm(Constants.ACTION_ADD, Constants.CONTROLLER_CART, new { ProductID = item.ID }, FormMethod.Post, null))

@@ -69,7 +69,7 @@ else if (TempData[Constants.ALERT_FAIL] != null)
                         @Html.ActionLink(product.Name, Constants.ACTION_PRODUCT_VIEW, Constants.CONTROLLER_SHOP, new { ID = product.ID }, null)
                     </td>
                     <td style="text-align:center;">
-                        <img src="@Url.Content(PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}"))" alt="Image" style="width: 100px;" />
+                        <img src="@Url.Content(PathUtility.CombineUrls(Config.StorageUrlProduct, product.ID.ToString(), product.ImageName))" alt="Image" class="thumb" />
                     </td>
                     <td style="text-align:center;">
                         @Func.Currencyfy(item.UnitCost)

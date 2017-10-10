@@ -34,10 +34,10 @@ namespace ECommerceWeb.Controllers
 
 		#endregion
 
-		#region List
+		#region Index
 
 		// GET: Category/List
-		public ActionResult List()
+		public ActionResult Index()
 		{
 			return View(CategoryViewModel.List());
 		}
@@ -96,7 +96,7 @@ namespace ECommerceWeb.Controllers
 					Session.Remove(Constants.SESSION_TEMP_CATEGORY);
 					TempData[Constants.ALERT_SUCCESS]                       = "Category saved successfully!";
 
-					return RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY);
+					return RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_CATEGORY);
 				}
 			}
 

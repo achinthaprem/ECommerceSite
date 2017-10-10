@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
 using ECommerce.Tables.Utility.System;
 using ECommerceWeb.Common;
@@ -18,13 +16,13 @@ namespace ECommerceWeb.Models.Home
 
 		#region Members
 
-		private bool                                isAdmin                 = false;
-		private List<SelectListItem>                activeCategoryList      = null;
-		private List<TopSellingProductViewModel>    productList             = null;
-		private int                                 selectedCategoryID      = Constants.DEFAULT_VALUE_INT;
-		private List<SelectListItem>                productOptionList       = null;
-		private TopSellingProductViewModel          selectedProduct         = null;
-		private string                              reportName              = String.Empty;
+		private bool						isAdmin                 = false;
+		private SelectList					activeCategoryList      = null;
+		private List<SalesViewModel>		productList             = null;
+		private int                         selectedCategoryID      = Constants.DEFAULT_VALUE_INT;
+		private SelectList					productOptionList       = null;
+		private SalesViewModel				selectedProduct         = null;
+		private string                      reportName              = String.Empty;
 
 		#endregion
 
@@ -36,13 +34,13 @@ namespace ECommerceWeb.Models.Home
 			set { this.isAdmin = value; }
 		}
 
-		public List<SelectListItem> ActiveCategoryList
+		public SelectList ActiveCategoryList
 		{
 			get { return this.activeCategoryList; }
 			set { this.activeCategoryList = value; }
 		}
 
-		public List<TopSellingProductViewModel> ProductList
+		public List<SalesViewModel> ProductList
 		{
 			get { return this.productList; }
 			set { this.productList = value; }
@@ -54,13 +52,13 @@ namespace ECommerceWeb.Models.Home
 			set { this.selectedCategoryID = value; }
 		}
 
-		public List<SelectListItem> ProductOptionList
+		public SelectList ProductOptionList
 		{
 			get { return this.productOptionList; }
 			set { this.productOptionList = value; }
 		}
 
-		public TopSellingProductViewModel SelectedProduct
+		public SalesViewModel SelectedProduct
 		{
 			get { return this.selectedProduct; }
 			set { this.selectedProduct = value; }
@@ -78,50 +76,87 @@ namespace ECommerceWeb.Models.Home
 
 		public ReportViewModel() { }
 
-		public ReportViewModel(int? TopSellingFilterBy, int? SelectedProduct)
+		private ReportViewModel(int? TopSellingFilterBy, int? SelectedProduct)
 		{
-			this.activeCategoryList					= Func.FilterActiveCategoryList(ETC.Category.ListByStatus(ETC.Category.STATUS_ACTIVE));
+			this.activeCategoryList                 = Lists.ListCategories(
+														ETC.Category.ListByStatus(ETC.Category.STATUS_ACTIVE), 
+														Lists.SelectorType.WithAll, 
+														selectedValue: null);
 			this.isAdmin                            = true;
-			this.productList						= GetTopSellingProducts(TopSellingFilterBy, IncludeNotSold: false);
-			this.selectedCategoryID					= TopSellingFilterBy ?? 0;
-			this.productOptionList					= ProductSelectList(GetTopSellingProducts(null, true));
+			this.productList						= SalesViewModel.List(
+														TopSellingFilterBy, 
+														IncludeNotSold: false);
+			this.selectedCategoryID					= TopSellingFilterBy ?? Constants.DEFAULT_VALUE_INT;
+			this.productOptionList					= Lists.ListProducts(
+														ETC.Product.ListByStatus(ETC.Product.STATUS_ACTIVE), 
+														Lists.SelectorType.None,
+														selectedValue: null);
 			this.selectedProduct                    = SearchProduct(SelectedProduct);
+		}
 
+		#endregion
 
-			if (TopSellingFilterBy == null || TopSellingFilterBy == 0)
+		#region Execute Create
+
+		public static ReportViewModel ExecuteCreate(int? TopSellingFilterBy, int? SelectedProduct)
+		{
+			ReportViewModel             result              = new ReportViewModel(TopSellingFilterBy, SelectedProduct);
+
+			if (TopSellingFilterBy == null || TopSellingFilterBy == Constants.DEFAULT_VALUE_INT)
 			{
-				this.reportName						= "All Categories";
+				result.reportName							= "All Categories";
 			}
 			else
 			{
-				this.reportName						= ETC.Category.ExecuteCreate(TopSellingFilterBy ?? default(int)).Name;
+				ETC.Category            category            = ETC.Category.ExecuteCreate(TopSellingFilterBy.Value);
+
+				if (category != null)
+				{
+					result.reportName                       = category.Name;
+				}
+				else
+				{
+					result                                  = null;
+				}
 			}
 
+			return result;
 		}
 
 		#endregion
 
 		#region Methods
 
-		public void GenerateReport(int? reportMode, HttpApplication application)
+		public void GenerateReport(int? reportMode, int? TopSellingFilterBy, HttpApplication application)
 		{
 			switch (reportMode)
 			{
 				case 1:
-					this.GenerateWorkbook(this.productList, this.reportName, application);
+					this.GenerateWorkbook(
+						SalesViewModel.List(TopSellingFilterBy, IncludeNotSold: false), 
+						this.reportName, 
+						application);
 					break;
 				case 2:
-					List<TopSellingProductViewModel> tempList = new List<TopSellingProductViewModel>();
+					List<SalesViewModel> tempList = new List<SalesViewModel>();
 					tempList.Add(this.selectedProduct);
-					this.GenerateWorkbook(tempList, this.selectedProduct.Name.Replace("/", "-"), application);
+
+					this.GenerateWorkbook(
+						tempList, 
+						this.selectedProduct.Name.Replace("/", "-"), 
+						application);
 					break;
 				default:
 					break;
 			}
 		}
 
-		private void GenerateWorkbook(List<TopSellingProductViewModel> list, string ReportName, HttpApplication application)
-		{
+		#endregion
+
+		#region Utility Methods
+
+		private void GenerateWorkbook(List<SalesViewModel> list, string ReportName, HttpApplication application)
+		{ // TODO: Replace with List<Product> or else suitable
 			using (ExcelEngine excelEngine = new ExcelEngine())
 			{
 				excelEngine.Excel.DefaultVersion                                = ExcelVersion.Excel2016;
@@ -199,7 +234,9 @@ namespace ECommerceWeb.Models.Home
 					worksheet.Range[i, 4].CellStyle                             = contentStyle;
 					worksheet.Range[i, 4].CellStyle.HorizontalAlignment         = ExcelHAlign.HAlignCenter;
 
-					System.Drawing.Image        image                           = System.Drawing.Image.FromFile(HostingEnvironment.MapPath(list[i-startRowIndex].ImageSrc));
+					System.Drawing.Image        image                           = System.Drawing.Image.FromFile(PathUtility.CombinePaths(Config.StoragePathProduct, 
+																					list[i-startRowIndex].ID.ToString(), 
+																					list[i-startRowIndex].ImageName));
 					System.Drawing.Image        image_r                         = Imager.Resize(image, 200, 150, true);
 					IPictureShape               shape                           = worksheet.Pictures.AddPicture(i, 5, image_r);
 					worksheet.SetRowHeightInPixels(i, image_r.Height);
@@ -222,102 +259,23 @@ namespace ECommerceWeb.Models.Home
 			}
 		}
 
-		private TopSellingProductViewModel SearchProduct(int? selectedProduct)
+		private SalesViewModel SearchProduct(int? selectedProduct)
 		{
-			TopSellingProductViewModel      result                      = null;
+			SalesViewModel			result              = null;
 
 			if (selectedProduct.HasValue)
 			{
-				ETC.Product                 product                     = ETC.Product.ExecuteCreate(selectedProduct.Value);
+				ETC.Product         product             = ETC.Product.ExecuteCreate(selectedProduct.Value);
 
 				if (product != null)
 				{
-					result                                              = new TopSellingProductViewModel();
-					result.ID                                           = product.ID;
-					result.Name                                         = product.Name;
-					result.Description                                  = product.Description;
-					result.Price                                        = product.Price;
-					result.ImageSrc                                     = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
-					result.Category                                     = product.ExecuteCreateCategoryByCategoryID().Name;
-					result.CategoryID                                   = product.CategoryID;
-					result.Status                                       = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;
-					result.Sellings                                     = CountSells(product);
+					result                              = SalesViewModel.ExecuteCreate(product);
 				}
 			}
 
 			return result;
 		}
-
-		private List<SelectListItem> ProductSelectList(List<TopSellingProductViewModel> modelList)
-		{
-			List<SelectListItem>            result                      = new List<SelectListItem>();
-
-			foreach (TopSellingProductViewModel model in modelList)
-			{
-				result.Add(new SelectListItem { Value = model.ID.ToString(), Text = model.Name });
-			}
-
-			return result;
-		}
-
-		private List<TopSellingProductViewModel> GetTopSellingProducts(int? FilterBy, bool IncludeNotSold)
-		{
-			List<TopSellingProductViewModel>		result                  = new List<TopSellingProductViewModel>();
-			List<ETC.Product>                       productList             = null;
-
-			if (FilterBy.HasValue || FilterBy == 0)
-			{
-				productList                                                 = ETC.Product.List();
-			}
-			else
-			{
-				productList                                                 = ETC.Product.ListByCategoryID(FilterBy ?? 0);
-			}
-
-			foreach (ETC.Product product in productList)
-			{
-				int                                 sellings                = CountSells(product);
-
-				if (sellings == 0 && !IncludeNotSold)
-				{
-					continue;
-				}
-
-				TopSellingProductViewModel          model                   = new TopSellingProductViewModel();
-				model.ID                                                    = product.ID;
-				model.Name                                                  = product.Name;
-				model.Description                                           = product.Description;
-				model.Price                                                 = product.Price;
-				model.ImageSrc                                              = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
-				model.Category                                              = product.ExecuteCreateCategoryByCategoryID().Name;
-				model.CategoryID                                            = product.CategoryID;
-				model.Status                                                = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;
-				model.Sellings                                              = sellings;
-
-				result.Add(model);
-			}
-
-			result                                                          = result.OrderByDescending(o => o.Sellings).ToList();
-
-			return result;
-		}
-
-		private int CountSells(ETC.Product product)
-		{
-			List<ETC.OrderItem>                 orderItemList           = ETC.OrderItem.ListByProductID(product.ID);
-			int                                 sellings                = 0;
-
-			foreach (ETC.OrderItem item in orderItemList)
-			{
-				if (item.ExecuteCreateOrderByOrderID().Status == ETC.Order.STATUS_COMPLETED)
-				{
-					sellings                                            += item.Quantity;
-				}
-			}
-
-			return sellings;
-		}
-
+		
 		#endregion
 
 	}

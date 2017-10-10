@@ -66,7 +66,9 @@ namespace ECommerce.Tables.Utility.System
 		#region Folder Constants
 
 		// Folders
-		public  const string            FOLDER_TEMP                             = "FolderTemp";
+		public const string				FOLDER_TEMP								= "Temp";
+		public const string				FOLDER_CATEGORY							= "Category";
+		public const string				FOLDER_PRODUCT							= "Product";
 
 		#endregion
 
@@ -201,11 +203,59 @@ namespace ECommerce.Tables.Utility.System
 		}
 
 		/// <summary>
+		/// Gets the Path to the Temp location.
+		/// </summary>
+		public static string StoragePathTemp
+		{
+			get { return PathUtility.CombinePaths(StoragePath, FOLDER_TEMP); }
+		}
+
+		/// <summary>
+		/// Gets the Path to the Category location.
+		/// </summary>
+		public static string StoragePathCategory
+		{
+			get { return PathUtility.CombinePaths(StoragePath, FOLDER_CATEGORY); }
+		}
+
+		/// <summary>
+		/// Gets the Path to the Product location.
+		/// </summary>
+		public static string StoragePathProduct
+		{
+			get { return PathUtility.CombinePaths(StoragePath, FOLDER_PRODUCT); }
+		}
+
+		/// <summary>
 		/// Gets the URL to the storage location.
 		/// </summary>
 		public static string StorageUrl
 		{
 			get { return GetConfigString(KEY_STORAGE_PATH_URL); }
+		}
+
+		/// <summary>
+		/// Gets the URL to the Temp location.
+		/// </summary>
+		public static string StorageUrlTemp
+		{
+			get { return PathUtility.CombineUrls(StorageUrl, FOLDER_TEMP); }
+		}
+
+		/// <summary>
+		/// Gets the URL to the Category location.
+		/// </summary>
+		public static string StorageUrlCategory
+		{
+			get { return PathUtility.CombineUrls(StorageUrl, FOLDER_CATEGORY); }
+		}
+
+		/// <summary>
+		/// Gets the URL to the Product location.
+		/// </summary>
+		public static string StorageUrlProduct
+		{
+			get { return PathUtility.CombineUrls(StorageUrl, FOLDER_PRODUCT); }
 		}
 
 		/// <summary>

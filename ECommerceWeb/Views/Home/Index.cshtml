@@ -24,7 +24,7 @@
                         <li>@Html.ActionLink("Add", Constants.ACTION_EDITOR, Constants.CONTROLLER_CATEGORY)</li>
                     </ul>
                     <ul>
-                        <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_CATEGORY)</li>
+                        <li>@Html.ActionLink("View List", Constants.ACTION_INDEX, Constants.CONTROLLER_CATEGORY)</li>
                     </ul>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                         <li>@Html.ActionLink("Add", Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT)</li>
                     </ul>
                     <ul>
-                        <li>@Html.ActionLink("View List", Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT)</li>
+                        <li>@Html.ActionLink("View List", Constants.ACTION_INDEX, Constants.CONTROLLER_PRODUCT)</li>
                     </ul>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                                         @Html.ActionLink(item.Name, Constants.ACTION_EDITOR, Constants.CONTROLLER_PRODUCT, new { ID = item.ID }, null)
                                     </td>
                                     <td style="text-align:center;">
-                                        <img src="@Url.Content(item.ImageSrc)" alt="Image" style="width: 100px;" />
+                                        <img src="@Url.Content(item.ImageSrc)" alt="Image" class="thumb" />
                                     </td>
                                     <td style="text-align:center;">
                                         @Func.Currencyfy(item.Price)
@@ -156,7 +156,7 @@
 
                         <datalist id="products">
 
-                            @{  List<SelectListItem> list = Model.ProductOptionList;
+                            @{  SelectList list = Model.ProductOptionList;
                                 foreach (SelectListItem item in list)
                                 {
                                     <option data-value="@item.Value">@item.Text</option>
@@ -185,7 +185,7 @@
                             </div>
                             <hr style="margin-top: 0px;" />
 
-                            <img src="@Url.Content(Model.SelectedProduct.ImageSrc)" alt="Image" style="height: 100px;" />
+                            <img src="@Url.Content(Model.SelectedProduct.ImageSrc)" alt="Image" class="thumb" />
                             <br /><br />
 
                             <label>Name: </label>

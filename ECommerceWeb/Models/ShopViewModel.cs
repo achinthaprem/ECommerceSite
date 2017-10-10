@@ -108,7 +108,7 @@ namespace ECommerceWeb.Models.Shop
 				this.name                       = product.Name;
 				this.description                = product.Description;
 				this.price                      = product.Price;
-				this.imageSrc                   = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
+				this.imageSrc                   = PathUtility.CombineUrls(Config.StorageUrlProduct, product.ID.ToString(), product.ImageName);
 				this.category                   = product.ExecuteCreateCategoryByCategoryID().Name;
 				this.categoryID                 = product.CategoryID;
 				this.status                     = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;
@@ -124,7 +124,7 @@ namespace ECommerceWeb.Models.Shop
 				this.name                       = product.Name;
 				this.description                = product.Description;
 				this.price                      = product.Price;
-				this.imageSrc                   = PathUtility.CombineUrls(Config.StorageUrl, $@"Images/Product/{product.ID}/{product.ImageName}");
+				this.imageSrc                   = PathUtility.CombineUrls(Config.StorageUrlProduct, product.ID.ToString(), product.ImageName);
 				this.category                   = product.ExecuteCreateCategoryByCategoryID().Name;
 				this.categoryID                 = product.CategoryID;
 				this.status                     = (product.Status == ETC.Product.STATUS_ACTIVE) ? true : false;

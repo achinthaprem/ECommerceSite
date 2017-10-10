@@ -301,6 +301,7 @@
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\CustomValidations.cs" />
     <Compile Include="Common\Func.cs" />
+    <Compile Include="Common\Lists.cs" />
     <Compile Include="Common\Session.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CartController.cs" />
@@ -321,9 +322,9 @@
     <Compile Include="Models\Home\CreateContactFormViewModel.cs" />
     <Compile Include="Models\Home\ListContactFormViewModel.cs" />
     <Compile Include="Models\Home\ReportViewModel.cs" />
-    <Compile Include="Models\Home\TopSellingProductViewModel.cs" />
+    <Compile Include="Models\Home\SalesViewModel.cs" />
     <Compile Include="Models\ProductViewModel.cs" />
-    <Compile Include="Models\Shop\ProductViewModel.cs" />
+    <Compile Include="Models\ShopViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -391,12 +392,12 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
-    <Content Include="Views\Category\List.cshtml" />
-    <Content Include="Views\Product\List.cshtml" />
+    <Content Include="Views\Category\Index.cshtml" />
+    <Content Include="Views\Product\Index.cshtml" />
     <Content Include="Views\Shop\Index.cshtml" />
     <Content Include="Views\Shared\_Cart.cshtml" />
     <Content Include="Views\Shop\ProductView.cshtml" />
-    <Content Include="Views\Cart\View.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Category\Editor.cshtml" />
     <Content Include="Views\Product\Editor.cshtml" />
   </ItemGroup>

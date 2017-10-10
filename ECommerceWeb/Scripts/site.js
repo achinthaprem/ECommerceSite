@@ -1,25 +1,40 @@
-﻿$(document).ready(function () {
+﻿//$(document).ready(function () {
 
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+//    function readURL(input) {
+//        if (input.files && input.files[0]) {
+//            var reader = new FileReader();
 
-            reader.onload = function (e) {
+//            reader.onload = function (e) {
 
-                var img = document.getElementById("image_preview");
-                img.src = e.target.result;
+//                var img = document.getElementById("image_preview");
+//                img.src = e.target.result;
 
-            }
+//            };
 
-            reader.readAsDataURL(input.files[0]);
-        }
+//            reader.readAsDataURL(input.files[0]);
+//        }
+//    }
+
+//    $("input[type=file]").change(function () {
+//        readURL(this);
+//    });
+
+//});
+
+function setPreviewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            var img = document.getElementById("image_preview");
+            img.src = e.target.result;
+
+        };
+
+        reader.readAsDataURL(input.files[0]);
     }
-
-    $("input[type=file]").change(function () {
-        readURL(this);
-    });
-
-});
+}
 
 function test() {
     console.log("Hello World!");
@@ -39,7 +54,7 @@ $('.more').click(function () {
 // FilterBy
 function FilterBy(val) {
 
-    if (val != 0) {
+    if (val !== 0) {
         window.location.href = baseUrl + "Shop/Index?filterBy=" + val;
     } else {
         window.location.href = baseUrl + "Shop/Index";
@@ -48,7 +63,7 @@ function FilterBy(val) {
 
 function TopSellingFilterBy(val) {
 
-    if (val != 0) {
+    if (val !== 0) {
         //window.location.href = "/Home/Index?TopSellingFilterBy=" + val;
         insertParam('TopSellingFilterBy', val);
     } else {
@@ -77,7 +92,7 @@ function insertParam(key, value) {
     while (i--) {
         x = kvp[i].split('=');
 
-        if (x[0] == key) {
+        if (x[0] === key) {
             x[1] = value;
             kvp[i] = x.join('=');
             break;
@@ -185,8 +200,8 @@ function DeleteProduct(id, name) {
 AJAX upload
 */
 $(document).ready(function () {
-    $('#submit_category').click(function () {
-
+    $('#image_upload_category').change(function () {
+        
         // Checking whether FormData is available in browser  
         if (window.FormData !== undefined) {
 
@@ -211,11 +226,11 @@ $(document).ready(function () {
                 processData: false, // Not to process data  
                 data: fileData,
                 success: function (result) {
-                    $('form#categoryEditorForm').submit();
+                    setPreviewImage(fileUpload);
                 },
                 error: function (err) {
                     //alert(err.statusText);
-                    $('form#categoryEditorForm').submit();
+                    setPreviewImage(fileUpload);
                 }
             });
         } else {
@@ -225,7 +240,7 @@ $(document).ready(function () {
 });  
 
 $(document).ready(function() {
-    $('#submit_product').click(function() {
+    $('#image_upload_product').change(function() {
 
         // Checking whether FormData is available in browser  
         if (window.FormData !== undefined) {
@@ -251,11 +266,11 @@ $(document).ready(function() {
                 processData: false, // Not to process data  
                 data: fileData,
                 success: function(result) {
-                    $('form#productEditorForm').submit();
+                    setPreviewImage(fileUpload);
                 },
                 error: function(err) {
                     //alert(err.statusText);
-                    $('form#productEditorForm').submit();
+                    setPreviewImage(fileUpload);
                 }
             });
         } else {

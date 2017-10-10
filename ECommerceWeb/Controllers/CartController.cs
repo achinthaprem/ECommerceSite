@@ -10,16 +10,16 @@ namespace ECommerceWeb.Controllers
 	public class CartController : Controller
 	{
 
-		#region Cart View
+		#region Index (Cart)
 
 		// GET: Cart/View
 		/// <summary>
 		/// Cart view page
 		/// </summary>
 		/// <returns></returns>
-		new public ActionResult View()
+		public ActionResult Index()
 		{
-			return View("View", new OrderViewModel());
+			return View(new OrderViewModel());
 		}
 
 		#endregion

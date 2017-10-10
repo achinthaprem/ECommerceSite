@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using ECommerce.Tables.Utility.System;
@@ -25,8 +26,9 @@ namespace ECommerceWeb.Models.Product
 		private ETC.Product             entity                  = null;
 		private HttpPostedFileBase      image                   = null;
 		private ETC.Category            category                = null;
-		private List<SelectListItem>    categoryList            = null;
+		private SelectList				categoryList            = null;
 		private bool                    isEditMode              = false;
+		private string                  tempFolder              = String.Empty;
 
 		#endregion
 
@@ -94,8 +96,6 @@ namespace ECommerceWeb.Models.Product
 			set { this.status = value; }
 		}
 
-		#endregion
-
 		#region Helpers
 
 		public bool IsEditMode
@@ -104,7 +104,7 @@ namespace ECommerceWeb.Models.Product
 			set { this.isEditMode = value; }
 		}
 
-		public List<SelectListItem> CategoryList
+		public SelectList CategoryList
 		{
 			get { return this.categoryList; }
 			set { this.categoryList = value; }
@@ -115,13 +115,35 @@ namespace ECommerceWeb.Models.Product
 			get { return this.category.Name ?? null; }
 		}
 
+		private string TempFolderPath
+		{
+			get { return PathUtility.CombinePaths(Config.StoragePathTemp, this.tempFolder); }
+		}
+
+		private string TempFolderUrl
+		{
+			get { return PathUtility.CombineUrls(Config.StorageUrlTemp, this.tempFolder); }
+		}
+
+		private string FolderPath
+		{
+			get { return PathUtility.CombinePaths(Config.StoragePathProduct, this.id.ToString()); }
+		}
+
+		private string FolderUrl
+		{
+			get { return PathUtility.CombineUrls(Config.StorageUrlProduct, this.id.ToString()); }
+		}
+
+		#endregion
+
 		#endregion
 
 		#region Constructors
 
 		public ProductViewModel()
 		{
-			this.categoryList                               = Func.ConvertCategoriesToSelectList(ETC.Category.ListByStatus(ETC.Category.STATUS_ACTIVE));
+			this.categoryList                               = Lists.ListCategories(ETC.Category.ListByStatus(ETC.Category.STATUS_ACTIVE), Lists.SelectorType.WithSelect, null);
 		}
 
 		private ProductViewModel(ETC.Product product)
@@ -135,14 +157,12 @@ namespace ECommerceWeb.Models.Product
 			this.categoryID                                 = product.CategoryID;
 			this.entity                                     = product;
 			this.category                                   = product.ExecuteCreateCategoryByCategoryID();
-			this.categoryList                               = Func.ConvertCategoriesToSelectList(ETC.Category.ListByStatus(ETC.Category.STATUS_ACTIVE));
+			this.categoryList                               = Lists.ListCategories(ETC.Category.ListByStatus(ETC.Category.STATUS_ACTIVE), Lists.SelectorType.WithSelect, null);
 
 			this.isEditMode                                 = true;
 		}
 
 		#endregion
-
-		#region Methods
 
 		#region Execute Create
 
@@ -168,6 +188,8 @@ namespace ECommerceWeb.Models.Product
 		}
 
 		#endregion
+
+		#region Methods
 
 		#region List
 
@@ -236,8 +258,7 @@ namespace ECommerceWeb.Models.Product
 				{
 					if (this.image != null)
 					{
-						string          path                = $@"Images\Product\{product.ID}";
-						Func.SaveImage(this.image, path, this.imageName);
+						SaveImg();
 					}
 
 					product.Update(
@@ -262,13 +283,29 @@ namespace ECommerceWeb.Models.Product
 																Common.Session.Account.ID,
 																Common.Session.Account.ID);
 				product.Insert();
+				this.id                                     = product.ID;
 
 				if (this.image != null)
 				{
-					string              path                = $@"Images\Product\{product.ID}";
-					Func.SaveImage(this.image, path, this.imageName);
+					SaveImg();
 				}
 			}
+
+			if (!String.IsNullOrEmpty(this.TempFolderPath) && Directory.Exists(this.TempFolderPath))
+			{
+				Directory.Delete(this.TempFolderPath, true);
+			}
+		}
+
+		private void SaveImg()
+		{
+			if (!Directory.Exists(this.FolderPath))
+			{
+				Directory.CreateDirectory(this.FolderPath);
+			}
+
+			File.Copy(PathUtility.CombinePaths(this.TempFolderPath, this.imageName),
+					  PathUtility.CombinePaths(this.FolderPath, this.imageName));
 		}
 
 		#endregion
@@ -280,6 +317,8 @@ namespace ECommerceWeb.Models.Product
 			if (this.entity != null)
 			{
 				this.entity.Delete();
+
+				Directory.Delete(this.FolderPath, true);
 			}
 		}
 
@@ -289,7 +328,20 @@ namespace ECommerceWeb.Models.Product
 
 		public void Upload(HttpPostedFileBase file)
 		{
-			this.image                      = file;
+			if (String.IsNullOrEmpty(this.tempFolder))
+			{
+				this.tempFolder                 = Guid.NewGuid().ToString();
+			}
+
+			if (!Directory.Exists(this.TempFolderPath))
+			{
+				Directory.CreateDirectory(this.TempFolderPath);
+			}
+
+			this.image                          = file;
+			this.imageName                      = file.FileName;
+
+			file.SaveAs(PathUtility.CombinePaths(this.TempFolderPath, this.imageName));
 		}
 
 		#endregion
@@ -306,9 +358,11 @@ namespace ECommerceWeb.Models.Product
 
 			if (this.entity != null)
 			{
-				result                              = PathUtility.CombineUrls(
-														Config.StorageUrl,
-														$@"Images/Product/{this.entity.ID}/{this.entity.ImageName}");
+				result                              = PathUtility.CombineUrls(this.FolderUrl, this.imageName);
+			}
+			else if (this.image != null)
+			{
+				result                              = PathUtility.CombineUrls(this.TempFolderUrl, this.imageName);
 			}
 
 			return result;

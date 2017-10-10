@@ -9,7 +9,7 @@ namespace ECommerceWeb.Controllers
 	[VerifyAdmin]
 	public class ProductController : Controller
 	{
-
+		
 		#region Properties
 
 		public ProductViewModel TempSession
@@ -34,14 +34,14 @@ namespace ECommerceWeb.Controllers
 
 		#endregion
 
-		#region List
+		#region Index
 
 		// GET: Product/List
 		/// <summary>
 		/// List All Products
 		/// </summary>
 		/// <returns></returns>
-		public ActionResult List()
+		public ActionResult Index()
 		{
 			return View(ProductViewModel.List());
 		}
@@ -103,9 +103,9 @@ namespace ECommerceWeb.Controllers
 				{
 					this.TempSession.Save();
 					Session.Remove(Constants.SESSION_TEMP_PRODUCT);
-					TempData[Constants.ALERT_SUCCESS]                       = "Product saved successfully!";
+					TempData[Constants.ALERT_SUCCESS]				= "Product saved successfully!";
 
-					return RedirectToAction(Constants.ACTION_LIST, Constants.CONTROLLER_PRODUCT);
+					return RedirectToAction(Constants.ACTION_INDEX, Constants.CONTROLLER_PRODUCT);
 				}
 			}
 

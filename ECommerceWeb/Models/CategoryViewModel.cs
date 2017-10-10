@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using ECommerce.Tables.Utility.System;
@@ -23,6 +24,7 @@ namespace ECommerceWeb.Models.Category
 		private ETC.Category            entity                  = null;
 		private HttpPostedFileBase      image                   = null;
 		private bool                    isEditMode              = false;
+		private string                  tempFolder				= String.Empty;
 
 		#endregion
 
@@ -71,12 +73,26 @@ namespace ECommerceWeb.Models.Category
 			get { return this.status; }
 			set { this.status = value; }
 		}
+		
+		private string TempFolderPath
+		{
+			get { return PathUtility.CombinePaths(Config.StoragePathTemp, this.tempFolder); }
+		}
 
-		//public HttpPostedFileBase ImageFile
-		//{
-		//	get { return this.image; }
-		//	set { this.image = value; }
-		//}
+		private string TempFolderUrl
+		{
+			get { return PathUtility.CombineUrls(Config.StorageUrlTemp, this.tempFolder); }
+		}
+
+		private string FolderPath
+		{
+			get { return PathUtility.CombinePaths(Config.StoragePathCategory, this.id.ToString()); }
+		}
+
+		private string FolderUrl
+		{
+			get { return PathUtility.CombineUrls(Config.StorageUrlCategory, this.id.ToString()); }
+		}
 
 		#endregion
 
@@ -108,8 +124,6 @@ namespace ECommerceWeb.Models.Category
 
 		#endregion
 
-		#region Methods
-
 		#region Execute Create
 
 		public static CategoryViewModel ExecuteCreate(int? id)
@@ -134,6 +148,8 @@ namespace ECommerceWeb.Models.Category
 		}
 
 		#endregion
+
+		#region Methods
 
 		#region List
 
@@ -200,8 +216,7 @@ namespace ECommerceWeb.Models.Category
 				{
 					if (this.image != null)
 					{
-						string          path                = $@"Images\Category\{category.ID}";
-						Func.SaveImage(this.image, path, this.imageName);
+						SaveImg();
 					}
 
 					category.Update(
@@ -222,13 +237,29 @@ namespace ECommerceWeb.Models.Category
 																Common.Session.Account.ID,
 																Common.Session.Account.ID);
 				category.Insert();
+				this.id                                     = category.ID;
 
 				if (this.image != null)
 				{
-					string				path                = $@"Images\Category\{category.ID}";
-					Func.SaveImage(this.image, path, this.imageName);
+					SaveImg();
 				}
 			}
+
+			if (!String.IsNullOrEmpty(this.TempFolderPath) && Directory.Exists(this.TempFolderPath))
+			{
+				Directory.Delete(this.TempFolderPath, true);
+			}
+		}
+
+		private void SaveImg()
+		{
+			if (!Directory.Exists(this.FolderPath))
+			{
+				Directory.CreateDirectory(this.FolderPath);
+			}
+
+			File.Copy(PathUtility.CombinePaths(this.TempFolderPath, this.imageName),
+					  PathUtility.CombinePaths(this.FolderPath, this.imageName));
 		}
 
 		#endregion
@@ -240,6 +271,8 @@ namespace ECommerceWeb.Models.Category
 			if (this.entity != null)
 			{
 				this.entity.Delete();
+
+				Directory.Delete(this.FolderPath, true);
 			}
 		}
 
@@ -249,7 +282,20 @@ namespace ECommerceWeb.Models.Category
 
 		public void Upload(HttpPostedFileBase file)
 		{
-			this.image                      = file;
+			if (String.IsNullOrEmpty(this.tempFolder))
+			{
+				this.tempFolder					= Guid.NewGuid().ToString();
+			}
+
+			if (!Directory.Exists(this.TempFolderPath))
+			{
+				Directory.CreateDirectory(this.TempFolderPath);
+			}
+
+			this.image                          = file;
+			this.imageName                      = file.FileName;
+
+			file.SaveAs(PathUtility.CombinePaths(this.TempFolderPath, this.imageName));
 		}
 
 		#endregion
@@ -266,9 +312,11 @@ namespace ECommerceWeb.Models.Category
 
 			if (this.entity != null)
 			{
-				result                              = PathUtility.CombineUrls(
-														Config.StorageUrl,
-														$@"Images/Category/{this.entity.ID}/{this.entity.ImageName}");
+				result                              = PathUtility.CombineUrls(this.FolderUrl, this.imageName);
+			}
+			else if (this.image != null)
+			{
+				result                              = PathUtility.CombineUrls(this.TempFolderUrl, this.imageName);
 			}
 
 			return result;

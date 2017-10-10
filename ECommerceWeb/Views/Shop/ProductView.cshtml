@@ -1,5 +1,5 @@
 ﻿@using ECommerceWeb.Common
-@model ECommerceWeb.Models.Shop.ProductViewModel
+@model ECommerceWeb.Models.Shop.ShopViewModel
 
 @{
     ViewBag.Title = "Product View";
@@ -55,7 +55,7 @@ else if (TempData[Constants.ALERT_FAIL] != null)
         </dt>
 
         <dd>
-            <img src="@Url.Content(Model.ImageSrc)" alt="Image" style="height: 200px;" />
+            <img src="@Url.Content(Model.ImageSrc)" alt="Image" style="max-height: 200px;" />
         </dd>
 
         <dt></dt>

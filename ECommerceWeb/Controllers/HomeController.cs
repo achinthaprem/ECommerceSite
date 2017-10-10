@@ -22,7 +22,16 @@ namespace ECommerceWeb.Controllers
 		{
 			if (Common.Session.IsAdmin)
 			{
-				return View(new ReportViewModel(TopSellingFilterBy, SelectedProduct));
+				ReportViewModel         result          = ReportViewModel.ExecuteCreate(TopSellingFilterBy, SelectedProduct);
+
+				if (result != null)
+				{
+					return View(result);
+				}
+				else
+				{
+					return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+				}
 			}
 			else
 			{
@@ -46,11 +55,11 @@ namespace ECommerceWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult ExportToExcel(int? reportMode, int? TopSellingFilterBy, int? SelectedProduct)
 		{
-			ReportViewModel			result			= new ReportViewModel(TopSellingFilterBy, SelectedProduct);
+			ReportViewModel			result			= ReportViewModel.ExecuteCreate(TopSellingFilterBy, SelectedProduct);
 
 			if (result != null)
 			{
-				result.GenerateReport(reportMode, HttpContext.ApplicationInstance);
+				result.GenerateReport(reportMode, TopSellingFilterBy, HttpContext.ApplicationInstance);
 			}
 			else
 			{

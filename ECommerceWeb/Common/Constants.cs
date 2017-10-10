@@ -57,7 +57,6 @@
 		public const string             ACTION_CHANGE_PSW               = "ChangePassword";
 		public const string             ACTION_ADD						= "Add";
 		public const string             ACTION_EDITOR                   = "Editor";
-		public const string             ACTION_LIST                     = "List";
 		public const string             ACTION_DELETE                   = "Delete";
 		public const string             ACTION_VIEW						= "View";
 		public const string             ACTION_PRODUCT_VIEW             = "ProductView";
